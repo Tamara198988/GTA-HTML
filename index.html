@@ -624,10 +624,10 @@
     .city-viewport {
       position: relative;
       width: 100%;
-      height: clamp(400px, 64vh, 620px);
-      background: #061026;
+      height: 560px;
+      background: #09111e;
       border: 3px solid var(--ink);
-      border-radius: 12px;
+      border-radius: 14px;
       overflow: hidden;
       box-shadow: var(--shadow-gta);
       user-select: none;
@@ -636,7 +636,9 @@
     #city-canvas {
       display: block;
       width: 100%;
-      height: 100%;
+      height: 560px;
+      background: #09111e;
+      border-radius: 14px;
       touch-action: none;
     }
 
@@ -1579,7 +1581,7 @@
         </div>
 
         <div class="city-viewport">
-          <canvas id="city-canvas"></canvas>
+          <canvas id="city-canvas" width="1100" height="600" style="width:100%; height:560px; display:block; background:#09111e; border-radius:14px;"></canvas>
 
           <div class="city-hud-box">
             <div id="city-hud-island" style="font-size: 0.7rem; font-weight: 800; color: var(--cyan); text-transform: uppercase;">🏝️ Остров HTML</div>
@@ -3405,8 +3407,8 @@
       const OpenCityGame = (() => {
         const W = 2800;
         const H = 1800;
-        let cvs = null;
-        let ctx = null;
+        let cvs = document.getElementById('city-canvas');
+        let ctx = cvs ? cvs.getContext('2d') : null;
         let running = false;
         let raf = null;
         let lastTs = 0;
@@ -3415,7 +3417,7 @@
         let activeMarker = null;
 
         const keys = { up: false, down: false, left: false, right: false };
-        const car = { x: 420, y: 340, vx: 0, vy: 0, angle: 0 };
+        const car = { x: 420, y: 420, vx: 0, vy: 0, angle: 0 };
 
         const MARKERS = [
           { kind: 'dist', idx: 0, x: 420, y: 340, r: 44 },
@@ -3451,13 +3453,25 @@
           { x: 1620, y: 1400, w: 1000, h: 220, neon: '#ffd700', name: 'ANIMATION ALLEY' }
         ];
 
-        function resize() {
-          if (!cvs) return;
+        const PALMS = [
+          [145, 290], [145, 720], [145, 1140], [145, 1580],
+          [1215, 290], [1215, 720], [1215, 1140], [1215, 1580],
+          [540, 620], [820, 960], [520, 1340],
+          [1585, 320], [1585, 780], [1585, 1180], [1585, 1580],
+          [2650, 320], [2650, 780], [2650, 1180], [2650, 1580],
+          [2130, 340], [2130, 1140]
+        ];
+
+        function ensureCanvas() {
+          if (!cvs) cvs = document.getElementById('city-canvas');
+          if (cvs && !ctx) ctx = cvs.getContext('2d');
+          if (!cvs) return false;
           const r = cvs.getBoundingClientRect();
-          if (r.width > 0 && r.height > 0) {
-            cvs.width = Math.round(r.width);
-            cvs.height = Math.round(r.height);
-          }
+          const targetW = r && r.width > 80 ? Math.round(r.width) : 1100;
+          const targetH = r && r.height > 80 ? Math.round(r.height) : 600;
+          if (cvs.width !== targetW) cvs.width = targetW;
+          if (cvs.height !== targetH) cvs.height = targetH;
+          return !!ctx;
         }
 
         function onLand(x, y) {
@@ -3475,7 +3489,10 @@
         function stepPhysics(dt) {
           if (gateWarn > 0) {
             gateWarn -= dt;
-            if (gateWarn <= 0) document.getElementById('city-gate-alert').classList.add('hidden');
+            if (gateWarn <= 0) {
+              const ga = document.getElementById('city-gate-alert');
+              if (ga) ga.classList.add('hidden');
+            }
           }
 
           const fx = Math.cos(car.angle);
@@ -3506,8 +3523,10 @@
             car.vx = -Math.abs(car.vx) * 0.4;
             AudioEngine.error();
             const gEl = document.getElementById('city-gate-alert');
-            gEl.textContent = tr('gateClosed');
-            gEl.classList.remove('hidden');
+            if (gEl) {
+              gEl.textContent = tr('gateClosed');
+              gEl.classList.remove('hidden');
+            }
             gateWarn = 2.6;
           }
 
@@ -3523,9 +3542,14 @@
 
         function updateHud() {
           const isEn = State.lang === 'en';
-          document.getElementById('city-hud-island').textContent = car.x > 1400
-            ? (isEn ? '🌉 Neon-City CSS (Chapter 2)' : '🌉 Неон-Сити CSS (Глава 2)')
-            : (isEn ? '🏝️ HTML Island (Chapter 1)' : '🏝️ Остров HTML (Глава 1)');
+          const islEl = document.getElementById('city-hud-island');
+          const distEl = document.getElementById('city-hud-dist');
+          const tagsEl = document.getElementById('city-hud-tags');
+          if (islEl) {
+            islEl.textContent = car.x > 1400
+              ? (isEn ? '🌉 Neon-City CSS (Chapter 2)' : '🌉 Неон-Сити CSS (Глава 2)')
+              : (isEn ? '🏝️ HTML Island (Chapter 1)' : '🏝️ Остров HTML (Глава 1)');
+          }
 
           let near = DISTRICTS[0];
           let minD = Infinity;
@@ -3535,12 +3559,13 @@
               if (dist < minD) { minD = dist; near = DISTRICTS[m.idx]; }
             }
           });
-          document.getElementById('city-hud-dist').textContent = (isEn ? 'Lv.' : 'Ур.') + near.level + ': ' + (isEn ? near.nameEn : near.nameRu);
-          document.getElementById('city-hud-tags').textContent = near.tags;
+          if (distEl) distEl.textContent = (isEn ? 'Lv.' : 'Ур.') + near.level + ': ' + (isEn ? near.nameEn : near.nameRu);
+          if (tagsEl) tagsEl.textContent = near.tags;
 
           const bar = document.getElementById('city-marker-bar');
           const lbl = document.getElementById('city-marker-label');
           const btn = document.getElementById('btn-city-enter');
+          if (!bar || !lbl || !btn) return;
           if (!activeMarker) { bar.classList.add('hidden'); return; }
 
           bar.classList.remove('hidden');
@@ -3583,142 +3608,230 @@
           }
         }
 
-        function render() {
-          if (!ctx || !cvs) return;
-          const cw = cvs.width;
-          const ch = cvs.height;
-          ctx.fillStyle = '#07122b';
-          ctx.fillRect(0, 0, cw, ch);
-
-          const camX = Math.max(0, Math.min(W - cw, car.x - cw / 2));
-          const camY = Math.max(0, Math.min(H - ch, car.y - ch / 2));
+        function drawPalm(x, y) {
           ctx.save();
-          ctx.translate(-camX, -camY);
-
-          /* Острова */
-          ctx.fillStyle = '#1e293b';
-          ctx.fillRect(110, 100, 1140, 1600);
-          ctx.strokeStyle = '#ffd166';
-          ctx.lineWidth = 6;
-          ctx.strokeRect(110, 100, 1140, 1600);
-
-          ctx.fillStyle = '#1a1838';
-          ctx.fillRect(1550, 100, 1140, 1600);
-          ctx.strokeStyle = '#00f0ff';
-          ctx.lineWidth = 6;
-          ctx.strokeRect(1550, 100, 1140, 1600);
-
-          /* Мосты */
-          [375, 1215].forEach(by => {
-            ctx.fillStyle = '#28324a';
-            ctx.fillRect(1245, by, 310, 90);
-            ctx.strokeStyle = '#ff2a85';
-            ctx.lineWidth = 4;
-            ctx.strokeRect(1245, by, 310, 90);
-            if (!isDistUnlocked(7)) {
-              ctx.fillStyle = '#ff4757';
-              ctx.fillRect(1375, by + 4, 16, 82);
-            }
-          });
-
-          /* Дороги */
-          ctx.fillStyle = '#0f1424';
-          [340, 760, 1180, 1520].forEach(ry => ctx.fillRect(140, ry - 44, 1080, 88));
-          [420, 690, 960].forEach(rx => ctx.fillRect(rx - 44, 140, 88, 1520));
-          [420, 840, 1260].forEach(ry => ctx.fillRect(1580, ry - 46, 1080, 92));
-          [1840, 2130, 2420].forEach(rx => ctx.fillRect(rx - 46, 140, 92, 1520));
-
-          /* Здания */
-          BUILDINGS.forEach(b => {
-            ctx.fillStyle = '#141c38';
-            ctx.fillRect(b.x, b.y, b.w, b.h);
-            ctx.strokeStyle = b.neon;
-            ctx.lineWidth = 3;
-            ctx.strokeRect(b.x, b.y, b.w, b.h);
-            ctx.fillStyle = 'rgba(255,255,255,0.75)';
-            ctx.font = '800 12px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText(b.name, b.x + b.w / 2, b.y + b.h / 2 + 4);
-          });
-
-          /* Маркеры */
-          const isEn = State.lang === 'en';
-          const pulse = 0.88 + Math.sin(clock * 5) * 0.12;
-          MARKERS.forEach(m => {
-            let col = '#ffd166';
-            let lbl = '';
-            if (m.kind === 'dist') {
-              const d = DISTRICTS[m.idx];
-              const unl = isDistUnlocked(m.idx);
-              const cap = isDistCompleted(m.idx);
-              col = cap ? '#4cd137' : unl ? '#ffd166' : '#64748b';
-              lbl = (isEn ? 'Lv.' : 'Ур.') + d.level + ': ' + (isEn ? d.nameEn : d.nameRu);
-            } else if (m.kind === 'graffiti') {
-              col = '#ff2a85';
-              lbl = isEn ? '🎨 Graffiti' : '🎨 Граффити';
-            } else {
-              col = '#00f0ff';
-              lbl = isEn ? '🔧 Garage' : '🔧 Гараж';
-            }
-
+          ctx.translate(x, y);
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+          ctx.beginPath();
+          ctx.arc(4, 5, 18, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = '#16a34a';
+          ctx.lineWidth = 4;
+          for (let i = 0; i < 6; i++) {
+            const a = (i * Math.PI) / 3 + 0.25;
             ctx.beginPath();
-            ctx.arc(m.x, m.y, m.r * pulse, 0, Math.PI * 2);
-            ctx.fillStyle = col + '33';
-            ctx.fill();
-            ctx.lineWidth = 4;
-            ctx.strokeStyle = col;
+            ctx.moveTo(0, 0);
+            ctx.quadraticCurveTo(Math.cos(a + 0.3) * 12, Math.sin(a + 0.3) * 12, Math.cos(a) * 20, Math.sin(a) * 20);
             ctx.stroke();
-
-            ctx.font = '800 12px sans-serif';
-            ctx.textAlign = 'center';
-            const tw = ctx.measureText(lbl).width + 14;
-            ctx.fillStyle = 'rgba(6,9,20,0.88)';
-            ctx.fillRect(m.x - tw / 2, m.y - m.r - 24, tw, 19);
-            ctx.fillStyle = '#fff';
-            ctx.fillText(lbl, m.x, m.y - m.r - 10);
-          });
-
-          /* Спорткар игрока */
-          ctx.save();
-          ctx.translate(car.x, car.y);
-          ctx.rotate(car.angle);
-          if (State.garage.underglow && State.garage.underglow !== 'none') {
-            ctx.shadowColor = State.garage.underglow;
-            ctx.shadowBlur = 22;
-            ctx.fillStyle = State.garage.underglow;
-            ctx.fillRect(-24, -14, 48, 28);
-            ctx.shadowBlur = 0;
           }
-          ctx.fillStyle = State.garage.color || '#ffd166';
-          ctx.strokeStyle = '#05060b';
-          ctx.lineWidth = 2.5;
+          ctx.fillStyle = '#4cd137';
           ctx.beginPath();
-          ctx.roundRect(-23, -12, 46, 24, 6);
+          ctx.arc(0, 0, 5, 0, Math.PI * 2);
           ctx.fill();
-          ctx.stroke();
-          ctx.fillStyle = '#0b152b';
-          ctx.fillRect(2, -9, 10, 18);
           ctx.restore();
-          ctx.restore();
+        }
 
-          /* Мини-карта */
-          const mw = 160;
-          const mh = 104;
-          const mx = cw - mw - 12;
-          const my = 12;
-          ctx.fillStyle = 'rgba(6, 10, 22, 0.88)';
-          ctx.fillRect(mx, my, mw, mh);
-          ctx.strokeStyle = '#00f0ff';
-          ctx.lineWidth = 2;
-          ctx.strokeRect(mx, my, mw, mh);
-          ctx.fillStyle = '#28354f';
-          ctx.fillRect(mx + 110 * (mw / W), my + 100 * (mh / H), 1140 * (mw / W), 1600 * (mh / H));
-          ctx.fillStyle = '#26214d';
-          ctx.fillRect(mx + 1550 * (mw / W), my + 100 * (mh / H), 1140 * (mw / W), 1600 * (mh / H));
-          ctx.fillStyle = '#ffffff';
-          ctx.beginPath();
-          ctx.arc(mx + car.x * (mw / W), my + car.y * (mh / H), 4, 0, Math.PI * 2);
-          ctx.fill();
+        function render() {
+          try {
+            if (!ensureCanvas()) return;
+            const cw = cvs.width || 1100;
+            const ch = cvs.height || 600;
+
+            /* Океан и волны */
+            ctx.fillStyle = '#09111e';
+            ctx.fillRect(0, 0, cw, ch);
+
+            const camX = Math.max(0, Math.min(W - cw, car.x - cw / 2));
+            const camY = Math.max(0, Math.min(H - ch, car.y - ch / 2));
+            ctx.save();
+            ctx.translate(-camX, -camY);
+
+            ctx.strokeStyle = 'rgba(0, 240, 255, 0.08)';
+            ctx.lineWidth = 2;
+            for (let wy = 80; wy < H; wy += 90) {
+              ctx.beginPath();
+              ctx.moveTo(0, wy);
+              ctx.lineTo(W, wy);
+              ctx.stroke();
+            }
+
+            /* Остров HTML (слева) и Неон-Сити CSS (справа) */
+            ctx.fillStyle = '#2b241d';
+            ctx.fillRect(96, 86, 1168, 1628);
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(110, 100, 1140, 1600);
+            ctx.strokeStyle = '#ffd166';
+            ctx.lineWidth = 6;
+            ctx.strokeRect(110, 100, 1140, 1600);
+
+            ctx.fillStyle = '#1b1d36';
+            ctx.fillRect(1536, 86, 1168, 1628);
+            ctx.fillStyle = '#1a1838';
+            ctx.fillRect(1550, 100, 1140, 1600);
+            ctx.strokeStyle = '#00f0ff';
+            ctx.lineWidth = 6;
+            ctx.strokeRect(1550, 100, 1140, 1600);
+
+            /* Два моста со шлагбаумами */
+            [375, 1215].forEach(by => {
+              ctx.fillStyle = '#28324a';
+              ctx.fillRect(1245, by, 310, 90);
+              ctx.strokeStyle = '#ff2a85';
+              ctx.lineWidth = 4;
+              ctx.strokeRect(1245, by, 310, 90);
+
+              ctx.save();
+              ctx.setLineDash([16, 14]);
+              ctx.strokeStyle = '#ffd166';
+              ctx.lineWidth = 3;
+              ctx.beginPath();
+              ctx.moveTo(1255, by + 45);
+              ctx.lineTo(1545, by + 45);
+              ctx.stroke();
+              ctx.restore();
+
+              if (!isDistUnlocked(7)) {
+                ctx.fillStyle = '#ff4757';
+                ctx.fillRect(1375, by + 4, 16, 82);
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(1377, by + 18, 12, 14);
+                ctx.fillRect(1377, by + 52, 12, 14);
+              }
+            });
+
+            /* Асфальтовые дороги и жёлтая осевая разметка */
+            const hRoadsLeft = [340, 760, 1180, 1520];
+            const vRoadsLeft = [420, 690, 960];
+            const hRoadsRight = [420, 840, 1260];
+            const vRoadsRight = [1840, 2130, 2420];
+
+            ctx.fillStyle = '#0f1424';
+            hRoadsLeft.forEach(ry => ctx.fillRect(140, ry - 44, 1080, 88));
+            vRoadsLeft.forEach(rx => ctx.fillRect(rx - 44, 140, 88, 1520));
+            hRoadsRight.forEach(ry => ctx.fillRect(1580, ry - 46, 1080, 92));
+            vRoadsRight.forEach(rx => ctx.fillRect(rx - 46, 140, 92, 1520));
+
+            ctx.save();
+            ctx.setLineDash([18, 16]);
+            ctx.strokeStyle = 'rgba(255, 209, 102, 0.72)';
+            ctx.lineWidth = 3;
+            hRoadsLeft.forEach(ry => { ctx.beginPath(); ctx.moveTo(150, ry); ctx.lineTo(1210, ry); ctx.stroke(); });
+            vRoadsLeft.forEach(rx => { ctx.beginPath(); ctx.moveTo(rx, 150); ctx.lineTo(rx, 1650); ctx.stroke(); });
+            hRoadsRight.forEach(ry => { ctx.beginPath(); ctx.moveTo(1590, ry); ctx.lineTo(2650, ry); ctx.stroke(); });
+            vRoadsRight.forEach(rx => { ctx.beginPath(); ctx.moveTo(rx, 150); ctx.lineTo(rx, 1650); ctx.stroke(); });
+            ctx.restore();
+
+            /* Здания с неоновой окантовкой */
+            BUILDINGS.forEach(b => {
+              ctx.fillStyle = '#141c38';
+              ctx.fillRect(b.x, b.y, b.w, b.h);
+              ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+              ctx.fillRect(b.x + 12, b.y + 12, b.w - 24, b.h - 24);
+              ctx.strokeStyle = b.neon;
+              ctx.lineWidth = 3;
+              ctx.strokeRect(b.x, b.y, b.w, b.h);
+              ctx.fillStyle = 'rgba(255,255,255,0.82)';
+              ctx.font = '800 12px sans-serif';
+              ctx.textAlign = 'center';
+              ctx.fillText(b.name, b.x + b.w / 2, b.y + b.h / 2 + 4);
+            });
+
+            /* Пальмы */
+            PALMS.forEach(pt => drawPalm(pt[0], pt[1]));
+
+            /* Маркеры районов, граффити и гаража */
+            const isEn = State.lang === 'en';
+            const pulse = 0.88 + Math.sin(clock * 5) * 0.12;
+            MARKERS.forEach(m => {
+              let col = '#ffd166';
+              let lbl = '';
+              if (m.kind === 'dist') {
+                const d = DISTRICTS[m.idx];
+                const unl = isDistUnlocked(m.idx);
+                const cap = isDistCompleted(m.idx);
+                col = cap ? '#4cd137' : unl ? '#ffd166' : '#64748b';
+                lbl = (isEn ? 'Lv.' : 'Ур.') + d.level + ': ' + (isEn ? d.nameEn : d.nameRu);
+              } else if (m.kind === 'graffiti') {
+                col = '#ff2a85';
+                lbl = isEn ? '🎨 Graffiti' : '🎨 Граффити';
+              } else {
+                col = '#00f0ff';
+                lbl = isEn ? '🔧 Garage' : '🔧 Гараж';
+              }
+
+              ctx.beginPath();
+              ctx.arc(m.x, m.y, m.r * pulse, 0, Math.PI * 2);
+              ctx.fillStyle = col + '38';
+              ctx.fill();
+              ctx.lineWidth = 4;
+              ctx.strokeStyle = col;
+              ctx.stroke();
+
+              ctx.font = '800 12px sans-serif';
+              ctx.textAlign = 'center';
+              const tw = ctx.measureText(lbl).width + 14;
+              ctx.fillStyle = 'rgba(6,9,20,0.9)';
+              ctx.fillRect(m.x - tw / 2, m.y - m.r - 24, tw, 19);
+              ctx.fillStyle = '#ffffff';
+              ctx.fillText(lbl, m.x, m.y - m.r - 10);
+            });
+
+            /* Спорткар игрока */
+            ctx.save();
+            ctx.translate(car.x, car.y);
+            ctx.rotate(car.angle);
+            if (State.garage.underglow && State.garage.underglow !== 'none') {
+              ctx.shadowColor = State.garage.underglow;
+              ctx.shadowBlur = 22;
+              ctx.fillStyle = State.garage.underglow;
+              ctx.fillRect(-24, -14, 48, 28);
+              ctx.shadowBlur = 0;
+            }
+            ctx.fillStyle = State.garage.color || '#ffd166';
+            ctx.strokeStyle = '#05060b';
+            ctx.lineWidth = 2.5;
+            if (typeof ctx.roundRect === 'function') {
+              ctx.beginPath();
+              ctx.roundRect(-23, -12, 46, 24, 6);
+              ctx.fill();
+              ctx.stroke();
+            } else {
+              ctx.fillRect(-23, -12, 46, 24);
+              ctx.strokeRect(-23, -12, 46, 24);
+            }
+            ctx.fillStyle = '#0b152b';
+            ctx.fillRect(2, -9, 10, 18);
+            ctx.fillStyle = '#fffbeb';
+            ctx.fillRect(20, -10, 4, 5);
+            ctx.fillRect(20, 5, 4, 5);
+            ctx.restore();
+            ctx.restore();
+
+            /* Мини-карта в правом верхнем углу */
+            const mw = 168;
+            const mh = 108;
+            const mx = cw - mw - 12;
+            const my = 12;
+            ctx.fillStyle = 'rgba(6, 10, 22, 0.9)';
+            ctx.fillRect(mx, my, mw, mh);
+            ctx.strokeStyle = '#00f0ff';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(mx, my, mw, mh);
+            ctx.fillStyle = '#28354f';
+            ctx.fillRect(mx + 110 * (mw / W), my + 100 * (mh / H), 1140 * (mw / W), 1600 * (mh / H));
+            ctx.fillStyle = '#26214d';
+            ctx.fillRect(mx + 1550 * (mw / W), my + 100 * (mh / H), 1140 * (mw / W), 1600 * (mh / H));
+
+            MARKERS.forEach(m => {
+              ctx.fillStyle = m.kind === 'dist' ? (isDistCompleted(m.idx) ? '#4cd137' : '#ffd166') : m.kind === 'graffiti' ? '#ff2a85' : '#00f0ff';
+              ctx.fillRect(mx + m.x * (mw / W) - 2, my + m.y * (mh / H) - 2, 4, 4);
+            });
+
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(mx + car.x * (mw / W), my + car.y * (mh / H), 4.5, 0, Math.PI * 2);
+            ctx.fill();
+          } catch (err) {}
         }
 
         function loop(ts) {
@@ -3770,7 +3883,7 @@
           if (k === 'd' || k === 'в' || e.key === 'ArrowRight') keys.right = false;
         });
 
-        window.addEventListener('resize', () => { if (running) resize(); });
+        window.addEventListener('resize', () => { if (running) render(); });
 
         return {
           open(focusIdx) {
@@ -3781,7 +3894,8 @@
             showView('city');
           },
           resume() {
-            resize();
+            ensureCanvas();
+            render();
             if (!running) {
               running = true;
               lastTs = performance.now();
