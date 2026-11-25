@@ -414,6 +414,34 @@
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
+      align-items: center;
+    }
+
+    .lang-toggle-group {
+      display: inline-flex;
+      align-items: center;
+      background: #070a16;
+      border: 2.5px solid var(--ink);
+      border-radius: 9px;
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .lang-toggle-btn {
+      background: transparent;
+      color: var(--muted);
+      border: none;
+      padding: 6px 9px;
+      font-family: var(--font-ui);
+      font-weight: 900;
+      font-size: 0.76rem;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .lang-toggle-btn.active {
+      background: var(--yellow);
+      color: var(--ink);
     }
 
     /* ==========================================================================
@@ -2229,6 +2257,10 @@
         </div>
 
         <div class="hud-controls">
+          <div class="lang-toggle-group" role="group" aria-label="Language switcher">
+            <button type="button" class="lang-toggle-btn active" id="btn-lang-ru" data-lang="ru">🇷🇺 RU</button>
+            <button type="button" class="lang-toggle-btn" id="btn-lang-en" data-lang="en">🇬🇧 EN</button>
+          </div>
           <button type="button" class="gta-btn btn-sm btn-green" id="btn-hud-city">🏎️ Город</button>
           <button type="button" class="gta-btn btn-sm btn-pink" id="btn-open-phone">📱 iCode Phone</button>
           <button type="button" class="gta-btn btn-sm btn-dark" id="btn-toggle-sfx">🔊 SFX</button>
@@ -2241,11 +2273,11 @@
     <main id="view-menu">
       <section class="gta-panel hero-banner">
         <div>
-          <h1>GTA: <span>HTML &amp; CSS CITY</span> — 11 районов!</h1>
+          <h1 id="hero-main-title">GTA: <span>HTML &amp; CSS CITY</span> — 11 районов!</h1>
           <div class="hero-meta-row">
-            <span class="gta-pill" style="background: var(--green);">🏆 Ранг: <span id="menu-rank-text">Новичок в городе 🌴</span></span>
-            <span class="gta-pill" style="background: var(--cyan);">📍 Районы: <span id="menu-districts-count">0</span> / 11</span>
-            <span class="gta-pill" style="background: var(--white);">⚡ Рекорд Погони: $<span id="menu-chase-best">0</span></span>
+            <span class="gta-pill" style="background: var(--green);" id="pill-rank-wrap">🏆 Ранг: <span id="menu-rank-text">Новичок в городе 🌴</span></span>
+            <span class="gta-pill" style="background: var(--cyan);" id="pill-districts-wrap">📍 Районы: <span id="menu-districts-count">0</span> / 11</span>
+            <span class="gta-pill" style="background: var(--white);" id="pill-chase-wrap">⚡ Рекорд Погони: $<span id="menu-chase-best">0</span></span>
           </div>
         </div>
         <button type="button" class="gta-btn btn-green" id="btn-hero-drive-city" style="font-size: 0.98rem; padding: 13px 20px;">
@@ -2258,10 +2290,10 @@
         <div class="menu-car-showcase">
           <div class="menu-car-frame" id="menu-car-preview" title="Нажми, чтобы заехать в гараж HTML Customs"></div>
           <div>
-            <div style="font-weight: 800; font-size: 1.05rem; color: var(--yellow);">
+            <div id="extras-banner-title" style="font-weight: 800; font-size: 1.05rem; color: var(--yellow);">
               🏎️ КАТАЙСЯ ПО ДВУМ ОСТРОВАМ И ОТКРЫВАЙ ГЛАВЫ HTML И CSS!
             </div>
-            <div style="font-size: 0.85rem; color: var(--muted); margin-top: 2px;">
+            <div id="extras-banner-sub" style="font-size: 0.85rem; color: var(--muted); margin-top: 2px;">
               Управляй своей прокачанной тачкой по улицам города, заезжай в маркеры миссий, рисуй граффити и открывай мосты в Неон-Сити CSS!
             </div>
           </div>
@@ -2277,13 +2309,13 @@
       <section class="modes-launcher-grid">
         <article class="mode-launch-card">
           <div class="mode-card-head head-missions">
-            <span class="gta-pill" style="background: var(--ink); color: var(--yellow);">11 РАЙОНОВ • 33 МИССИИ</span>
+            <span class="gta-pill" id="mode1-badge" style="background: var(--ink); color: var(--yellow);">11 РАЙОНОВ • 33 МИССИИ</span>
             <span style="font-size: 1.45rem;">🏙️</span>
           </div>
           <div class="mode-card-body">
             <div>
-              <h3>🗺️ Главы HTML &amp; CSS</h3>
-              <p>Собирай код из плиток по нарастающей: 7 районов HTML + 4 района CSS (цвета, рамки, Flexbox и анимации)!</p>
+              <h3 id="mode1-title">🗺️ Главы HTML &amp; CSS</h3>
+              <p id="mode1-desc">Собирай код из плиток по нарастающей: 7 районов HTML + 4 района CSS (цвета, рамки, Flexbox и анимации)!</p>
             </div>
             <button type="button" class="gta-btn" id="btn-launch-missions">▶ Продолжить миссии</button>
           </div>
@@ -2291,16 +2323,16 @@
 
         <article class="mode-launch-card">
           <div class="mode-card-head head-bugs">
-            <span class="gta-pill" style="background: var(--ink); color: var(--pink);">10 ЗАДАНИЙ • HTML + CSS</span>
+            <span class="gta-pill" id="mode2-badge" style="background: var(--ink); color: var(--pink);">10 ЗАДАНИЙ • HTML + CSS</span>
             <span style="font-size: 1.45rem;">💻</span>
           </div>
           <div class="mode-card-body">
             <div>
-              <h3>💻 Взлом багов</h3>
-              <p>Находи и чини сломанные теги, пустые ячейки, <code>src/href</code>, отступы <code>padding</code> и <code>display: flex</code>.</p>
+              <h3 id="mode2-title">💻 Взлом багов</h3>
+              <p id="mode2-desc">Находи и чини сломанные теги, пустые ячейки, <code>src/href</code>, отступы <code>padding</code> и <code>display: flex</code>.</p>
             </div>
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
-              <span style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--cyan);">Пройдено: <b id="menu-bugs-progress">0 / 10</b></span>
+              <span style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--cyan);" id="mode2-prog-wrap">Пройдено: <b id="menu-bugs-progress">0 / 10</b></span>
               <button type="button" class="gta-btn btn-pink" id="btn-start-bugs">▶ Взлом багов</button>
             </div>
           </div>
@@ -2308,16 +2340,16 @@
 
         <article class="mode-launch-card">
           <div class="mode-card-head head-chase">
-            <span class="gta-pill" style="background: var(--ink); color: var(--cyan);">60 СЕК • 3 🛡️ • x4</span>
+            <span class="gta-pill" id="mode3-badge" style="background: var(--ink); color: var(--cyan);">60 СЕК • 3 🛡️ • x4</span>
             <span style="font-size: 1.45rem;">🚓</span>
           </div>
           <div class="mode-card-body">
             <div>
-              <h3>🚓 Погоня от багов</h3>
-              <p>Блиц-квиз на скорость по HTML и CSS! Отрывайся от Баг-Полиции, держи серию и разгоняй комбо до x4!</p>
+              <h3 id="mode3-title">🚓 Погоня от багов</h3>
+              <p id="mode3-desc">Блиц-квиз на скорость по HTML и CSS! Отрывайся от Баг-Полиции, держи серию и разгоняй комбо до x4!</p>
             </div>
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
-              <span style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--green);">Рекорд: $<b id="menu-chase-best-2">0</b></span>
+              <span style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--green);" id="mode3-rec-wrap">Рекорд: $<b id="menu-chase-best-2">0</b></span>
               <button type="button" class="gta-btn btn-cyan" id="btn-start-chase">▶ Погоня от багов</button>
             </div>
           </div>
@@ -2327,22 +2359,22 @@
       <!-- Карта 11 районов (Глава 1: HTML + Глава 2: CSS) -->
       <section class="districts-wrapper-panel">
         <div class="districts-section-head">
-          <h2>🗺️ Карта 11 районов HTML &amp; CSS CITY (по нарастающей)</h2>
+          <h2 id="districts-map-title">🗺️ Карта 11 районов HTML &amp; CSS CITY (по нарастающей)</h2>
           <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
             <button type="button" class="gta-btn btn-sm btn-green" id="btn-quick-start-radio">📻 ВКЛЮЧИТЬ 106.5 VICE NEON FM</button>
-            <span class="gta-pill" style="background: #0e1222; color: var(--cyan); border-color: var(--cyan);">Колесо Радио: R</span>
+            <span class="gta-pill" id="radio-wheel-key-pill" style="background: #0e1222; color: var(--cyan); border-color: var(--cyan);">Колесо Радио: R</span>
           </div>
         </div>
 
         <div class="chapter-divider">
-          <span style="font-weight: 900; color: var(--yellow); font-size: 0.96rem;">🏝️ ОСТРОВ HTML — ГЛАВА 1: СТРУКТУРА И ТЕГИ (УРОВНИ 1–7)</span>
-          <span class="gta-pill" style="background: var(--pink); color: #fff;">21 миссия</span>
+          <span id="chapter1-title" style="font-weight: 900; color: var(--yellow); font-size: 0.96rem;">🏝️ ОСТРОВ HTML — ГЛАВА 1: СТРУКТУРА И ТЕГИ (УРОВНИ 1–7)</span>
+          <span class="gta-pill" id="chapter1-badge" style="background: var(--pink); color: #fff;">21 миссия</span>
         </div>
         <div class="districts-grid" id="districts-grid-html"></div>
 
         <div class="chapter-divider css-chapter">
-          <span style="font-weight: 900; color: var(--cyan); font-size: 0.96rem;">🌉 НЕОН-СИТИ CSS — ГЛАВА 2: СТИЛИ, FLEXBOX И АНИМАЦИИ (УРОВНИ 8–11)</span>
-          <span class="gta-pill" style="background: var(--purple); color: #fff;">12 миссий • Открывается после Уровня 7</span>
+          <span id="chapter2-title" style="font-weight: 900; color: var(--cyan); font-size: 0.96rem;">🌉 НЕОН-СИТИ CSS — ГЛАВА 2: СТИЛИ, FLEXBOX И АНИМАЦИИ (УРОВНИ 8–11)</span>
+          <span class="gta-pill" id="chapter2-badge" style="background: var(--purple); color: #fff;">12 миссий • Открывается после Уровня 7</span>
         </div>
         <div class="districts-grid" id="districts-grid-css"></div>
       </section>
@@ -2358,8 +2390,8 @@
     <section id="view-city" class="hidden">
       <div class="opencity-panel">
         <div class="opencity-top-bar">
-          <span class="gta-pill" style="background: var(--green);">🏎️ ОТКРЫТЫЙ 2D-ГОРОД • ВИД СВЕРХУ</span>
-          <span class="gta-pill" style="background: #0e1222; color: var(--cyan); border-color: var(--cyan);">WASD / Стрелки • H — Гудок • Enter — Войти в маркер</span>
+          <span class="gta-pill" id="city-top-pill" style="background: var(--green);">🏎️ ОТКРЫТЫЙ 2D-ГОРОД • ВИД СВЕРХУ</span>
+          <span class="gta-pill" id="city-controls-pill" style="background: #0e1222; color: var(--cyan); border-color: var(--cyan);">WASD / Стрелки • H — Гудок • Enter — Войти в маркер</span>
           <button type="button" class="gta-btn btn-sm btn-dark" id="btn-city-home">🏠 На главную</button>
         </div>
 
@@ -2396,8 +2428,8 @@
         </div>
 
         <div class="opencity-legend-bar">
-          <span>🟡/🟢 <b>Маркеры районов</b> (HTML и CSS) • 🟣 <b>Стены граффити</b> • 🔵 <b>Гараж HTML Customs</b></span>
-          <span>🌉 Два моста на восток ведут в <b>Неон-Сити CSS</b> (Уровни 8–11)</span>
+          <span id="city-legend-1">🟡/🟢 <b>Маркеры районов</b> (HTML и CSS) • 🟣 <b>Стены граффити</b> • 🔵 <b>Гараж HTML Customs</b></span>
+          <span id="city-legend-2">🌉 Два моста на восток ведут в <b>Неон-Сити CSS</b> (Уровни 8–11)</span>
         </div>
       </div>
     </section>
@@ -2433,7 +2465,7 @@
 
         <div class="intel-lore-box" id="intel-lore-text"></div>
 
-        <div class="section-caption" style="margin-bottom: 10px;">
+        <div class="section-caption" id="intel-decoder-caption" style="margin-bottom: 10px;">
           🔍 РАСШИФРОВКА КОДА — ОТ КАКИХ АНГЛИЙСКИХ СЛОВ ПРОИЗОШЛИ ЭТИ КОМАНДЫ:
         </div>
         <div class="intel-decoder-grid" id="intel-cards-grid"></div>
@@ -2473,8 +2505,8 @@
 
         <div class="billboard-frame">
           <div class="billboard-bar">
-            <span>📺 ЦЕЛЬ НА БИЛБОРДЕ</span>
-            <span style="color: var(--yellow);">ОБРАЗЕЦ</span>
+            <span id="billboard-target-label">📺 ЦЕЛЬ НА БИЛБОРДЕ</span>
+            <span id="billboard-sample-label" style="color: var(--yellow);">ОБРАЗЕЦ</span>
           </div>
           <div class="billboard-screen preview-render" id="mission-target-preview"></div>
         </div>
@@ -2482,13 +2514,13 @@
 
       <div class="mission-workspace">
         <div>
-          <div class="section-caption">Твой код (нажми на плитку, чтобы убрать):</div>
+          <div class="section-caption" id="mission-dropzone-caption">Твой код (нажми на плитку, чтобы убрать):</div>
           <div class="code-dropzone" id="mission-dropzone"></div>
         </div>
 
         <div class="billboard-frame">
           <div class="billboard-bar" style="color: var(--green);">
-            <span>📡 НЕОНОВЫЙ БИЛБОРД</span>
+            <span id="billboard-live-label">📡 НЕОНОВЫЙ БИЛБОРД</span>
             <span>● LIVE</span>
           </div>
           <div class="billboard-screen preview-render" id="mission-live-preview"></div>
@@ -2496,7 +2528,7 @@
       </div>
 
       <div class="tile-pool-panel">
-        <div class="section-caption">Выбери плитки кода по порядку:</div>
+        <div class="section-caption" id="mission-pool-caption">Выбери плитки кода по порядку:</div>
         <div class="tiles-row" id="mission-pool"></div>
       </div>
 
@@ -2515,7 +2547,7 @@
     <!-- ==================== РЕЖИМ 2: ВЗЛОМ БАГОВ (10 ЗАДАНИЙ) ==================== -->
     <section id="view-bugs" class="hidden">
       <div class="mode-hud-bar">
-        <span class="gta-pill" style="background: var(--pink); color: #fff;">💻 ВЗЛОМ <span id="bug-num">1</span> / 10</span>
+        <span class="gta-pill" id="bug-mode-badge" style="background: var(--pink); color: #fff;">💻 ВЗЛОМ <span id="bug-num">1</span> / 10</span>
         <div class="gta-progress-track">
           <div class="gta-progress-fill" id="bug-progress-bar"></div>
         </div>
@@ -2528,10 +2560,10 @@
         <p style="color: var(--muted); font-size: 0.92rem;" id="bug-desc"></p>
       </div>
 
-      <div class="section-caption">Повреждённый код городской системы:</div>
+      <div class="section-caption" id="bug-terminal-caption">Повреждённый код городской системы:</div>
       <div class="bug-terminal" id="bug-terminal"></div>
 
-      <div class="section-caption">Выбери верный патч для починки:</div>
+      <div class="section-caption" id="bug-options-caption">Выбери верный патч для починки:</div>
       <div class="bug-options-grid" id="bug-options"></div>
 
       <div id="bug-feedback" class="hidden"></div>
@@ -2541,25 +2573,25 @@
     <section id="view-chase" class="hidden">
       <div class="chase-hud-grid">
         <div class="chase-stat-box" id="chase-timer-box">
-          <div class="chase-stat-label">Таймер</div>
-          <div class="chase-stat-val">⏱️ <span id="chase-time">60</span>с</div>
+          <div class="chase-stat-label" id="chase-lbl-timer">Таймер</div>
+          <div class="chase-stat-val">⏱️ <span id="chase-time">60</span><span id="chase-sec-unit">с</span></div>
         </div>
         <div class="chase-stat-box">
-          <div class="chase-stat-label">Щиты</div>
+          <div class="chase-stat-label" id="chase-lbl-shields">Щиты</div>
           <div class="chase-stat-val" id="chase-shields">🛡️🛡️🛡️</div>
         </div>
         <div class="chase-stat-box">
-          <div class="chase-stat-label">Множитель</div>
+          <div class="chase-stat-label" id="chase-lbl-mult">Множитель</div>
           <div class="chase-stat-val" style="color: var(--pink);" id="chase-mult">x1</div>
         </div>
         <div class="chase-stat-box">
-          <div class="chase-stat-label">Кэш погони</div>
+          <div class="chase-stat-label" id="chase-lbl-cash">Кэш погони</div>
           <div class="chase-stat-val" style="color: var(--green);">$<span id="chase-score">0</span></div>
         </div>
       </div>
 
       <div class="section-caption" style="display: flex; justify-content: space-between;">
-        <span>🏎️ Скорость отрыва от Баг-Полиции</span>
+        <span id="chase-speed-caption">🏎️ Скорость отрыва от Баг-Полиции</span>
         <span id="chase-streak-label">Серия: 0</span>
       </div>
       <div class="speed-bar-wrap">
@@ -2568,7 +2600,7 @@
 
       <div class="chase-question-card">
         <div class="chase-combo-pill hidden" id="chase-combo-pill">🔥 КОМБО x2!</div>
-        <div style="font-weight: 800; font-size: 0.84rem; letter-spacing: 0.06em; color: var(--cyan); text-transform: uppercase; margin-bottom: 8px;">
+        <div id="chase-q-prompt" style="font-weight: 800; font-size: 0.84rem; letter-spacing: 0.06em; color: var(--cyan); text-transform: uppercase; margin-bottom: 8px;">
           Выбери верный HTML-тег или CSS-свойство:
         </div>
         <div class="chase-q-text" id="chase-question">...</div>
@@ -2580,8 +2612,8 @@
     <!-- ==================== ГАРАЖ «HTML CUSTOMS» ==================== -->
     <section id="view-garage" class="hidden">
       <div class="mode-hud-bar">
-        <span class="gta-pill" style="background: var(--yellow); color: var(--ink);">🔧 ГАРАЖ «HTML CUSTOMS»</span>
-        <span class="gta-pill" style="background: var(--green);">Твой кэш: <span id="garage-cash-badge">$000000</span></span>
+        <span class="gta-pill" id="garage-hud-title" style="background: var(--yellow); color: var(--ink);">🔧 ГАРАЖ «HTML CUSTOMS»</span>
+        <span class="gta-pill" id="garage-cash-wrap" style="background: var(--green);">Твой кэш: <span id="garage-cash-badge">$000000</span></span>
         <div style="display: flex; gap: 6px; flex-wrap: wrap;">
           <button type="button" class="gta-btn btn-sm btn-green" id="btn-garage-city">🏎️ Вернуться в город</button>
           <button type="button" class="gta-btn btn-sm btn-dark" id="btn-garage-back">🏠 На главную</button>
@@ -2590,7 +2622,7 @@
 
       <div class="garage-layout">
         <div class="garage-stage-card">
-          <div class="section-caption">Твой спорткар (поедет по 2D-городу в этом тюнинге!):</div>
+          <div class="section-caption" id="garage-stage-caption">Твой спорткар (поедет по 2D-городу в этом тюнинге!):</div>
           <div class="garage-car-stage" id="garage-car-stage"></div>
           <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;">
             <button type="button" class="gta-btn btn-pink" id="btn-garage-rev">🔥 ГАЗАНУТЬ!</button>
@@ -2607,9 +2639,9 @@
     <!-- ==================== РЕЖИМ 4: СТЕНА ГРАФФИТИ (БАЛЛОНЧИК) ==================== -->
     <section id="view-graffiti" class="hidden">
       <div class="mode-hud-bar">
-        <span class="gta-pill" style="background: var(--pink); color: #fff;">🎨 СТЕНА ГРАФФИТИ • БАЛЛОНЧИК</span>
+        <span class="gta-pill" id="graffiti-hud-title" style="background: var(--pink); color: #fff;">🎨 СТЕНА ГРАФФИТИ • БАЛЛОНЧИК</span>
         <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
-          <label for="graffiti-district-select" style="font-size: 0.8rem; font-weight: 800; color: var(--cyan);">Район стены:</label>
+          <label for="graffiti-district-select" id="graffiti-district-label" style="font-size: 0.8rem; font-weight: 800; color: var(--cyan);">Район стены:</label>
           <select id="graffiti-district-select" class="graffiti-select"></select>
         </div>
         <div style="display: flex; gap: 6px; flex-wrap: wrap;">
@@ -2621,13 +2653,13 @@
       <div class="graffiti-panel">
         <div class="graffiti-toolbar-top">
           <div class="graffiti-row">
-            <button type="button" class="gta-btn btn-sm btn-cyan graffiti-tool-btn active" data-tool="spray">💨 Баллончик</button>
-            <button type="button" class="gta-btn btn-sm btn-dark graffiti-tool-btn" data-tool="marker">🖊️ Маркер</button>
-            <button type="button" class="gta-btn btn-sm btn-dark graffiti-tool-btn" data-tool="stencil">🔖 HTML/CSS-трафарет</button>
+            <button type="button" class="gta-btn btn-sm btn-cyan graffiti-tool-btn active" id="btn-tool-spray" data-tool="spray">💨 Баллончик</button>
+            <button type="button" class="gta-btn btn-sm btn-dark graffiti-tool-btn" id="btn-tool-marker" data-tool="marker">🖊️ Маркер</button>
+            <button type="button" class="gta-btn btn-sm btn-dark graffiti-tool-btn" id="btn-tool-stencil" data-tool="stencil">🔖 HTML/CSS-трафарет</button>
           </div>
 
           <div class="graffiti-row">
-            <span style="font-size: 0.78rem; font-weight: 800; color: var(--muted);">Сопло:</span>
+            <span id="graffiti-nozzle-label" style="font-size: 0.78rem; font-weight: 800; color: var(--muted);">Сопло:</span>
             <button type="button" class="gta-btn btn-sm btn-dark graffiti-size-btn" data-size="14">S</button>
             <button type="button" class="gta-btn btn-sm btn-dark graffiti-size-btn active" data-size="26">M</button>
             <button type="button" class="gta-btn btn-sm btn-dark graffiti-size-btn" data-size="42">L</button>
@@ -2640,12 +2672,12 @@
 
         <div class="graffiti-controls-grid">
           <div class="graffiti-box">
-            <div class="section-caption">Палитра баллончика (10 неоновых красок):</div>
+            <div class="section-caption" id="graffiti-palette-caption">Палитра баллончика (10 неоновых красок):</div>
             <div class="graffiti-row" id="graffiti-palette"></div>
           </div>
 
           <div class="graffiti-box">
-            <div class="section-caption">Трафареты (кликни по стене в режиме трафарета):</div>
+            <div class="section-caption" id="graffiti-stencils-caption">Трафареты (кликни по стене в режиме трафарета):</div>
             <div class="graffiti-row" id="graffiti-stencils"></div>
           </div>
         </div>
@@ -2695,7 +2727,7 @@
       </div>
 
       <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.16);">
-        <span style="font-size: 0.78rem; color: var(--muted);">Горячая клавиша: <b>R</b> или <b>Q</b></span>
+        <span id="rw-hotkey-hint" style="font-size: 0.78rem; color: var(--muted);">Горячая клавиша: <b>R</b> или <b>Q</b></span>
         <button type="button" class="gta-btn btn-sm btn-cyan" id="btn-rw-next-song">⏭ Другой трек на волне</button>
       </div>
     </div>
@@ -2728,7 +2760,7 @@
         <div class="admin-modal-title" id="admin-modal-title">🔐 ДОСТУП ДЛЯ АДМИНА</div>
         <button type="button" class="gta-btn btn-sm btn-dark" id="btn-close-admin-modal">✕</button>
       </div>
-      <p style="font-size: 0.85rem; color: var(--muted); line-height: 1.4;">
+      <p id="admin-modal-desc" style="font-size: 0.85rem; color: var(--muted); line-height: 1.4;">
         Введи пароль преподавателя, чтобы разблокировать панель читов, все 11 районов и мосты в Неон-Сити CSS:
       </p>
       <input type="password" id="admin-pass-input" class="admin-pass-input" placeholder="Пароль..." autocomplete="off" />
@@ -2768,16 +2800,870 @@
               return window.localStorage.getItem(key);
             } catch (err) {
               return Object.prototype.hasOwnProperty.call(memFallback, key) ? memFallback[key] : null;
-            }
-          },
-          setItem(key, val) {
-            memFallback[key] = String(val);
-            try {
-              window.localStorage.setItem(key, String(val));
-            } catch (err) {}
           }
+        },
+        setItem(key, val) {
+          memFallback[key] = String(val);
+          try {
+            window.localStorage.setItem(key, String(val));
+          } catch (err) {}
+        }
+      };
+    })();
+
+      /* ==========================================================================
+         1.1. ДВУЯЗЫЧНЫЙ СЛОВАРЬ (RU / EN) И ХЕЛПЕРЫ ЛОКАЛИЗАЦИИ
+         ========================================================================== */
+      const I18N = {
+        ru: {
+          hudRadioBtn: '📻 РАДИО',
+          hudCityBtn: '🏎️ Город',
+          hudHomeBtn: '🏠 Главная',
+          djOn: '🎙️ DJ: ВКЛ',
+          djOff: '🎙️ DJ: ВЫКЛ',
+          heroTitleHtml: 'GTA: <span>HTML &amp; CSS CITY</span> — 11 районов!',
+          rankLabel: '🏆 Ранг: ',
+          districtsLabel: '📍 Районы: ',
+          chaseRecLabel: '⚡ Рекорд Погони: $',
+          heroDriveBtn: '🏎️ ВЫЕХАТЬ В ГОРОД (2D КАРТА)',
+          extrasTitle: '🏎️ КАТАЙСЯ ПО ДВУМ ОСТРОВАМ И ОТКРЫВАЙ ГЛАВЫ HTML И CSS!',
+          extrasSub: 'Управляй своей прокачанной тачкой по улицам города, заезжай в маркеры миссий, рисуй граффити и открывай мосты в Неон-Сити CSS!',
+          btnOpenCity: '🏎️ Выехать в город',
+          btnOpenGraffiti: '🎨 Стена граффити',
+          btnOpenGarage: '🔧 Гараж HTML Customs',
+          mode1Badge: '11 РАЙОНОВ • 33 МИССИИ',
+          mode1Title: '🗺️ Главы HTML & CSS',
+          mode1Desc: 'Собирай код из плиток по нарастающей: 7 районов HTML + 4 района CSS (цвета, рамки, Flexbox и анимации)!',
+          btnLaunchMissions: '▶ Продолжить миссии',
+          mode2Badge: '10 ЗАДАНИЙ • HTML + CSS',
+          mode2Title: '💻 Взлом багов',
+          mode2DescHtml: 'Находи и чини сломанные теги, пустые ячейки, <code>src/href</code>, отступы <code>padding</code> и <code>display: flex</code>.',
+          mode2ProgLabel: 'Пройдено: ',
+          btnStartBugs: '▶ Взлом багов',
+          mode3Badge: '60 СЕК • 3 🛡️ • x4',
+          mode3Title: '🚓 Погоня от багов',
+          mode3Desc: 'Блиц-квиз на скорость по HTML и CSS! Отрывайся от Баг-Полиции, держи серию и разгоняй комбо до x4!',
+          mode3RecLabel: 'Рекорд: $',
+          btnStartChase: '▶ Погоня от багов',
+          districtsMapTitle: '🗺️ Карта 11 районов HTML & CSS CITY (по нарастающей)',
+          radioWheelKeyPill: 'Колесо Радио: R',
+          chapter1Title: '🏝️ ОСТРОВ HTML — ГЛАВА 1: СТРУКТУРА И ТЕГИ (УРОВНИ 1–7)',
+          chapter1Badge: '21 миссия',
+          chapter2Title: '🌉 НЕОН-СИТИ CSS — ГЛАВА 2: СТИЛИ, FLEXBOX И АНИМАЦИИ (УРОВНИ 8–11)',
+          chapter2Badge: '12 миссий • Открывается после Уровня 7',
+          resetBtnDefault: '🗑️ Сбросить прогресс',
+          resetBtnConfirm: '⚠️ Точно сбросить? Нажми ещё раз',
+          resetSuccess: 'Прогресс сброшен — можно начинать заново!',
+          quickRadioStart: '📻 ВКЛЮЧИТЬ 106.5 VICE NEON FM',
+          quickRadioPlaying: '🔊 ИГРАЕТ: ',
+          radioOffTitle: 'РАДИО ВЫКЛ',
+          radioOffSub: 'Нажми ▶ или выбери волну',
+          rwModalTitle: '📻 КОЛЕСО РАДИО HTML & CSS CITY',
+          rwCloseBtn: '✕ Закрыть',
+          rwHotkeyHtml: 'Горячая клавиша: <b>R</b> или <b>Q</b>',
+          rwNextSongBtn: '⏭ Другой трек на волне',
+          rwCenterOffSub: 'Тишина',
+          rwCenterOffDj: 'Выбери любую волну вокруг',
+          rwHostPrefix: '🎙️ Ведущий: ',
+          cardCaptured: '✅ Захвачен',
+          cardLocked: '🔒 Закрыт',
+          cardPassPrev: '🔒 Пройди уровень ',
+          cardReplay: '🔄 Переиграть район',
+          cardTakeMissions: '▶ Взять миссии',
+          cardWallTag: '🎨 Твой тег на стене',
+          ranks: [
+            'Абсолютная легенда HTML & CSS 👑',
+            'Звезда Неон-Сити CSS 🌟',
+            'Покоритель Острова HTML 🚀',
+            'Архитектор улиц 🔥',
+            'Юный дизайнер 🎨',
+            'Новичок в городе 🌴'
+          ],
+          cityTopPill: '🏎️ ОТКРЫТЫЙ 2D-ГОРОД • ВИД СВЕРХУ',
+          cityControlsPill: 'WASD / Стрелки • H — Гудок • Enter — Войти в маркер',
+          cityHomeBtn: '🏠 На главную',
+          padBrake: 'СТОП',
+          padGas: 'ГАЗ ▲',
+          cityLegend1Html: '🟡/🟢 <b>Маркеры районов</b> (HTML и CSS) • 🟣 <b>Стены граффити</b> • 🔵 <b>Гараж HTML Customs</b>',
+          cityLegend2Html: '🌉 Два моста на восток ведут в <b>Неон-Сити CSS</b> (Уровни 8–11)',
+          cityBridgeLocked: '🚧 Мост в Неон-Сити CSS закрыт! Пройди Уровень 7 (Пентхаус-Сити) или введи пароль.',
+          cityDistrictLocked: '🔒 Район закрыт! Сначала пройди Уровень ',
+          cityIslandCss: '🌉 Неон-Сити CSS (Глава 2)',
+          cityIslandHtml: '🏝️ Остров HTML (Глава 1)',
+          cityPromptEnter: '🚀 ВОЙТИ В МИССИЮ (ENTER)',
+          cityPromptLocked: '🔒 ЗАКРЫТО',
+          cityPromptPassFirst: ' — сначала пройди Уровень ',
+          cityPromptGraffitiSuffix: ' — рисуй баллончиком!',
+          cityPromptGraffitiBtn: '🎨 РИСОВАТЬ (ENTER)',
+          cityPromptGarage: '🔧 Гараж «HTML Customs» — тюнинг тачки',
+          cityPromptGarageBtn: '🔧 ЗАЕХАТЬ В ГАРАЖ (ENTER)',
+          intelSubtitleSuffix: 'Разбираем секретный шифр тегов и стилей перед стартом!',
+          intelDecoderCaption: '🔍 РАСШИФРОВКА КОДА — ОТ КАКИХ АНГЛИЙСКИХ СЛОВ ПРОИЗОШЛИ ЭТИ КОМАНДЫ:',
+          intelBackToMap: '🗺️ На карту районов',
+          intelBackShort: '🗺️ Назад к карте',
+          intelReturnMission: '↩ Вернуться к миссии',
+          intelGoStart: 'ВСЁ ПОНЯТНО, ВПЕРЁД! 🚀',
+          intelCityBtn: '🏎️ В 2D-город',
+          intelExamplePrefix: 'Пример: ',
+          missionIntelBtn: '📋 Брифинг района',
+          missionCityBtn: '🏎️ В 2D-город',
+          billboardTarget: '📺 ЦЕЛЬ НА БИЛБОРДЕ',
+          billboardSample: 'ОБРАЗЕЦ',
+          billboardLive: '📡 НЕОНОВЫЙ БИЛБОРД',
+          dropzoneCaption: 'Твой код (нажми на плитку, чтобы убрать):',
+          dropzoneEmpty: '// Кликай на плитки ниже, чтобы собрать код...',
+          poolCaption: 'Выбери плитки кода по порядку:',
+          btnCheckCode: '✅ Проверить код',
+          btnMentorHint: '💡 Подсказка (-$50)',
+          btnUndoTile: '⌫ Убрать последнюю',
+          btnClearTiles: '🧹 Очистить',
+          billboardEmptySignal: 'Сигнал пуст. Собери плитки кода ниже...',
+          missionBannerWinTitle: 'МИССИЯ ВЫПОЛНЕНА!',
+          missionBannerWinSub: 'Отличная работа в районе «{name}»!',
+          missionBannerIslandDone: 'Остров HTML пройден на 100%! Мосты в Неон-Сити CSS открыты — впереди Уровень 8: «{next}»!',
+          missionBannerDistrictDone: 'Район «{name}» пройден на 100%! Открыт Уровень {lvl}: «{next}»!',
+          missionBannerAllDone: 'Поздравляем! Все 11 районов (HTML + CSS) и все 33 миссии пройдены! Теперь ты — Абсолютная легенда HTML & CSS 👑!',
+          btnNextMission: '▶ Следующая миссия ({n}/3)',
+          btnNextLevel: '🚀 Уровень {lvl}: {next}',
+          btnReturnCity: '🏎️ Вернуться в 2D-город',
+          btnGoGraffiti: '🎨 Стена граффити',
+          btnGoMap: '🗺️ На карту районов',
+          missionBannerBugTitle: 'ОЙ, БАГ В КОДЕ!',
+          missionBannerBugSub: 'ПРОВЕРЬ ПОРЯДОК ПЛИТОК',
+          missionErrEmpty: 'Поле кода пустое — выбери плитки снизу, чтобы собрать решение.',
+          missionErrPos: 'Ошибка на позиции #{pos}: у тебя «{u}», а должно быть «{s}».',
+          missionErrMissing: '(не хватает плитки)',
+          missionErrExtra: '(лишняя плитка)',
+          btnFixCode: '🔄 Поправить код',
+          btnRestartMission: '🧹 Начать заново',
+          hintNoCash: '❌ Не хватает денег на подсказку! Нужно $50 (заработай во «Взломе багов» или «Погоне»).',
+          hintWrongTile: '💡 Подсказка (-$50): плитка #{pos} («{tile}») не на своём месте — кликни по ней, чтобы убрать!',
+          hintNextTile: '💡 Подсказка (-$50): нужная плитка подсвечена зелёным внизу! Кликай по ней!',
+          bugTerminalCaption: 'Повреждённый код городской системы:',
+          bugOptionsCaption: 'Выбери верный патч для починки:',
+          bugFixedTitle: '✅ БАГ ПОЧИНЕН! +$',
+          bugRulePrefix: '💡 Правило: ',
+          bugFinishBtn: 'Финиш 🏆',
+          bugNextBtn: 'Следующий баг →',
+          bugAllDoneSub: 'Отличная работа, напарник! Все 10 багов по HTML и CSS исправлены!',
+          bugHomeBtn: '🗺️ На главную',
+          bugAgainBtn: '🔄 Взломать снова',
+          bugWrongMsg: '🚨 Неверный патч! Баг всё ещё в коде — попробуй другой вариант.',
+          chaseLblTimer: 'Таймер',
+          chaseSecUnit: 'с',
+          chaseLblShields: 'Щиты',
+          chaseLblMult: 'Множитель',
+          chaseLblCash: 'Кэш погони',
+          chaseSpeedCaption: '🏎️ Скорость отрыва от Баг-Полиции',
+          chaseStreakPrefix: 'Серия: ',
+          chaseComboPrefix: '🔥 КОМБО x',
+          chasePrompt: 'Выбери верный HTML-тег или CSS-свойство:',
+          chaseEndTitle: 'ЗАЕЗД ОКОНЧЕН!',
+          chaseEndGain: ' ЗА ПОГОНЮ',
+          chaseEndRecord: ' • НОВЫЙ РЕКОРД!',
+          chaseEndShieldsSub: 'Баг-Полиция догнала и пробила 3 щита! Верных ответов: {ok}. Рекорд: ${best}.',
+          chaseEndTimeSub: 'Время вышло! Ты набрал ${score} ({ok} верных ответов). Рекорд: ${best}.',
+          chasePlayAgain: '🔄 Сыграть ещё раз',
+          garageHudTitle: '🔧 ГАРАЖ «HTML CUSTOMS»',
+          garageCashLabel: 'Твой кэш: ',
+          garageStageCaption: 'Твой спорткар (поедет по 2D-городу в этом тюнинге!):',
+          garageRevBtn: '🔥 ГАЗАНУТЬ!',
+          garageDriveBtn: '🏎️ Выехать в город',
+          garageMissionsBtn: '🗺️ К миссиям',
+          garageEquippedMsg: '✅ Установлено: ',
+          garageBoughtMsg: '🔥 Куплено и установлено: ',
+          garageNoCashMsg: '❌ Не хватает кэша! Нужно ${price} — пройди миссии города!',
+          graffitiHudTitle: '🎨 СТЕНА ГРАФФИТИ • БАЛЛОНЧИК',
+          graffitiDistrictLabel: 'Район стены:',
+          toolSpray: '💨 Баллончик',
+          toolMarker: '🖊️ Маркер',
+          toolStencil: '🔖 HTML/CSS-трафарет',
+          nozzleLabel: 'Сопло:',
+          paletteCaption: 'Палитра баллончика (10 неоновых красок):',
+          stencilsCaption: 'Трафареты (кликни по стене в режиме трафарета):',
+          graffitiClearBtn: '🧹 Очистить стену',
+          graffitiSaveBtn: '📸 Сохранить на карту района (+$250)',
+          graffitiNextLvlBtn: '➡️ К следующему уровню',
+          graffitiSavedBonus: '🎨 Граффити сохранено на карточке «{name}»! Бонус за уличный арт: +$250!',
+          graffitiSavedUpdated: '🎨 Рисунок на стене района «{name}» обновлён на карте!',
+          phoneTitle: '📱 iCode Phone — Шпаргалка',
+          phoneTabPrefix: 'Ур.',
+          phoneCheatsTab: '🎮 Читы',
+          phoneAdminBanner: '🎮 ПАНЕЛЬ АДМИНА И ЧИТ-КОДЫ',
+          phoneAllUnlocked: '✅ Все 11 районов и мосты уже открыты',
+          phoneUnlockAllBtn: '🔓 Открыть все 11 районов и мосты города',
+          phoneLockBackBtn: '🔒 Заблокировать обратно',
+          phoneCheatPlaceholder: 'Введи чит-код...',
+          phoneEnterBtn: '▶ Ввести',
+          adminModalTitle: '🔐 ДОСТУП ДЛЯ АДМИНА',
+          adminModalDesc: 'Введи пароль преподавателя, чтобы разблокировать панель читов, все 11 районов и мосты в Неон-Сити CSS:',
+          adminPassPlaceholder: 'Пароль...',
+          adminPassErr: 'НЕВЕРНЫЙ ПАРОЛЬ',
+          adminCancelBtn: 'Отмена',
+          adminLoginBtn: '🔓 Войти',
+          toastAdminTitle: 'ДОСТУП АДМИНА ОТКРЫТ',
+          toastAdminDesc: 'В iCode Phone разблокирована вкладка «🎮 Читы»!',
+          toastAdminAllOpen: 'Все 11 районов (HTML + CSS) и мосты города открыты!',
+          toastAdminLockedTitle: 'РЕЖИМ АДМИНА ЗАБЛОКИРОВАН',
+          toastAdminLockedDesc: 'Панель читов снова скрыта за паролем.',
+          toastBadCheatTitle: 'НЕВЕРНЫЙ ЧИТ-КОД',
+          toastBadCheatDesc: 'Доступны: HESOYAM, CATRAIN, NEONPARTY, TURBO'
+        },
+        en: {
+          hudRadioBtn: '📻 RADIO',
+          hudCityBtn: '🏎️ City',
+          hudHomeBtn: '🏠 Home',
+          djOn: '🎙️ DJ: ON',
+          djOff: '🎙️ DJ: OFF',
+          heroTitleHtml: 'GTA: <span>HTML &amp; CSS CITY</span> — 11 Districts!',
+          rankLabel: '🏆 Rank: ',
+          districtsLabel: '📍 Districts: ',
+          chaseRecLabel: '⚡ Chase Record: $',
+          heroDriveBtn: '🏎️ DRIVE IN CITY (2D MAP)',
+          extrasTitle: '🏎️ CRUISE TWO ISLANDS AND UNLOCK HTML & CSS CHAPTERS!',
+          extrasSub: 'Drive your custom sports car through the streets, enter mission markers, spray graffiti, and open bridges to Neon-City CSS!',
+          btnOpenCity: '🏎️ Drive in City',
+          btnOpenGraffiti: '🎨 Graffiti Wall',
+          btnOpenGarage: '🔧 HTML Customs Garage',
+          mode1Badge: '11 DISTRICTS • 33 MISSIONS',
+          mode1Title: '🗺️ HTML & CSS Chapters',
+          mode1Desc: 'Build real code from tiles step by step: 7 HTML districts + 4 CSS districts (colors, Box Model, Flexbox & animations)!',
+          btnLaunchMissions: '▶ Continue Missions',
+          mode2Badge: '10 TASKS • HTML + CSS',
+          mode2Title: '💻 Bug Hack',
+          mode2DescHtml: 'Spot and patch broken tags, empty table cells, <code>src/href</code>, <code>padding</code>, and <code>display: flex</code>.',
+          mode2ProgLabel: 'Cleared: ',
+          btnStartBugs: '▶ Start Bug Hack',
+          mode3Badge: '60 SEC • 3 🛡️ • x4',
+          mode3Title: '🚓 Bug Chase',
+          mode3Desc: 'High-speed HTML & CSS quiz! Outrun the Bug Police, keep your streak alive, and boost your combo up to x4!',
+          mode3RecLabel: 'Best: $',
+          btnStartChase: '▶ Start Bug Chase',
+          districtsMapTitle: '🗺️ 11 Districts Map of HTML & CSS CITY (Progressive)',
+          radioWheelKeyPill: 'Radio Wheel: R',
+          chapter1Title: '🏝️ HTML ISLAND — CHAPTER 1: STRUCTURE & TAGS (LEVELS 1–7)',
+          chapter1Badge: '21 missions',
+          chapter2Title: '🌉 NEON-CITY CSS — CHAPTER 2: STYLES, FLEXBOX & ANIMATIONS (LEVELS 8–11)',
+          chapter2Badge: '12 missions • Unlocks after Level 7',
+          resetBtnDefault: '🗑️ Reset Progress',
+          resetBtnConfirm: '⚠️ Sure? Click again to reset',
+          resetSuccess: 'Progress cleared — ready for a fresh start!',
+          quickRadioStart: '📻 TURN ON 106.5 VICE NEON FM',
+          quickRadioPlaying: '🔊 ON AIR: ',
+          radioOffTitle: 'RADIO OFF',
+          radioOffSub: 'Press ▶ or pick a station',
+          rwModalTitle: '📻 HTML & CSS CITY RADIO WHEEL',
+          rwCloseBtn: '✕ Close',
+          rwHotkeyHtml: 'Shortcut key: <b>R</b> or <b>Q</b>',
+          rwNextSongBtn: '⏭ Next Track on Station',
+          rwCenterOffSub: 'Silence',
+          rwCenterOffDj: 'Pick any station around the wheel',
+          rwHostPrefix: '🎙️ Host: ',
+          cardCaptured: '✅ Captured',
+          cardLocked: '🔒 Locked',
+          cardPassPrev: '🔒 Beat Level ',
+          cardReplay: '🔄 Replay District',
+          cardTakeMissions: '▶ Start Missions',
+          cardWallTag: '🎨 Your Wall Tag',
+          ranks: [
+            'Ultimate HTML & CSS Legend 👑',
+            'Neon-City CSS Star 🌟',
+            'HTML Island Conqueror 🚀',
+            'Street Architect 🔥',
+            'Junior Designer 🎨',
+            'City Rookie 🌴'
+          ],
+          cityTopPill: '🏎️ OPEN 2D CITY • TOP-DOWN VIEW',
+          cityControlsPill: 'WASD / Arrows • H — Horn • Enter — Enter Marker',
+          cityHomeBtn: '🏠 Home',
+          padBrake: 'BRAKE',
+          padGas: 'GAS ▲',
+          cityLegend1Html: '🟡/🟢 <b>District Markers</b> (HTML & CSS) • 🟣 <b>Graffiti Walls</b> • 🔵 <b>HTML Customs Garage</b>',
+          cityLegend2Html: '🌉 Two eastbound bridges lead to <b>Neon-City CSS</b> (Levels 8–11)',
+          cityBridgeLocked: '🚧 Bridge to Neon-City CSS is closed! Complete Level 7 (Penthouse City) or enter admin password.',
+          cityDistrictLocked: '🔒 District locked! Complete Level ',
+          cityIslandCss: '🌉 Neon-City CSS (Chapter 2)',
+          cityIslandHtml: '🏝️ HTML Island (Chapter 1)',
+          cityPromptEnter: '🚀 ENTER MISSION (ENTER)',
+          cityPromptLocked: '🔒 LOCKED',
+          cityPromptPassFirst: ' — beat Level ',
+          cityPromptGraffitiSuffix: ' — grab your spray can!',
+          cityPromptGraffitiBtn: '🎨 SPRAY WALL (ENTER)',
+          cityPromptGarage: '🔧 HTML Customs Garage — tune your ride',
+          cityPromptGarageBtn: '🔧 ENTER GARAGE (ENTER)',
+          intelSubtitleSuffix: 'Decoding the secret meaning of tags & styles before launch!',
+          intelDecoderCaption: '🔍 CODE DECODER — WHERE THESE ENGLISH KEYWORDS COME FROM:',
+          intelBackToMap: '🗺️ Districts Map',
+          intelBackShort: '🗺️ Back to Map',
+          intelReturnMission: '↩ Back to Mission',
+          intelGoStart: 'GOT IT, LET’S ROLL! 🚀',
+          intelCityBtn: '🏎️ To 2D City',
+          intelExamplePrefix: 'Example: ',
+          missionIntelBtn: '📋 District Briefing',
+          missionCityBtn: '🏎️ To 2D City',
+          billboardTarget: '📺 BILLBOARD GOAL',
+          billboardSample: 'TARGET',
+          billboardLive: '📡 NEON BILLBOARD',
+          dropzoneCaption: 'Your code (click a tile to remove it):',
+          dropzoneEmpty: '// Click code tiles below to assemble your solution...',
+          poolCaption: 'Pick code tiles in the right order:',
+          btnCheckCode: '✅ Check Code',
+          btnMentorHint: '💡 Hint (-$50)',
+          btnUndoTile: '⌫ Undo Last',
+          btnClearTiles: '🧹 Clear',
+          billboardEmptySignal: 'No signal yet. Assemble code tiles below...',
+          missionBannerWinTitle: 'MISSION PASSED!',
+          missionBannerWinSub: 'Awesome coding in «{name}»!',
+          missionBannerIslandDone: 'HTML Island 100% cleared! Bridges to Neon-City CSS are now open — next up Level 8: «{next}»!',
+          missionBannerDistrictDone: 'District «{name}» 100% cleared! Unlocked Level {lvl}: «{next}»!',
+          missionBannerAllDone: 'Congratulations! All 11 districts (HTML + CSS) and all 33 missions cleared! You are an Ultimate HTML & CSS Legend 👑!',
+          btnNextMission: '▶ Next Mission ({n}/3)',
+          btnNextLevel: '🚀 Level {lvl}: {next}',
+          btnReturnCity: '🏎️ Back to 2D City',
+          btnGoGraffiti: '🎨 Graffiti Wall',
+          btnGoMap: '🗺️ Districts Map',
+          missionBannerBugTitle: 'OOPS, BUG IN CODE!',
+          missionBannerBugSub: 'CHECK TILE ORDER',
+          missionErrEmpty: 'Your workspace is empty — pick code tiles below to build the solution.',
+          missionErrPos: 'Mismatch at position #{pos}: you placed «{u}», expected «{s}».',
+          missionErrMissing: '(missing tile)',
+          missionErrExtra: '(extra tile)',
+          btnFixCode: '🔄 Fix Code',
+          btnRestartMission: '🧹 Start Over',
+          hintNoCash: '❌ Not enough cash for a hint! You need $50 (earn cash in Bug Hack or Bug Chase).',
+          hintWrongTile: '💡 Hint (-$50): tile #{pos} («{tile}») is in the wrong spot — click it to remove!',
+          hintNextTile: '💡 Hint (-$50): the next needed tile is glowing green below — click it!',
+          bugTerminalCaption: 'Corrupted city system code:',
+          bugOptionsCaption: 'Pick the right patch to fix it:',
+          bugFixedTitle: '✅ BUG PATCHED! +$',
+          bugRulePrefix: '💡 Rule: ',
+          bugFinishBtn: 'Finish 🏆',
+          bugNextBtn: 'Next Bug →',
+          bugAllDoneSub: 'Great job, partner! All 10 HTML and CSS bugs have been patched!',
+          bugHomeBtn: '🗺️ Home',
+          bugAgainBtn: '🔄 Hack Again',
+          bugWrongMsg: '🚨 Wrong patch! The bug is still active — try another option.',
+          chaseLblTimer: 'Timer',
+          chaseSecUnit: 's',
+          chaseLblShields: 'Shields',
+          chaseLblMult: 'Multiplier',
+          chaseLblCash: 'Chase Cash',
+          chaseSpeedCaption: '🏎️ Escape Speed from Bug Police',
+          chaseStreakPrefix: 'Streak: ',
+          chaseComboPrefix: '🔥 COMBO x',
+          chasePrompt: 'Pick the matching HTML tag or CSS property:',
+          chaseEndTitle: 'CHASE OVER!',
+          chaseEndGain: ' EARNED IN CHASE',
+          chaseEndRecord: ' • NEW RECORD!',
+          chaseEndShieldsSub: 'Bug Police broke all 3 shields! Correct answers: {ok}. Best: ${best}.',
+          chaseEndTimeSub: 'Time is up! You scored ${score} ({ok} correct answers). Best: ${best}.',
+          chasePlayAgain: '🔄 Race Again',
+          garageHudTitle: '🔧 «HTML CUSTOMS» GARAGE',
+          garageCashLabel: 'Your cash: ',
+          garageStageCaption: 'Your sports car (drives in 2D City with this exact tuning!):',
+          garageRevBtn: '🔥 REV ENGINE!',
+          garageDriveBtn: '🏎️ Drive in City',
+          garageMissionsBtn: '🗺️ To Missions',
+          garageEquippedMsg: '✅ Equipped: ',
+          garageBoughtMsg: '🔥 Purchased & equipped: ',
+          garageNoCashMsg: '❌ Not enough cash! Need ${price} — beat city missions to earn more!',
+          graffitiHudTitle: '🎨 GRAFFITI WALL • SPRAY CAN',
+          graffitiDistrictLabel: 'District wall:',
+          toolSpray: '💨 Spray Can',
+          toolMarker: '🖊️ Marker',
+          toolStencil: '🔖 HTML/CSS Stencil',
+          nozzleLabel: 'Nozzle:',
+          paletteCaption: 'Spray palette (10 neon colors):',
+          stencilsCaption: 'Stencils (click the wall while Stencil tool is active):',
+          graffitiClearBtn: '🧹 Clear Wall',
+          graffitiSaveBtn: '📸 Save to District Card (+$250)',
+          graffitiNextLvlBtn: '➡️ Next Level',
+          graffitiSavedBonus: '🎨 Graffiti saved on «{name}» card! Street art bonus: +$250!',
+          graffitiSavedUpdated: '🎨 Wall artwork for «{name}» updated on the map!',
+          phoneTitle: '📱 iCode Phone — Cheat Sheet',
+          phoneTabPrefix: 'Lv.',
+          phoneCheatsTab: '🎮 Cheats',
+          phoneAdminBanner: '🎮 ADMIN PANEL & CHEAT CODES',
+          phoneAllUnlocked: '✅ All 11 districts & bridges already unlocked',
+          phoneUnlockAllBtn: '🔓 Unlock All 11 Districts & Bridges',
+          phoneLockBackBtn: '🔒 Lock Admin Mode',
+          phoneCheatPlaceholder: 'Enter cheat code...',
+          phoneEnterBtn: '▶ Apply',
+          adminModalTitle: '🔐 ADMIN ACCESS',
+          adminModalDesc: 'Enter the teacher password to unlock cheat codes, all 11 districts, and bridges to Neon-City CSS:',
+          adminPassPlaceholder: 'Password...',
+          adminPassErr: 'INVALID PASSWORD',
+          adminCancelBtn: 'Cancel',
+          adminLoginBtn: '🔓 Unlock',
+          toastAdminTitle: 'ADMIN ACCESS GRANTED',
+          toastAdminDesc: 'The «🎮 Cheats» tab is now unlocked in iCode Phone!',
+          toastAdminAllOpen: 'All 11 districts (HTML + CSS) and city bridges are now open!',
+          toastAdminLockedTitle: 'ADMIN MODE LOCKED',
+          toastAdminLockedDesc: 'Cheat panel is hidden behind password again.',
+          toastBadCheatTitle: 'INVALID CHEAT CODE',
+          toastBadCheatDesc: 'Available codes: HESOYAM, CATRAIN, NEONPARTY, TURBO'
+        }
+      };
+
+      const EN_CONTENT = {
+        stations: {
+          vice: {
+            dj: 'DJ Alice',
+            djLines: [
+              'You are tuned to 106.5 Vice Neon FM! Lighting up the night billboards and writing clean code!',
+              'DJ Alice on the mic! Great rhythm for assembling tags and styles across the city!',
+              'Ocean breeze, neon lights, and fresh synthwave made for future web-design legends!'
+            ]
+          },
+          lossantos: {
+            dj: 'DJ Max',
+            djLines: [
+              '98.4 Los Santos Beats! Keep the groove rolling and close every tag without a single bug!',
+              'DJ Max here! Ride the beat, build tables, master Flexbox, and tune your car in the garage!',
+              'Shoutout to all code architects! Pure groove and 100% respect on this frequency!'
+            ]
+          },
+          chill: {
+            dj: 'DJ Nika',
+            djLines: [
+              '101.1 Chill Palm FM. Smooth lo-fi beats for styling your pages with CSS.',
+              'With you is DJ Nika. Take your time, check every bracket and semicolon — you got this!',
+              'Warm sunset over the bay and cozy tunes for the coolest page designers in town.'
+            ]
+          },
+          arcade: {
+            dj: 'DJ Bit',
+            djLines: [
+              '88.8 Retro Arcade FM! Engaging 100% turbo boost right now!',
+              'DJ Bit on air! Eight bits of pure energy for hacking bugs and winning the chase!',
+              'Pixel drive and neon disco rhythm for the whole HTML & CSS City crew!'
+            ]
+          },
+          off: {
+            name: 'RADIO OFF',
+            shortName: 'OFF',
+            genre: 'Cabin silence',
+            dj: 'No host',
+            trackTitle: 'Radio turned off'
+          }
+        },
+        districts: [
+          {
+            island: 'HTML Island',
+            name: 'Vice Beach',
+            topic: 'Basic text tags: headings, paragraphs, bold & italic',
+            briefingLore: 'Welcome to HTML & CSS CITY, future legend! The entire web is built from English command words called tags. To remember them easily, just look at the English word behind each tag!',
+            decoderCards: [
+              { tag: '<h1>, <h2>, <h3>', origin: 'from Heading', why: '<strong>Heading</strong> means a title at the top of a section. The number sets importance: <strong>1</strong> is the largest main heading, <strong>2</strong> is medium, and <strong>3</strong> is a subheading.', example: '<h1>HTML CITY</h1>' },
+              { tag: '<p>', origin: 'from Paragraph', why: 'The first letter of <strong>Paragraph</strong>. Browsers automatically add space above and below paragraphs so text stays neat and readable.', example: '<p>Welcome!</p>' },
+              { tag: '<b>', origin: 'from Bold', why: '<strong>Bold</strong> means thick and prominent. Everything placed between the opening and closing tags becomes bold.', example: '<p>Free <b>entry</b></p>' },
+              { tag: '<i>', origin: 'from Italic', why: '<strong>Italic</strong> comes from Italian Renaissance printers who invented slanted type for emphasis.', example: '<p>Night <i>drive</i></p>' }
+            ],
+            missions: [
+              { title: 'Mission 1.1: Main Beach Billboard', desc: 'Build a main heading <h1>HTML CITY</h1> followed by a paragraph <p>Welcome!</p>.' },
+              { title: 'Mission 1.2: H2 and H3 Headings', desc: 'Create a second-level heading <h2>Vice Beach</h2> and third-level heading <h3>Night Drive</h3>.' },
+              { title: 'Mission 1.3: Bold & Italic Emphasis', desc: 'Inside a paragraph <p>, highlight words: <p>Free <b>entry</b> and <i>fun</i></p>.' }
+            ]
+          },
+          {
+            island: 'HTML Island',
+            name: 'Neon Boulevard',
+            topic: 'Line breaks, images & clickable links',
+            briefingLore: 'Cruising onto Neon Boulevard, partner! Our billboards need line breaks, bright images, and clickable links to invite the crew to the garage.',
+            decoderCards: [
+              { tag: '<br>', origin: 'from line Break', why: 'Short for <strong>line break</strong>. Works just like pressing Enter to move text onto a new line. No closing tag needed!', example: '<p>Race starts<br>At 7 PM</p>' },
+              { tag: '<img src="...">', origin: 'Image + Source', why: '<strong>img</strong> is short for <strong>Im</strong>a<strong>g</strong>e, and <strong>src</strong> stands for <strong>S</strong>ou<strong>rc</strong>e — the filename of the picture.', example: '<img src="car.png">' },
+              { tag: '<a href="#">', origin: 'Anchor + Hypertext Reference', why: '<strong>a</strong> comes from <strong>Anchor</strong> (linking one page to another), and <strong>href</strong> stands for <strong>H</strong>ypertext <strong>Ref</strong>erence.', example: '<a href="#">Open Garage</a>' }
+            ],
+            missions: [
+              { title: 'Mission 2.1: Two-Line Announcement', desc: 'Inside <p>, split "Race starts" and "At 7 PM" using a single <br> line break tag.' },
+              { title: 'Mission 2.2: Sports Car & Cyber Cat', desc: 'Display the sports car image <img src="car.png"> and cyber cat image <img src="cat.png">.' },
+              { title: 'Mission 2.3: Garage Link', desc: 'Build paragraph <p>Click the link:</p> and clickable link <a href="#">Open Garage</a>.' }
+            ]
+          },
+          {
+            island: 'HTML Island',
+            name: 'Media Port',
+            topic: 'Practice: placing an image right after text',
+            briefingLore: 'At Media Port we master combining text and images, young pro! Remember the golden rule: browsers read HTML from top to bottom like a comic strip.',
+            decoderCards: [
+              { tag: '</p> → <img>', origin: 'Top-to-bottom flow', why: 'Placing <code>&lt;img&gt;</code> right <strong>after</strong> a closing paragraph tag puts the picture cleanly below your text.', example: '<p>Cyber cat!</p><img src="cat.png">' },
+              { tag: 'Text + <br> + <img>', origin: 'Image inside paragraph after line break', why: 'Want the image inside the same paragraph on a new line? Put <strong>&lt;br&gt;</strong> right after the text, then the image.', example: '<p>Summer in town<br><img src="palm.png"></p>' }
+            ],
+            missions: [
+              { title: 'Mission 3.1: Heading, Paragraph & Cyber Cat', desc: 'Assemble <h2>My Partner</h2>, paragraph <p>Cyber cat ready!</p>, and <img src="cat.png"> right after text.' },
+              { title: 'Mission 3.2: Text, <br> Break & Palm Tree', desc: 'Inside <p>, write "Summer in town", add <br>, and immediately place <img src="palm.png">.' },
+              { title: 'Mission 3.3: Car Club Card with Photo Below', desc: 'Build <h3>New Racer</h3>, <p>Speed <b>300 km/h</b></p>, and <img src="car.png"> right below it.' }
+            ]
+          },
+          {
+            island: 'HTML Island',
+            name: 'Downtown',
+            topic: 'Tables: rows & data cells',
+            briefingLore: 'Welcome to Downtown business district, friends! All price lists and leaderboards here are built from three core table tags.',
+            decoderCards: [
+              { tag: '<table>', origin: 'from Table', why: '<strong>Table</strong> creates the outer grid frame that holds all rows and cells together.', example: '<table> ... </table>' },
+              { tag: '<tr>', origin: 'from Table Row', why: 'Initials of <strong>T</strong>able <strong>R</strong>ow. Each row creates one horizontal tier from left to right.', example: '<tr><td>Nitro</td><td>500$</td></tr>' },
+              { tag: '<td>', origin: 'from Table Data', why: 'Initials of <strong>T</strong>able <strong>D</strong>ata. Each cell is a box inside a row where you place text or images.', example: '<td>500$</td>' }
+            ],
+            missions: [
+              { title: 'Mission 4.1: Table with 1 Row & 2 Cells', desc: 'Create <table> with one row <tr> and two cells <td>Nitro</td> and <td>500$</td>.' },
+              { title: 'Mission 4.2: 2×2 Tuning Price List', desc: 'Build a 2-row table: Row 1 (Rims | 200$), Row 2 (Neon | 300$).' },
+              { title: 'Mission 4.3: 3-Row Leaderboard', desc: 'Build a 3-row table: Row 1 (Player | Score), Row 2 (Alex | 900), Row 3 (Mia | 950).' }
+            ]
+          },
+          {
+            island: 'HTML Island',
+            name: 'Garage Docks',
+            topic: 'Images inside cells & empty cells',
+            briefingLore: 'At Garage Docks our crew upgrades tables! You can place pictures inside cells and reserve blank spots without breaking columns.',
+            decoderCards: [
+              { tag: '<td><img ...></td>', origin: 'Image inside Table Data cell', why: 'A <code>&lt;td&gt;</code> cell is a container: put <code>&lt;img src="..."&gt;</code> inside it to lock photos into a clean grid.', example: '<td><img src="car.png"></td>' },
+              { tag: '<td></td>', origin: 'Empty cell — reserved parking spot', why: 'Skipping a cell shifts later columns left! Write an empty pair <strong>&lt;td&gt;&lt;/td&gt;</strong> to reserve blank space.', example: '<tr><td></td><td><img src="crown.png"></td></tr>' }
+            ],
+            missions: [
+              { title: 'Mission 5.1: Text & Sports Car in Table', desc: 'Build a row with text cell <td>Ride</td> and image cell <td><img src="car.png"></td>.' },
+              { title: 'Mission 5.2: Empty Cell & Crown', desc: 'Leave the first cell empty <td></td> and place the crown <td><img src="crown.png"></td> in the second.' },
+              { title: 'Mission 5.3: 2×2 Garage Grid with Empty Slot', desc: 'Row 1: car.png and empty <td></td>. Row 2: text "Lunch" and burger.png.' }
+            ]
+          },
+          {
+            island: 'HTML Island',
+            name: 'Vinewood Style',
+            topic: 'The style attribute: background, text color & border',
+            briefingLore: 'Up in the Vinewood hills everything shines, junior designer! Unlock inline CSS styling right inside HTML tags using style="..."',
+            decoderCards: [
+              { tag: 'style="..."', origin: 'from Style', why: 'The <strong>style</strong> attribute opens your designer toolkit inside any tag. Separate property and value with <code>:</code> and end with <code>;</code>.', example: '<h2 style="color: yellow;">VINEWOOD</h2>' },
+              { tag: 'background-color', origin: 'Background + Color', why: 'Fills the entire backdrop behind your text or box with color.', example: 'background-color: #1a1a2e;' },
+              { tag: 'color', origin: 'from Color', why: 'Controls the color of the text letters themselves.', example: 'color: yellow;' },
+              { tag: 'border', origin: 'from Border', why: 'Draws an outline around an element: thickness (<code>2px</code>), line style (<code>solid</code>), and color.', example: 'border: 2px solid cyan;' }
+            ],
+            missions: [
+              { title: 'Mission 6.1: Neon Background & Text Color', desc: 'Style heading <h2> with background-color: #1a1a2e; and color: yellow;.' },
+              { title: 'Mission 6.2: Cyber Border', desc: 'Add a cyan frame style="border: 2px solid cyan;" to a paragraph saying "Secret Zone".' },
+              { title: 'Mission 6.3: Triple Style Combo', desc: 'Style <p> with background-color: black, color: #4cd137, and border: 2px solid #ff2a85.' }
+            ]
+          },
+          {
+            island: 'HTML Island',
+            name: 'Penthouse City',
+            topic: 'Containers for building designer cards',
+            briefingLore: 'Final district of HTML Island, future legend! Pro web builders group elements inside containers. Beat this level to lower the bridges to Neon-City CSS!',
+            decoderCards: [
+              { tag: '<div>', origin: 'from Division', why: 'Short for <strong>Division</strong> (dividing a page into sections). A block box that groups headings, text, and images together.', example: '<div><h2>Penthouse</h2><p>Floor 50</p></div>' },
+              { tag: '<span>', origin: 'from Span', why: '<strong>Span</strong> wraps a short inline stretch of text inside a sentence without starting a new line.', example: '<h3>Pro: <span style="color: #ffd166;">LEGEND</span></h3>' }
+            ],
+            missions: [
+              { title: 'Mission 7.1: Wrap Block in <div>', desc: 'Place <h2>Penthouse</h2> and <p>Floor 50</p> inside a single <div>...</div> container.' },
+              { title: 'Mission 7.2: Styled Garage Card Container', desc: 'Build a dark <div> card with neon border, heading, text, and car.png inside.' },
+              { title: 'Mission 7.3: HTML Island Star Card', desc: 'Build the HTML Island finale card with styled container, highlighted LEGEND span, and crown.png!' }
+            ]
+          },
+          {
+            island: 'Neon-City CSS',
+            name: 'Palette District',
+            topic: 'CSS Basics: colors, font size & font families',
+            briefingLore: 'The bridges are down — welcome to Neon-City CSS, code master! HTML builds the frame, while CSS (Cascading Style Sheets) turns it into a visual masterpiece!',
+            decoderCards: [
+              { tag: '<style> ... </style>', origin: 'from Style sheet', why: 'Inside <code>&lt;style&gt;</code> we write rules for tags on the page: pick a tag name (like <code>h2</code>) and list styles inside curly braces <code>{ ... }</code>!', example: '<style>h2 { color: #00f0ff; }</style>' },
+              { tag: 'font-size', origin: 'Font + Size', why: 'Sets how large letters appear, measured in pixels (<code>px</code>): e.g. <code>28px</code> for big titles.', example: 'font-size: 28px;' },
+              { tag: 'font-family', origin: 'Font + Family', why: 'Chooses the typeface style: clean sans-serif (<code>Arial</code>) or coder-style fixed width (<code>monospace</code>).', example: 'font-family: monospace;' }
+            ],
+            missions: [
+              { title: 'Mission 8.1: Style Rule for Heading', desc: 'Use <style> to set h2 color: #00f0ff; and font-size: 28px;, then add <h2>NEON CSS</h2> below.' },
+              { title: 'Mission 8.2: Coder Monospace Font', desc: 'Create a <p> with background #141a34, yellow text, and font-family: monospace;.' },
+              { title: 'Mission 8.3: Palette Sign via <style>', desc: 'Define a <style> rule for p (bg #1f1135, color #ff2a85, font-size 20px) and render <p>PALETTE DISTRICT</p>.' }
+            ]
+          },
+          {
+            island: 'Neon-City CSS',
+            name: 'Box Model Square',
+            topic: 'CSS Box Model: inner/outer spacing & rounded corners',
+            briefingLore: 'In Box Model Square we unlock the secret behind sleek buttons and cards — spacing and rounded corners, partner!',
+            decoderCards: [
+              { tag: 'padding', origin: 'from Padding', why: 'Soft cushioning <strong>inside</strong> the border so text never touches the edges of a card.', example: 'padding: 16px;' },
+              { tag: 'margin', origin: 'from Margin', why: 'Page margins <strong>outside</strong> the border so neighboring cards have breathing room between them.', example: 'margin: 12px;' },
+              { tag: 'border-radius', origin: 'Border + Radius', why: 'Rounds sharp corners! <code>border-radius: 14px;</code> creates smooth modern cards, and <code>50%</code> makes circles.', example: 'border-radius: 14px;' }
+            ],
+            missions: [
+              { title: 'Mission 9.1: Roomy Card with Padding', desc: 'Build a <div> with inner spacing padding: 16px; and border: 2px solid #00f0ff;.' },
+              { title: 'Mission 9.2: Rounded Neon Button', desc: 'Create a pill card <div> with border-radius: 18px;, padding: 12px;, and pink background.' },
+              { title: 'Mission 9.3: Complete Box Model Card', desc: 'Build a card with padding: 14px;, margin: 10px;, border, and border-radius: 14px;.' }
+            ]
+          },
+          {
+            island: 'Neon-City CSS',
+            name: 'Flexbox Harbor',
+            topic: 'CSS Flexbox: aligning blocks in rows & centering',
+            briefingLore: 'Welcome to Flexbox Harbor! Normally blocks stack vertically, but Flexbox lines them up side by side like race cars on a starting grid!',
+            decoderCards: [
+              { tag: 'display: flex;', origin: 'Display + Flexible layout', why: 'Switches a <code>&lt;div&gt;</code> container into flexible row mode so child items line up horizontally!', example: 'display: flex;' },
+              { tag: 'justify-content', origin: 'Justify + Content', why: 'Controls horizontal alignment: <code>center</code> groups items in the middle, while <code>space-between</code> pushes them to opposite ends.', example: 'justify-content: center;' },
+              { tag: 'align-items & gap', origin: 'Align + Gap', why: '<strong>align-items: center</strong> centers items vertically, and <strong>gap: 12px</strong> adds clean spacing between them.', example: 'align-items: center; gap: 12px;' }
+            ],
+            missions: [
+              { title: 'Mission 10.1: Two Badges in a Row with Gap', desc: 'Enable display: flex; gap: 12px; on <div> so two badges sit side by side with neat spacing.' },
+              { title: 'Mission 10.2: Perfect Center Alignment', desc: 'Build a banner with display: flex; justify-content: center; align-items: center; gap: 12px; and car.png inside.' },
+              { title: 'Mission 10.3: Navbar with space-between', desc: 'Push logo and score to opposite edges using display: flex; justify-content: space-between; align-items: center;.' }
+            ]
+          },
+          {
+            island: 'Neon-City CSS',
+            name: 'Animation Alley',
+            topic: 'CSS Effects: neon glow, opacity & smooth transitions',
+            briefingLore: 'Grand finale of the entire metropolis — Animation Alley, Vinewood star! Add neon glows, glass transparency, and smooth transitions!',
+            decoderCards: [
+              { tag: 'box-shadow', origin: 'Box + Shadow', why: 'Casts a drop shadow or vibrant <strong>neon glow</strong> around a card, like <code>box-shadow: 0 0 18px #00f0ff;</code>.', example: 'box-shadow: 0 0 18px #00f0ff;' },
+              { tag: 'opacity', origin: 'from Opacity', why: 'Sets transparency from <code>0</code> (invisible) to <code>1</code> (solid). <code>0.85</code> gives a sleek frosted-glass look.', example: 'opacity: 0.85;' },
+              { tag: 'transform & transition', origin: 'Transform + Transition', why: '<strong>transform: scale(1.06)</strong> scales a card, while <strong>transition: 0.3s</strong> animates changes smoothly!', example: 'transition: 0.3s; transform: scale(1.06);' }
+            ],
+            missions: [
+              { title: 'Mission 11.1: Neon Glow with box-shadow', desc: 'Build a rounded <div> card glowing with box-shadow: 0 0 18px #00f0ff;.' },
+              { title: 'Mission 11.2: Glass Card with opacity', desc: 'Create a translucent card with opacity: 0.85; and pink glow box-shadow: 0 0 16px #ff2a85;.' },
+              { title: 'Mission 11.3: GRAND FINALE — HTML & CSS Legend Trophy!', desc: 'Assemble the animated finale card with Flexbox, gold neon glow, transition: 0.3s, and crown.png!' }
+            ]
+          }
+        ],
+        bugs: [
+          { topic: 'Level 1 • HTML Text', title: 'Unclosed Bold Tag <b>', desc: 'The whole paragraph turned bold! Fix the closing tag.', rule: 'A closing tag always has a forward slash after the opening bracket: </b>.' },
+          { topic: 'Level 2 • HTML Images', title: 'Wrong Image Attribute', desc: 'The sports car is missing — someone used the wrong attribute on <img>.', rule: 'Image file paths in <img> always use the src attribute.' },
+          { topic: 'Level 2 • HTML Links', title: 'Broken Link Attribute on <a>', desc: 'The garage link does not work! Fix the destination attribute.', rule: 'Destination URLs in <a> links always use the href attribute.' },
+          { topic: 'Level 4 • HTML Tables', title: 'Forgot to Close Table Row', desc: 'The price list row broke: an opening <tr> was placed instead of closing it.', rule: 'Every table row <tr> must end with a closing </tr> tag.' },
+          { topic: 'Level 5 • Empty Cell', title: 'Broken Empty Table Cell', desc: 'We need an empty cell <td></td>, but the closing slash was forgotten.', rule: 'An empty table cell is an opening and closing pair with nothing inside: <td></td>.' },
+          { topic: 'Level 6 • CSS Syntax', title: 'Syntax Error in style', desc: 'The text color failed because = was used instead of a colon!', rule: 'Inside style="...", property and value are separated by a colon: color: yellow;.' },
+          { topic: 'Level 8 • CSS Fonts', title: 'Missing px Unit', desc: 'Font size did not apply because px was left off after 28.', rule: 'Font size in CSS needs a unit such as pixels: font-size: 28px;.' },
+          { topic: 'Level 9 • CSS Box Model', title: 'Mixed Up Corner Rounding', desc: 'To round a card’s corners, use border-radius instead of border-color.', rule: 'The border-radius property controls rounded corners.' },
+          { topic: 'Level 10 • CSS Flexbox', title: 'Blocks Won’t Line Up in a Row', desc: 'To activate Flexbox row layout, set display: flex;.', rule: 'display: flex; arranges child blocks into a neat horizontal row.' },
+          { topic: 'Level 11 • CSS Effects', title: 'Invisible Opacity Value', desc: 'The box vanished completely because opacity: 0; was used instead of 0.85.', rule: 'opacity ranges from 0 (invisible) to 1 (fully opaque).' }
+        ],
+        chaseQuestions: [
+          'Largest main heading tag?',
+          'Make a word bold?',
+          'Break text onto a new line?',
+          'Tag to insert an image?',
+          'Tag for a clickable link?',
+          'Single row inside a table?',
+          'Single data cell inside a row?',
+          'How to write an empty table cell?',
+          'Which property changes BACKGROUND color?',
+          'Which property changes TEXT color?',
+          'Main block container for a card?',
+          'CSS property for text size?',
+          'Inner spacing inside a border?',
+          'Outer spacing outside a border?',
+          'Property to round card corners?',
+          'Enable flexible row layout for blocks?',
+          'Spacing between items in Flexbox?',
+          'Neon shadow or glow around a box?'
+        ],
+        phoneCheats: [
+          {
+            title: 'Level 1 — Vice Beach (HTML Text)',
+            items: [
+              { tag: '<h1>, <h2>, <h3>', desc: 'Headings: <h1> is largest, <h3> is smaller.' },
+              { tag: '<p>', desc: 'Standard text paragraph.' },
+              { tag: '<b> & <i>', desc: '<b> makes text bold, <i> makes text italic.' }
+            ]
+          },
+          {
+            title: 'Level 2 — Neon Boulevard (Media)',
+            items: [
+              { tag: '<br>', desc: 'Single line break tag.' },
+              { tag: '<img src="...">', desc: 'Embeds an image (car.png, cat.png, palm.png, crown.png, burger.png).' },
+              { tag: '<a href="#">', desc: 'Clickable hyperlink.' }
+            ]
+          },
+          {
+            title: 'Level 3 — Media Port (Image After Text)',
+            items: [
+              { tag: '</p> + <img>', desc: 'Close </p> then add <img> to place the picture below text.' },
+              { tag: 'Text + <br> + <img>', desc: 'Image inside a paragraph after a line break.' }
+            ]
+          },
+          {
+            title: 'Level 4 — Downtown (Tables)',
+            items: [
+              { tag: '<table>, <tr>, <td>', desc: '<table> = grid, <tr> = row, <td> = data cell.' }
+            ]
+          },
+          {
+            title: 'Level 5 — Garage Docks (Cells)',
+            items: [
+              { tag: '<td><img ...></td>', desc: 'Image placed inside a table cell.' },
+              { tag: '<td></td>', desc: 'Empty cell — nothing between tags.' }
+            ]
+          },
+          {
+            title: 'Level 6 — Vinewood Style (style Attribute)',
+            items: [
+              { tag: 'background-color, color, border', desc: 'Backdrop color, text color, and outline inside style="...".' }
+            ]
+          },
+          {
+            title: 'Level 7 — Penthouse City (Containers)',
+            items: [
+              { tag: '<div> & <span>', desc: '<div> = card block, <span> = inline word wrapper.' }
+            ]
+          },
+          {
+            title: 'Level 8 — Palette District (CSS Basics)',
+            items: [
+              { tag: '<style>', desc: 'Tag for writing CSS rules for elements on the page.' },
+              { tag: 'font-size & font-family', desc: 'Font size in px and typeface family (e.g. monospace).' }
+            ]
+          },
+          {
+            title: 'Level 9 — Box Model Square (CSS Box Model)',
+            items: [
+              { tag: 'padding & margin', desc: 'padding = inner space inside border, margin = outer space.' },
+              { tag: 'border-radius', desc: 'Rounds corners of a card or button.' }
+            ]
+          },
+          {
+            title: 'Level 10 — Flexbox Harbor (CSS Flexbox)',
+            items: [
+              { tag: 'display: flex', desc: 'Lines up child elements horizontally in a row.' },
+              { tag: 'justify-content & align-items', desc: 'Horizontal alignment (center, space-between) & vertical alignment (center).' }
+            ]
+          },
+          {
+            title: 'Level 11 — Animation Alley (CSS Effects)',
+            items: [
+              { tag: 'box-shadow & opacity', desc: 'Neon outer glow and transparency from 0 to 1.' },
+              { tag: 'transform & transition', desc: 'Scaling with scale(1.06) and smooth animation timing 0.3s.' }
+            ]
+          }
+        ],
+        garageCatalog: [
+          {
+            title: '1. Body Paint (updates in 2D City too!)',
+            items: ['Yellow GT', 'Neon Pink', 'Cyber Cyan', 'Respect Lime', 'Ultraviolet', 'Boss Gold']
+          },
+          {
+            title: '2. Neon Underglow',
+            items: ['Off', 'Cyan', 'Pink', 'Lime', 'Gold']
+          },
+          {
+            title: '3. Rear Spoiler',
+            items: ['Stock', 'Sport', 'Cyber Wing']
+          },
+          {
+            title: '4. Wheel Rims',
+            items: ['Classic', 'Neon', 'Gold']
+          },
+          {
+            title: '5. Side Decal',
+            items: ['No Decal', 'HTML', 'CSS', 'VIP', '⚡ Bolt']
+          }
+        ],
+        graffitiColors: ['Neon Pink', 'Cyber Cyan', 'Respect Lime', 'GTA Yellow', 'Sunset Orange', 'Ultraviolet', 'Chalk White', 'Turbo Red', 'Sky Blue', 'Vinewood Gold'],
+        cheats: [
+          { code: 'HESOYAM', desc: '+$500 cash and instant restoration of all 3 shields in Bug Chase!' },
+          { code: 'CATRAIN', desc: 'Triggers a joyful cyber-cat rain across the entire screen!' },
+          { code: 'NEONPARTY', desc: 'Activates neon disco glow on all cards across the city!' },
+          { code: 'TURBO', desc: 'Lights up all 5 mastery stars in the top HUD!' }
+        ],
+        markers: [
+          'Lv.1: Vice Beach',
+          'Lv.2: Neon Boulevard',
+          'Lv.3: Media Port',
+          'Lv.4: Downtown',
+          'Lv.5: Garage Docks',
+          'Lv.6: Vinewood Style',
+          'Lv.7: Penthouse City',
+          'Lv.8: Palette District (CSS)',
+          'Lv.9: Box Model Square (CSS)',
+          'Lv.10: Flexbox Harbor (CSS)',
+          'Lv.11: Animation Alley (CSS)',
+          '🔧 HTML Customs Garage',
+          '🎨 Graffiti Wall (HTML)',
+          '🎨 Graffiti Wall (Vinewood)',
+          '🎨 Graffiti Wall (Neon CSS)'
+        ]
+      };
+
+      function getLang() {
+        return State.lang === 'en' ? 'en' : 'ru';
+      }
+
+      function t(key, vars) {
+        const lang = getLang();
+        const dict = I18N[lang] || I18N.ru;
+        let str = Object.prototype.hasOwnProperty.call(dict, key) ? dict[key] : (I18N.ru[key] || key);
+        if (vars && typeof str === 'string') {
+          Object.keys(vars).forEach(k => {
+            str = str.replace(new RegExp('\\{' + k + '\\}', 'g'), String(vars[k]));
+          });
+        }
+        return str;
+      }
+
+      function getStationLocalized(st) {
+        const lang = getLang();
+        if (lang === 'en' && EN_CONTENT.stations[st.id]) {
+          const ov = EN_CONTENT.stations[st.id];
+          return {
+            name: ov.name || st.name,
+            shortName: ov.shortName || st.shortName,
+            genre: ov.genre || st.genre,
+            dj: ov.dj || st.dj,
+            djLines: ov.djLines || st.djLines,
+            speechLang: 'en-US'
+          };
+        }
+        return {
+          name: st.name,
+          shortName: st.shortName,
+          genre: st.genre,
+          dj: st.dj,
+          djLines: st.djLines,
+          speechLang: 'ru-RU'
         };
-      })();
+      }
+
+      function getDistrictLocalized(idx) {
+        const base = DISTRICTS[idx];
+        if (!base) return DISTRICTS[0];
+        if (getLang() === 'en' && EN_CONTENT.districts[idx]) {
+          const enD = EN_CONTENT.districts[idx];
+          return Object.assign({}, base, {
+            island: enD.island,
+            name: enD.name,
+            topic: enD.topic,
+            briefingLore: enD.briefingLore,
+            decoderCards: enD.decoderCards
+          });
+        }
+        return base;
+      }
+
+      function getMissionLocalized(distIdx, missionIdx) {
+        const base = DISTRICTS[distIdx].missions[missionIdx];
+        if (getLang() === 'en' && EN_CONTENT.districts[distIdx] && EN_CONTENT.districts[distIdx].missions[missionIdx]) {
+          const enM = EN_CONTENT.districts[distIdx].missions[missionIdx];
+          return Object.assign({}, base, {
+            title: enM.title,
+            desc: enM.desc
+          });
+        }
+        return base;
+      }
+
+      function getBugLocalized(bugIdx) {
+        const base = BUG_MISSIONS[bugIdx];
+        if (getLang() === 'en' && EN_CONTENT.bugs[bugIdx]) {
+          return Object.assign({}, base, EN_CONTENT.bugs[bugIdx]);
+        }
+        return base;
+      }
+
+      function getChaseQuestionLocalized(qIdx) {
+        const base = CHASE_QUESTIONS[qIdx];
+        if (getLang() === 'en' && EN_CONTENT.chaseQuestions[qIdx]) {
+          return Object.assign({}, base, { q: EN_CONTENT.chaseQuestions[qIdx] });
+        }
+        return base;
+      }
 
       /* ==========================================================================
          2. ВСТРОЕННЫЕ SVG-КАРТИНКИ ДЛЯ ТЕГА <img> (ОФЛАЙН DATA URI)
@@ -3253,13 +4139,15 @@
         }
 
         function speakDjAnnouncement(station) {
-          if (!djEnabled || !station || station.isOff || !station.djLines.length) return;
+          if (!djEnabled || !station || station.isOff) return;
+          const loc = getStationLocalized(station);
+          if (!loc.djLines || !loc.djLines.length) return;
           try {
             if (!('speechSynthesis' in window)) return;
             window.speechSynthesis.cancel();
-            const line = station.djLines[Math.floor(Math.random() * station.djLines.length)];
+            const line = loc.djLines[Math.floor(Math.random() * loc.djLines.length)];
             const utter = new SpeechSynthesisUtterance(line);
-            utter.lang = 'ru-RU';
+            utter.lang = loc.speechLang;
             utter.rate = 1.05;
             utter.pitch = station.id === 'vice' || station.id === 'chill' ? 1.14 : 0.96;
             utter.volume = Math.min(1, Math.max(0.3, radioVolume * 1.4));
@@ -4620,6 +5508,7 @@
       }
 
       const State = {
+        lang: 'ru',
         cash: 0,
         completedMissionIds: [],
         completedBugs: [],
@@ -4663,6 +5552,7 @@
           const raw = SafeStorage.getItem(STORAGE_KEY);
           if (!raw) return;
           const d = JSON.parse(raw);
+          if (d.lang === 'en' || d.lang === 'ru') State.lang = d.lang;
           if (typeof d.cash === 'number') State.cash = d.cash;
           if (Array.isArray(d.completedMissionIds)) State.completedMissionIds = d.completedMissionIds;
           if (Array.isArray(d.completedBugs)) State.completedBugs = d.completedBugs;
@@ -4681,6 +5571,7 @@
       function writeSave() {
         try {
           SafeStorage.setItem(STORAGE_KEY, JSON.stringify({
+            lang: State.lang,
             cash: State.cash,
             completedMissionIds: State.completedMissionIds,
             completedBugs: State.completedBugs,
@@ -4734,12 +5625,13 @@
 
       function getRankName() {
         const cap = getCapturedDistrictsCount();
-        if (cap >= 11) return 'Абсолютная легенда HTML & CSS 👑';
-        if (cap >= 9)  return 'Звезда Неон-Сити CSS 🌟';
-        if (cap >= 7)  return 'Покоритель Острова HTML 🚀';
-        if (cap >= 4)  return 'Архитектор улиц 🔥';
-        if (cap >= 1)  return 'Юный дизайнер 🎨';
-        return 'Новичок в городе 🌴';
+        const ranks = t('ranks');
+        if (cap >= 11) return ranks[0];
+        if (cap >= 9)  return ranks[1];
+        if (cap >= 7)  return ranks[2];
+        if (cap >= 4)  return ranks[3];
+        if (cap >= 1)  return ranks[4];
+        return ranks[5];
       }
 
       function shuffle(arr) {
@@ -4855,11 +5747,11 @@
               el.addEventListener('click', (e) => { e.preventDefault(); AudioEngine.tile(); });
             }
             if (node.tagName === 'IMG') {
-              const src = node.getAttribute('src') || '';
-              if (src.indexOf('data:image/svg+xml') === 0) el.setAttribute('src', src);
-              el.setAttribute('alt', node.getAttribute('alt') || 'Картинка');
-            }
-            node.childNodes.forEach(ch => {
+          const src = node.getAttribute('src') || '';
+          if (src.indexOf('data:image/svg+xml') === 0) el.setAttribute('src', src);
+          el.setAttribute('alt', node.getAttribute('alt') || (getLang() === 'en' ? 'Image' : 'Картинка'));
+        }
+        node.childNodes.forEach(ch => {
               const cleaned = cleanNode(ch);
               if (cleaned) el.appendChild(cleaned);
             });
@@ -4910,6 +5802,7 @@
       function updateRadioPlayerUI() {
         const info = AudioEngine.getRadioState();
         const st = info.station;
+        const loc = getStationLocalized(st);
         const playBtn = document.getElementById('btn-track-toggle');
         const eq = document.getElementById('hud-eq-bars');
         const freqBadge = document.getElementById('hud-freq-badge');
@@ -4925,25 +5818,25 @@
         if (eq) eq.classList.toggle('playing', info.isPlaying && !st.isOff);
         if (freqBadge) freqBadge.textContent = st.freq;
 
-        if (stNameEl) stNameEl.textContent = st.isOff ? 'РАДИО ВЫКЛ' : st.freq + ' ' + st.name;
+        if (stNameEl) stNameEl.textContent = st.isOff ? t('radioOffTitle') : st.freq + ' ' + loc.name;
         if (titleEl) {
           titleEl.textContent = st.isOff
-            ? 'Нажми ▶ или выбери волну'
-            : '♪ ' + info.track.title + ' • ' + st.dj;
+            ? t('radioOffSub')
+            : '♪ ' + info.track.title + ' • ' + loc.dj;
         }
 
         if (djBtn) {
-          djBtn.textContent = info.djEnabled ? '🎙️ DJ: ВКЛ' : '🎙️ DJ: ВЫКЛ';
+          djBtn.textContent = info.djEnabled ? t('djOn') : t('djOff');
           djBtn.classList.toggle('dj-on', info.djEnabled);
         }
 
         if (quickBtn) {
           if (info.isPlaying && !st.isOff) {
-            quickBtn.textContent = '🔊 ИГРАЕТ: ' + st.freq + ' ' + st.shortName;
+            quickBtn.textContent = t('quickRadioPlaying') + st.freq + ' ' + loc.shortName;
             quickBtn.classList.remove('btn-green');
             quickBtn.classList.add('btn-cyan');
           } else {
-            quickBtn.textContent = '📻 ВКЛЮЧИТЬ 106.5 VICE NEON FM';
+            quickBtn.textContent = t('quickRadioStart');
             quickBtn.classList.remove('btn-cyan');
             quickBtn.classList.add('btn-green');
           }
@@ -4962,6 +5855,7 @@
         const radiusPct = 39;
 
         stations.forEach((st, idx) => {
+          const loc = getStationLocalized(st);
           const angleDeg = -90 + (360 / total) * idx;
           const angleRad = (angleDeg * Math.PI) / 180;
           const leftPct = 50 + radiusPct * Math.cos(angleRad);
@@ -4977,7 +5871,7 @@
           btn.innerHTML =
             '<span class="rw-node-icon">' + st.icon + '</span>' +
             '<span class="rw-node-freq">' + st.freq + '</span>' +
-            '<span class="rw-node-title">' + st.shortName + '</span>';
+            '<span class="rw-node-title">' + loc.shortName + '</span>';
 
           btn.addEventListener('click', () => {
             AudioEngine.selectStation(idx, true);
@@ -4992,6 +5886,7 @@
       function updateRadioWheelUI() {
         const info = AudioEngine.getRadioState();
         const st = info.station;
+        const loc = getStationLocalized(st);
         const freqEl = document.getElementById('rw-center-freq');
         if (!freqEl) return;
 
@@ -5001,10 +5896,10 @@
         const trackEl = document.getElementById('rw-center-track');
         const djEl = document.getElementById('rw-center-dj');
 
-        if (nameEl) nameEl.textContent = st.name;
-        if (genreEl) genreEl.textContent = st.genre;
-        if (trackEl) trackEl.textContent = st.isOff ? 'Тишина' : '♪ ' + info.track.title;
-        if (djEl) djEl.textContent = st.isOff ? 'Выбери любую волну вокруг' : '🎙️ Ведущий: ' + st.dj;
+        if (nameEl) nameEl.textContent = loc.name;
+        if (genreEl) genreEl.textContent = loc.genre;
+        if (trackEl) trackEl.textContent = st.isOff ? t('rwCenterOffSub') : '♪ ' + info.track.title;
+        if (djEl) djEl.textContent = st.isOff ? t('rwCenterOffDj') : t('rwHostPrefix') + loc.dj;
 
         document.querySelectorAll('#radio-wheel-stage .rw-node').forEach(node => {
           node.classList.toggle('active', Number(node.dataset.idx) === info.stationIndex);
@@ -5012,6 +5907,7 @@
       }
 
       function createDistrictCard(d, idx) {
+        const locD = getDistrictLocalized(idx);
         const unlocked = isDistrictUnlocked(idx);
         const captured = isDistrictCompleted(idx);
         const doneCount = d.missions.filter(m => State.completedMissionIds.includes(m.id)).length;
@@ -5023,24 +5919,26 @@
           (!unlocked ? ' locked' : '');
 
         const statusBadge = captured
-          ? '✅ Захвачен'
+          ? t('cardCaptured')
           : unlocked
             ? '⚡ ' + doneCount + '/' + d.missions.length
-            : '🔒 Закрыт';
+            : t('cardLocked');
+
+        const lvlShort = getLang() === 'en' ? 'LV. ' : 'УР. ';
 
         card.innerHTML =
           '<div>' +
             '<div class="district-top">' +
-              '<span class="district-num">' + (d.chapter === 'css' ? 'CSS • ' : 'HTML • ') + 'УР. ' + d.level + '</span>' +
+              '<span class="district-num">' + (d.chapter === 'css' ? 'CSS • ' : 'HTML • ') + lvlShort + d.level + '</span>' +
               '<span style="font-weight: 800; font-size: 0.8rem; color: ' + (captured ? 'var(--green)' : 'var(--yellow)') + ';">' + statusBadge + '</span>' +
             '</div>' +
-            '<div class="district-name" style="margin-top: 8px;">' + d.name + '</div>' +
-            '<div class="district-topic" style="margin-top: 4px;">' + d.topic + '</div>' +
+            '<div class="district-name" style="margin-top: 8px;">' + locD.name + '</div>' +
+            '<div class="district-topic" style="margin-top: 4px;">' + locD.topic + '</div>' +
           '</div>' +
           '<div>' +
             '<div class="district-tags-preview" style="margin-bottom: 10px;"></div>' +
             '<button type="button" class="gta-btn btn-sm ' + (captured ? 'btn-green' : unlocked ? (d.chapter === 'css' ? 'btn-cyan' : '') : 'btn-dark') + '" style="width: 100%;" ' + (!unlocked ? 'disabled' : '') + '>' +
-              (!unlocked ? '🔒 Пройди уровень ' + (d.level - 1) : captured ? '🔄 Переиграть район' : '▶ Взять миссии') +
+              (!unlocked ? t('cardPassPrev') + (d.level - 1) : captured ? t('cardReplay') : t('cardTakeMissions')) +
             '</button>' +
           '</div>';
 
@@ -5055,13 +5953,13 @@
           const thumb = document.createElement('img');
           thumb.className = 'district-graffiti-thumb';
           thumb.src = savedArt;
-          thumb.alt = 'Граффити района ' + d.name;
+          thumb.alt = locD.name;
 
           const cap = document.createElement('span');
           cap.style.fontSize = '0.73rem';
           cap.style.fontWeight = '800';
           cap.style.color = 'var(--yellow)';
-          cap.textContent = '🎨 Твой тег на стене';
+          cap.textContent = t('cardWallTag');
 
           artBox.append(thumb, cap);
           const bottomWrap = card.children[1];
@@ -5095,6 +5993,178 @@
         });
       }
 
+      function applyStaticLanguageUI() {
+        const lang = getLang();
+        document.documentElement.lang = lang;
+
+        document.querySelectorAll('.lang-toggle-btn').forEach(b => {
+          b.classList.toggle('active', b.dataset.lang === lang);
+        });
+
+        const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+        const setHtml = (id, val) => { const el = document.getElementById(id); if (el) el.innerHTML = val; };
+
+        setText('btn-open-radio-wheel', t('hudRadioBtn'));
+        setText('btn-hud-city', t('hudCityBtn'));
+        setText('btn-back-menu', t('hudHomeBtn'));
+
+        setHtml('hero-main-title', t('heroTitleHtml'));
+        setText('btn-hero-drive-city', t('heroDriveBtn'));
+        setText('extras-banner-title', t('extrasTitle'));
+        setText('extras-banner-sub', t('extrasSub'));
+        setText('btn-open-city', t('btnOpenCity'));
+        setText('btn-open-graffiti', t('btnOpenGraffiti'));
+        setText('btn-open-garage', t('btnOpenGarage'));
+
+        setText('mode1-badge', t('mode1Badge'));
+        setText('mode1-title', t('mode1Title'));
+        setText('mode1-desc', t('mode1Desc'));
+        setText('btn-launch-missions', t('btnLaunchMissions'));
+
+        setText('mode2-badge', t('mode2Badge'));
+        setText('mode2-title', t('mode2Title'));
+        setHtml('mode2-desc', t('mode2DescHtml'));
+        setText('btn-start-bugs', t('btnStartBugs'));
+
+        setText('mode3-badge', t('mode3Badge'));
+        setText('mode3-title', t('mode3Title'));
+        setText('mode3-desc', t('mode3Desc'));
+        setText('btn-start-chase', t('btnStartChase'));
+
+        setText('districts-map-title', t('districtsMapTitle'));
+        setText('radio-wheel-key-pill', t('radioWheelKeyPill'));
+        setText('chapter1-title', t('chapter1Title'));
+        setText('chapter1-badge', t('chapter1Badge'));
+        setText('chapter2-title', t('chapter2Title'));
+        setText('chapter2-badge', t('chapter2Badge'));
+
+        if (!State.resetArmed) {
+          setText('btn-reset-progress', t('resetBtnDefault'));
+        }
+
+        setText('city-top-pill', t('cityTopPill'));
+        setText('city-controls-pill', t('cityControlsPill'));
+        setText('btn-city-home', t('cityHomeBtn'));
+        setText('pad-brake', t('padBrake'));
+        setText('pad-gas', t('padGas'));
+        setHtml('city-legend-1', t('cityLegend1Html'));
+        setHtml('city-legend-2', t('cityLegend2Html'));
+
+        setText('intel-decoder-caption', t('intelDecoderCaption'));
+        setText('btn-intel-city', t('intelCityBtn'));
+
+        setText('btn-mission-intel', t('missionIntelBtn'));
+        setText('btn-mission-city', t('missionCityBtn'));
+        setText('billboard-target-label', t('billboardTarget'));
+        setText('billboard-sample-label', t('billboardSample'));
+        setText('billboard-live-label', t('billboardLive'));
+        setText('mission-dropzone-caption', t('dropzoneCaption'));
+        setText('mission-pool-caption', t('poolCaption'));
+        setText('btn-mission-check', t('btnCheckCode'));
+        setText('btn-mission-mentor', t('btnMentorHint'));
+        setText('btn-mission-undo', t('btnUndoTile'));
+        setText('btn-mission-clear', t('btnClearTiles'));
+
+        setText('bug-terminal-caption', t('bugTerminalCaption'));
+        setText('bug-options-caption', t('bugOptionsCaption'));
+
+        setText('chase-lbl-timer', t('chaseLblTimer'));
+        setText('chase-sec-unit', t('chaseSecUnit'));
+        setText('chase-lbl-shields', t('chaseLblShields'));
+        setText('chase-lbl-mult', t('chaseLblMult'));
+        setText('chase-lbl-cash', t('chaseLblCash'));
+        setText('chase-speed-caption', t('chaseSpeedCaption'));
+        setText('chase-q-prompt', t('chasePrompt'));
+
+        setText('garage-hud-title', t('garageHudTitle'));
+        setText('garage-stage-caption', t('garageStageCaption'));
+        setText('btn-garage-rev', t('garageRevBtn'));
+        setText('btn-garage-drive', t('garageDriveBtn'));
+        setText('btn-garage-missions', t('garageMissionsBtn'));
+        setText('btn-garage-city', t('btnReturnCity'));
+        setText('btn-garage-back', t('cityHomeBtn'));
+
+        setText('graffiti-hud-title', t('graffitiHudTitle'));
+        setText('graffiti-district-label', t('graffitiDistrictLabel'));
+        setText('btn-tool-spray', t('toolSpray'));
+        setText('btn-tool-marker', t('toolMarker'));
+        setText('btn-tool-stencil', t('toolStencil'));
+        setText('graffiti-nozzle-label', t('nozzleLabel'));
+        setText('graffiti-palette-caption', t('paletteCaption'));
+        setText('graffiti-stencils-caption', t('stencilsCaption'));
+        setText('btn-graffiti-clear', t('graffitiClearBtn'));
+        setText('btn-graffiti-save', t('graffitiSaveBtn'));
+        setText('btn-graffiti-next-level', t('graffitiNextLvlBtn'));
+        setText('btn-graffiti-city', t('btnReturnCity'));
+        setText('btn-graffiti-home', t('cityHomeBtn'));
+
+        setText('rw-modal-title', t('rwModalTitle'));
+        setText('btn-close-radio-wheel', t('rwCloseBtn'));
+        setHtml('rw-hotkey-hint', t('rwHotkeyHtml'));
+        setText('btn-rw-next-song', t('rwNextSongBtn'));
+
+        setText('phone-title', t('phoneTitle'));
+
+        setText('admin-modal-title', t('adminModalTitle'));
+        setText('admin-modal-desc', t('adminModalDesc'));
+        const admInp = document.getElementById('admin-pass-input');
+        if (admInp) admInp.placeholder = t('adminPassPlaceholder');
+        setText('admin-pass-error', t('adminPassErr'));
+        setText('btn-cancel-admin-modal', t('adminCancelBtn'));
+        setText('btn-submit-admin-pass', t('adminLoginBtn'));
+      }
+
+      function setLanguage(newLang) {
+        if (newLang !== 'ru' && newLang !== 'en') return;
+        State.lang = newLang;
+        writeSave();
+        AudioEngine.click();
+
+        applyStaticLanguageUI();
+        renderRadioWheelNodes();
+        updateRadioPlayerUI();
+        renderPhoneTabs();
+        renderPhoneContent();
+        updateGlobalUI();
+
+        /* Перерисовываем текущий активный экран без сброса прогресса */
+        if (views.briefing && !views.briefing.classList.contains('hidden')) {
+          openDistrictBriefing(State.activeDistrictIdx, briefingReturnToMission);
+        } else if (views.missions && !views.missions.classList.contains('hidden')) {
+          const locD = getDistrictLocalized(State.activeDistrictIdx);
+          const locM = getMissionLocalized(State.activeDistrictIdx, State.activeMissionIdx);
+          const badgeEl = document.getElementById('mission-level-badge');
+          const distEl = document.getElementById('mission-district');
+          const titleEl = document.getElementById('mission-title');
+          const descEl = document.getElementById('mission-desc');
+          if (badgeEl) {
+            badgeEl.textContent = (getLang() === 'en' ? 'LEVEL ' : 'УРОВЕНЬ ') + locD.level +
+              (getLang() === 'en' ? ' • MISSION ' : ' • МИССИЯ ') + (State.activeMissionIdx + 1) + '/' + locD.missions.length;
+          }
+          if (distEl) distEl.textContent = '📍 ' + locD.island.toUpperCase() + ' • «' + locD.name.toUpperCase() + '»';
+          if (titleEl) titleEl.textContent = locM.title;
+          if (descEl) descEl.textContent = locM.desc;
+          renderMissionBoard(null, null);
+        } else if (views.bugs && !views.bugs.classList.contains('hidden')) {
+          const b = getBugLocalized(State.bugIdx);
+          const bugTopicEl = document.getElementById('bug-topic-pill');
+          const bugTitleEl = document.getElementById('bug-title');
+          const bugDescEl = document.getElementById('bug-desc');
+          if (bugTopicEl) bugTopicEl.textContent = '🚨 ' + b.topic;
+          if (bugTitleEl) bugTitleEl.textContent = b.title;
+          if (bugDescEl) bugDescEl.textContent = b.desc;
+        } else if (views.chase && !views.chase.classList.contains('hidden')) {
+          const qObj = getChaseQuestionLocalized(State.chaseCurrentIdx);
+          const qEl = document.getElementById('chase-question');
+          if (qEl && qObj) qEl.textContent = qObj.q;
+          updateChaseHud();
+        } else if (views.garage && !views.garage.classList.contains('hidden')) {
+          GarageCustoms.refreshShop();
+        } else if (views.graffiti && !views.graffiti.classList.contains('hidden')) {
+          GraffitiWall.refreshControls();
+        }
+      }
+
       function updateGlobalUI() {
         const cashEl = document.getElementById('hud-cash-val');
         if (cashEl) cashEl.textContent = formatCash(State.cash);
@@ -5104,30 +6174,28 @@
           s.classList.toggle('lit', i < lit);
         });
 
-        const rankEl = document.getElementById('menu-rank-text');
-        const distCountEl = document.getElementById('menu-districts-count');
-        const chaseBest1 = document.getElementById('menu-chase-best');
-        const chaseBest2 = document.getElementById('menu-chase-best-2');
-        const bugsProg = document.getElementById('menu-bugs-progress');
+        const rankWrap = document.getElementById('pill-rank-wrap');
+        const distWrap = document.getElementById('pill-districts-wrap');
+        const chaseWrap = document.getElementById('pill-chase-wrap');
+        const bugsProgWrap = document.getElementById('mode2-prog-wrap');
+        const chaseRecWrap = document.getElementById('mode3-rec-wrap');
+        const garageCashWrap = document.getElementById('garage-cash-wrap');
 
-        if (rankEl) rankEl.textContent = getRankName();
-        if (distCountEl) distCountEl.textContent = getCapturedDistrictsCount();
-        if (chaseBest1) chaseBest1.textContent = State.chaseBest;
-        if (chaseBest2) chaseBest2.textContent = State.chaseBest;
-        if (bugsProg) bugsProg.textContent = State.completedBugs.length + ' / ' + BUG_MISSIONS.length;
+        if (rankWrap) rankWrap.innerHTML = t('rankLabel') + '<span id="menu-rank-text">' + getRankName() + '</span>';
+        if (distWrap) distWrap.innerHTML = t('districtsLabel') + '<span id="menu-districts-count">' + getCapturedDistrictsCount() + '</span> / 11';
+        if (chaseWrap) chaseWrap.innerHTML = t('chaseRecLabel') + '<span id="menu-chase-best">' + State.chaseBest + '</span>';
+        if (bugsProgWrap) bugsProgWrap.innerHTML = t('mode2ProgLabel') + '<b id="menu-bugs-progress">' + State.completedBugs.length + ' / ' + BUG_MISSIONS.length + '</b>';
+        if (chaseRecWrap) chaseRecWrap.innerHTML = t('mode3RecLabel') + '<b id="menu-chase-best-2">' + State.chaseBest + '</b>';
+        if (garageCashWrap) garageCashWrap.innerHTML = t('garageCashLabel') + '<span id="garage-cash-badge">' + formatCash(State.cash) + '</span>';
 
         const lockBtn = document.getElementById('btn-phone-admin-lock');
         if (lockBtn) {
           lockBtn.textContent = State.cheatsUnlocked ? '🔓' : '🔒';
           lockBtn.classList.toggle('unlocked', State.cheatsUnlocked);
-          lockBtn.title = State.cheatsUnlocked ? 'Панель админа открыта' : 'Доступ администратора';
         }
 
         const menuCar = document.getElementById('menu-car-preview');
         if (menuCar) menuCar.innerHTML = CarRenderer.buildSvg(State.garage, false);
-
-        const garageCash = document.getElementById('garage-cash-badge');
-        if (garageCash) garageCash.textContent = formatCash(State.cash);
 
         renderDistrictsMap();
       }
@@ -5308,6 +6376,13 @@
           gateWarnTimer = 2.6;
         }
 
+        function getMarkerLabel(idx) {
+          if (getLang() === 'en' && EN_CONTENT.markers[idx]) {
+            return EN_CONTENT.markers[idx];
+          }
+          return MARKERS[idx] ? MARKERS[idx].label : '';
+        }
+
         function updatePhysics(dt) {
           if (gateWarnTimer > 0) {
             gateWarnTimer -= dt;
@@ -5361,7 +6436,7 @@
             nextX = 1365;
             car.vx = -Math.abs(car.vx) * 0.4;
             AudioEngine.error();
-            triggerGateWarning('🚧 Мост в Неон-Сити CSS закрыт! Пройди Уровень 7 (Пентхаус-Сити) или введи пароль.');
+            triggerGateWarning(t('cityBridgeLocked'));
           }
 
           /* Проверка воды и границ островов */
@@ -5410,24 +6485,26 @@
           const enterBtn = document.getElementById('btn-city-enter-marker');
 
           if (islandEl) {
-            islandEl.textContent = car.x > 1400 ? '🌉 Неон-Сити CSS (Глава 2)' : '🏝️ Остров HTML (Глава 1)';
+            islandEl.textContent = car.x > 1400 ? t('cityIslandCss') : t('cityIslandHtml');
           }
 
           /* Определяем ближайший район для навигатора */
-          let nearestDist = DISTRICTS[0];
+          let nearestIdx = 0;
           let minD = Infinity;
           MARKERS.forEach(m => {
             if (m.kind === 'district') {
               const d = Math.hypot(car.x - m.x, car.y - m.y);
               if (d < minD) {
                 minD = d;
-                nearestDist = DISTRICTS[m.distIdx];
+                nearestIdx = m.distIdx;
               }
             }
           });
+          const nearestDist = getDistrictLocalized(nearestIdx);
 
           if (distEl && nearestDist) {
-            distEl.textContent = 'Ур.' + nearestDist.level + ': ' + nearestDist.name;
+            const lvlPrefix = getLang() === 'en' ? 'Lv.' : 'Ур.';
+            distEl.textContent = lvlPrefix + nearestDist.level + ': ' + nearestDist.name;
           }
           if (hintEl && nearestDist) {
             hintEl.textContent = nearestDist.tagsPreview;
@@ -5442,28 +6519,30 @@
 
           promptBox.classList.remove('hidden');
           if (activeMarker.kind === 'district') {
-            const d = DISTRICTS[activeMarker.distIdx];
+            const d = getDistrictLocalized(activeMarker.distIdx);
             const unlocked = isDistrictUnlocked(activeMarker.distIdx);
-            const doneCount = d.missions.filter(m => State.completedMissionIds.includes(m.id)).length;
+            const doneCount = DISTRICTS[activeMarker.distIdx].missions.filter(m => State.completedMissionIds.includes(m.id)).length;
+            const lvlWord = getLang() === 'en' ? 'Level ' : 'Уровень ';
             if (unlocked) {
-              promptText.textContent = '📍 ' + d.name + ' (Уровень ' + d.level + ' • ' + doneCount + '/3)';
-              enterBtn.textContent = '🚀 ВОЙТИ В МИССИЮ (ENTER)';
+              promptText.textContent = '📍 ' + d.name + ' (' + lvlWord + d.level + ' • ' + doneCount + '/3)';
+              enterBtn.textContent = t('cityPromptEnter');
               enterBtn.disabled = false;
               enterBtn.className = 'gta-btn btn-sm btn-green';
             } else {
-              promptText.textContent = '🔒 ' + d.name + ' — сначала пройди Уровень ' + (d.level - 1);
-              enterBtn.textContent = '🔒 ЗАКРЫТО';
+              promptText.textContent = '🔒 ' + d.name + t('cityPromptPassFirst') + (d.level - 1);
+              enterBtn.textContent = t('cityPromptLocked');
               enterBtn.disabled = true;
               enterBtn.className = 'gta-btn btn-sm btn-dark';
             }
           } else if (activeMarker.kind === 'graffiti') {
-            promptText.textContent = activeMarker.label + ' — рисуй баллончиком!';
-            enterBtn.textContent = '🎨 РИСОВАТЬ (ENTER)';
+            const mIdx = MARKERS.indexOf(activeMarker);
+            promptText.textContent = getMarkerLabel(mIdx) + t('cityPromptGraffitiSuffix');
+            enterBtn.textContent = t('cityPromptGraffitiBtn');
             enterBtn.disabled = false;
             enterBtn.className = 'gta-btn btn-sm btn-pink';
           } else if (activeMarker.kind === 'garage') {
-            promptText.textContent = '🔧 Гараж «HTML Customs» — тюнинг тачки';
-            enterBtn.textContent = '🔧 ЗАЕХАТЬ В ГАРАЖ (ENTER)';
+            promptText.textContent = t('cityPromptGarage');
+            enterBtn.textContent = t('cityPromptGarageBtn');
             enterBtn.disabled = false;
             enterBtn.className = 'gta-btn btn-sm btn-cyan';
           }
@@ -5475,7 +6554,7 @@
             if (!isDistrictUnlocked(activeMarker.distIdx)) {
               AudioEngine.error();
               const prevLvl = DISTRICTS[activeMarker.distIdx].level - 1;
-              triggerGateWarning('🔒 Район закрыт! Сначала пройди Уровень ' + prevLvl + '.');
+              triggerGateWarning(t('cityDistrictLocked') + prevLvl + '.');
               return;
             }
             AudioEngine.ok();
@@ -5615,7 +6694,7 @@
 
           /* Пульсирующие маркеры миссий, граффити и гаража */
           const pulse = 0.88 + Math.sin(animClock * 5) * 0.12;
-          MARKERS.forEach(m => {
+          MARKERS.forEach((m, mIdx) => {
             let ringColor = '#ffd166';
             let subTag = '';
             if (m.kind === 'district') {
@@ -5632,6 +6711,8 @@
               subTag = 'TUNING';
             }
 
+            const markerText = getMarkerLabel(mIdx) + ' [' + subTag + ']';
+
             ctx.save();
             ctx.beginPath();
             ctx.arc(m.x, m.y, m.r * pulse, 0, Math.PI * 2);
@@ -5644,7 +6725,7 @@
             /* Табличка над маркером */
             ctx.font = '800 12px "Segoe UI", Arial, sans-serif';
             ctx.textAlign = 'center';
-            const textW = ctx.measureText(m.label + ' [' + subTag + ']').width + 16;
+            const textW = ctx.measureText(markerText).width + 16;
             ctx.fillStyle = 'rgba(6, 9, 20, 0.88)';
             ctx.fillRect(m.x - textW / 2, m.y - m.r - 26, textW, 20);
             ctx.strokeStyle = ringColor;
@@ -5652,7 +6733,7 @@
             ctx.strokeRect(m.x - textW / 2, m.y - m.r - 26, textW, 20);
 
             ctx.fillStyle = '#ffffff';
-            ctx.fillText(m.label + ' [' + subTag + ']', m.x, m.y - m.r - 12);
+            ctx.fillText(markerText, m.x, m.y - m.r - 12);
             ctx.restore();
           });
 
@@ -5875,7 +6956,7 @@
       function openDistrictBriefing(distIdx, fromMission) {
         State.activeDistrictIdx = distIdx;
         briefingReturnToMission = !!fromMission;
-        const dist = DISTRICTS[distIdx];
+        const dist = getDistrictLocalized(distIdx);
 
         const pillEl = document.getElementById('intel-level-pill');
         const titleEl = document.getElementById('intel-district-title');
@@ -5884,9 +6965,15 @@
         const grid = document.getElementById('intel-cards-grid');
 
         if (pillEl) {
-          pillEl.textContent = 'БРИФИНГ РАЙОНА • ' + (dist.chapter === 'css' ? 'ГЛАВА 2: CSS' : 'ГЛАВА 1: HTML') + ' • УРОВЕНЬ ' + dist.level + ' ИЗ 11';
+          if (getLang() === 'en') {
+            pillEl.textContent = 'DISTRICT BRIEFING • ' + (dist.chapter === 'css' ? 'CHAPTER 2: CSS' : 'CHAPTER 1: HTML') + ' • LEVEL ' + dist.level + ' OF 11';
+          } else {
+            pillEl.textContent = 'БРИФИНГ РАЙОНА • ' + (dist.chapter === 'css' ? 'ГЛАВА 2: CSS' : 'ГЛАВА 1: HTML') + ' • УРОВЕНЬ ' + dist.level + ' ИЗ 11';
+          }
         }
-        if (titleEl) titleEl.textContent = 'РАЙОН ' + dist.level + ': «' + dist.name.toUpperCase() + '»';
+        if (titleEl) {
+          titleEl.textContent = (getLang() === 'en' ? 'DISTRICT ' : 'РАЙОН ') + dist.level + ': «' + dist.name.toUpperCase() + '»';
+        }
         if (subEl) subEl.textContent = dist.island + ' • ' + dist.topic;
         if (loreEl) loreEl.textContent = dist.briefingLore;
 
@@ -5915,7 +7002,7 @@
 
             const ex = document.createElement('div');
             ex.className = 'intel-example-code';
-            ex.textContent = 'Пример: ' + cardData.example;
+            ex.textContent = t('intelExamplePrefix') + cardData.example;
 
             card.append(top, why, ex);
             grid.appendChild(card);
@@ -5926,11 +7013,11 @@
         const goBtn = document.getElementById('btn-intel-go');
         if (backBtn && goBtn) {
           if (briefingReturnToMission) {
-            backBtn.textContent = '🗺️ На карту районов';
-            goBtn.textContent = '↩ Вернуться к миссии';
+            backBtn.textContent = t('intelBackToMap');
+            goBtn.textContent = t('intelReturnMission');
           } else {
-            backBtn.textContent = '🗺️ Назад к карте';
-            goBtn.textContent = 'ВСЁ ПОНЯТНО, ВПЕРЁД! 🚀';
+            backBtn.textContent = t('intelBackShort');
+            goBtn.textContent = t('intelGoStart');
           }
         }
 
@@ -5949,8 +7036,8 @@
       }
 
       function loadMission() {
-        const dist = DISTRICTS[State.activeDistrictIdx];
-        const m = dist.missions[State.activeMissionIdx];
+        const dist = getDistrictLocalized(State.activeDistrictIdx);
+        const m = getMissionLocalized(State.activeDistrictIdx, State.activeMissionIdx);
         State.missionPlaced = [];
         State.missionSolved = false;
 
@@ -5971,7 +7058,10 @@
         const titleEl = document.getElementById('mission-title');
         const descEl = document.getElementById('mission-desc');
 
-        if (badgeEl) badgeEl.textContent = 'УРОВЕНЬ ' + dist.level + ' • МИССИЯ ' + (State.activeMissionIdx + 1) + '/' + dist.missions.length;
+        if (badgeEl) {
+          badgeEl.textContent = (getLang() === 'en' ? 'LEVEL ' : 'УРОВЕНЬ ') + dist.level +
+            (getLang() === 'en' ? ' • MISSION ' : ' • МИССИЯ ') + (State.activeMissionIdx + 1) + '/' + dist.missions.length;
+        }
         if (earnedEl) earnedEl.textContent = State.missionEarned;
         if (progEl) progEl.style.width = ((State.activeMissionIdx / dist.missions.length) * 100) + '%';
         if (distEl) distEl.textContent = '📍 ' + dist.island.toUpperCase() + ' • «' + dist.name.toUpperCase() + '»';
@@ -6005,7 +7095,7 @@
         if (State.missionPlaced.length === 0) {
           const empty = document.createElement('span');
           empty.className = 'dropzone-empty';
-          empty.textContent = '// Кликай на плитки ниже, чтобы собрать код...';
+          empty.textContent = t('dropzoneEmpty');
           dz.appendChild(empty);
         } else {
           State.missionPlaced.forEach((item, idx) => {
@@ -6051,8 +7141,8 @@
 
       function checkMissionCode() {
         if (State.missionSolved) return;
-        const dist = DISTRICTS[State.activeDistrictIdx];
-        const m = dist.missions[State.activeMissionIdx];
+        const dist = getDistrictLocalized(State.activeDistrictIdx);
+        const m = getMissionLocalized(State.activeDistrictIdx, State.activeMissionIdx);
         const userCode = State.missionPlaced.map(x => x.text).join('');
         const targetCode = m.solution.join('');
 
@@ -6078,12 +7168,12 @@
           const hasNextInDistrict = State.activeMissionIdx < dist.missions.length - 1;
           const hasNextDistrict = State.activeDistrictIdx < DISTRICTS.length - 1;
 
-          let sub = 'Отличная работа в районе «' + dist.name + '»!';
+          let sub = t('missionBannerWinSub', { name: dist.name });
           const btns = [];
 
           if (hasNextInDistrict) {
             btns.push({
-              label: '▶ Следующая миссия (' + (State.activeMissionIdx + 2) + '/3)',
+              label: t('btnNextMission', { n: State.activeMissionIdx + 2 }),
               cls: 'btn-green',
               onClick: () => {
                 State.activeMissionIdx++;
@@ -6091,50 +7181,50 @@
               }
             });
           } else if (hasNextDistrict) {
-            const nextDist = DISTRICTS[State.activeDistrictIdx + 1];
+            const nextDist = getDistrictLocalized(State.activeDistrictIdx + 1);
             sub = dist.level === 7
-              ? 'Остров HTML пройден на 100%! Мосты в Неон-Сити CSS открыты — впереди Уровень 8: «' + nextDist.name + '»!'
-              : 'Район «' + dist.name + '» пройден на 100%! Открыт Уровень ' + (dist.level + 1) + ': «' + nextDist.name + '»!';
+              ? t('missionBannerIslandDone', { next: nextDist.name })
+              : t('missionBannerDistrictDone', { name: dist.name, lvl: dist.level + 1, next: nextDist.name });
             btns.push({
-              label: '🚀 Уровень ' + (dist.level + 1) + ': ' + nextDist.name,
+              label: t('btnNextLevel', { lvl: dist.level + 1, next: nextDist.name }),
               cls: 'btn-green',
               onClick: () => openDistrictBriefing(State.activeDistrictIdx + 1, false)
             });
           } else {
-            sub = 'Поздравляем! Все 11 районов (HTML + CSS) и все 33 миссии пройдены! Теперь ты — Абсолютная легенда HTML & CSS 👑!';
+            sub = t('missionBannerAllDone');
           }
 
           btns.push({
-            label: '🏎️ Вернуться в 2D-город',
+            label: t('btnReturnCity'),
             cls: 'btn-cyan',
             onClick: () => OpenCityGame.open(State.activeDistrictIdx)
           });
 
           btns.push({
-            label: '🎨 Стена граффити',
+            label: t('btnGoGraffiti'),
             cls: 'btn-pink',
             onClick: () => GraffitiWall.open(State.activeDistrictIdx)
           });
 
-          btns.push({ label: '🗺️ На карту районов', cls: 'btn-dark', onClick: () => showView('menu') });
+          btns.push({ label: t('btnGoMap'), cls: 'btn-dark', onClick: () => showView('menu') });
 
           showBanner({
             isWasted: false,
-            title: 'МИССИЯ ВЫПОЛНЕНА!',
-            rewardText: '+$' + m.reward + ' +РЕСПЕКТ',
+            title: t('missionBannerWinTitle'),
+            rewardText: '+$' + m.reward + ' +RESPECT',
             subtitle: sub,
             buttons: btns
           });
         } else {
-          let wrongDetail = 'Код пока не совпадает с образцом на билборде.';
+          let wrongDetail = '';
           if (State.missionPlaced.length === 0) {
-            wrongDetail = 'Поле кода пустое — выбери плитки снизу, чтобы собрать решение.';
+            wrongDetail = t('missionErrEmpty');
           } else {
             for (let i = 0; i < Math.max(State.missionPlaced.length, m.solution.length); i++) {
-              const u = State.missionPlaced[i] ? State.missionPlaced[i].text : '(не хватает плитки)';
-              const s = m.solution[i] || '(лишняя плитка)';
+              const u = State.missionPlaced[i] ? State.missionPlaced[i].text : t('missionErrMissing');
+              const s = m.solution[i] || t('missionErrExtra');
               if (u !== s) {
-                wrongDetail = 'Ошибка на позиции #' + (i + 1) + ': у тебя «' + u + '», а должно быть «' + s + '».';
+                wrongDetail = t('missionErrPos', { pos: i + 1, u: u, s: s });
                 break;
               }
             }
@@ -6142,13 +7232,13 @@
 
           showBanner({
             isWasted: true,
-            title: 'ОЙ, БАГ В КОДЕ!',
-            rewardText: 'ПРОВЕРЬ ПОРЯДОК ПЛИТОК',
+            title: t('missionBannerBugTitle'),
+            rewardText: t('missionBannerBugSub'),
             subtitle: wrongDetail,
             buttons: [
-              { label: '🔄 Поправить код', cls: 'btn-cyan', onClick: () => {} },
+              { label: t('btnFixCode'), cls: 'btn-cyan', onClick: () => {} },
               {
-                label: '🧹 Начать заново',
+                label: t('btnRestartMission'),
                 cls: 'btn-dark',
                 onClick: () => {
                   State.missionPlaced = [];
@@ -6169,7 +7259,7 @@
           AudioEngine.error();
           if (fb) {
             fb.className = 'feedback-strip fb-err';
-            fb.textContent = '❌ Не хватает денег на подсказку! Нужно $50 (заработай во «Взломе багов» или «Погоне»).';
+            fb.textContent = t('hintNoCash');
           }
           return;
         }
@@ -6183,7 +7273,7 @@
             renderMissionBoard(null, i);
             if (fb) {
               fb.className = 'feedback-strip fb-info';
-              fb.textContent = '💡 Подсказка (-$50): плитка #' + (i + 1) + ' («' + State.missionPlaced[i].text + '») не на своём месте — кликни по ней, чтобы убрать!';
+              fb.textContent = t('hintWrongTile', { pos: i + 1, tile: State.missionPlaced[i].text });
             }
             return;
           }
@@ -6195,7 +7285,7 @@
           renderMissionBoard(tile.id, null);
           if (fb) {
             fb.className = 'feedback-strip fb-info';
-            fb.textContent = '💡 Подсказка (-$50): нужная плитка подсвечена зелёным внизу! Кликай по ней!';
+            fb.textContent = t('hintNextTile');
           }
         }
       }
@@ -6212,17 +7302,19 @@
       }
 
       function loadBugLevel() {
-        const b = BUG_MISSIONS[State.bugIdx];
+        const b = getBugLocalized(State.bugIdx);
         State.bugSolved = false;
 
-        const bugNumEl = document.getElementById('bug-num');
+        const bugBadgeEl = document.getElementById('bug-mode-badge');
         const bugEarnedEl = document.getElementById('bug-earned');
         const bugProgEl = document.getElementById('bug-progress-bar');
         const bugTopicEl = document.getElementById('bug-topic-pill');
         const bugTitleEl = document.getElementById('bug-title');
         const bugDescEl = document.getElementById('bug-desc');
 
-        if (bugNumEl) bugNumEl.textContent = State.bugIdx + 1;
+        if (bugBadgeEl) {
+          bugBadgeEl.innerHTML = (getLang() === 'en' ? '💻 HACK ' : '💻 ВЗЛОМ ') + '<span id="bug-num">' + (State.bugIdx + 1) + '</span> / 10';
+        }
         if (bugEarnedEl) bugEarnedEl.textContent = State.bugEarned;
         if (bugProgEl) bugProgEl.style.width = ((State.bugIdx / BUG_MISSIONS.length) * 100) + '%';
         if (bugTopicEl) bugTopicEl.textContent = '🚨 ' + b.topic;
@@ -6263,7 +7355,7 @@
 
       function onBugOptionClick(picked, btnEl) {
         if (State.bugSolved) return;
-        const b = BUG_MISSIONS[State.bugIdx];
+        const b = getBugLocalized(State.bugIdx);
         const fb = document.getElementById('bug-feedback');
 
         if (picked === b.correct) {
@@ -6297,17 +7389,17 @@
 
             const textWrap = document.createElement('div');
             const line1 = document.createElement('div');
-            line1.textContent = '✅ БАГ ПОЧИНЕН! +$' + b.reward;
+            line1.textContent = t('bugFixedTitle') + b.reward;
             const line2 = document.createElement('div');
             line2.style.fontSize = '0.9rem';
             line2.style.marginTop = '3px';
-            line2.textContent = '💡 Правило: ' + b.rule;
+            line2.textContent = t('bugRulePrefix') + b.rule;
             textWrap.append(line1, line2);
 
             const nextBtn = document.createElement('button');
             nextBtn.type = 'button';
             nextBtn.className = 'gta-btn btn-sm';
-            nextBtn.textContent = isLast ? 'Финиш 🏆' : 'Следующий баг →';
+            nextBtn.textContent = isLast ? t('bugFinishBtn') : t('bugNextBtn');
             nextBtn.addEventListener('click', () => {
               AudioEngine.click();
               if (!isLast) {
@@ -6316,12 +7408,12 @@
               } else {
                 showBanner({
                   isWasted: false,
-                  title: 'МИССИЯ ВЫПОЛНЕНА!',
-                  rewardText: '+$' + State.bugEarned + ' +РЕСПЕКТ',
-                  subtitle: 'Отличная работа, напарник! Все 10 багов по HTML и CSS исправлены!',
+                  title: t('missionBannerWinTitle'),
+                  rewardText: '+$' + State.bugEarned + ' +RESPECT',
+                  subtitle: t('bugAllDoneSub'),
                   buttons: [
-                    { label: '🗺️ На главную', cls: 'btn-cyan', onClick: () => showView('menu') },
-                    { label: '🔄 Взломать снова', cls: 'btn-pink', onClick: startBugsMode }
+                    { label: t('bugHomeBtn'), cls: 'btn-cyan', onClick: () => showView('menu') },
+                    { label: t('bugAgainBtn'), cls: 'btn-pink', onClick: startBugsMode }
                   ]
                 });
               }
@@ -6335,7 +7427,7 @@
           btnEl.style.background = 'var(--red)';
           if (fb) {
             fb.className = 'feedback-strip fb-err';
-            fb.textContent = '🚨 Неверный патч! Баг всё ещё в коде — попробуй другой вариант.';
+            fb.textContent = t('bugWrongMsg');
           }
         }
       }
@@ -6351,7 +7443,7 @@
         State.chaseStreak = 0;
         State.chaseCorrect = 0;
         State.chaseLocked = false;
-        State.chaseLastQ = '';
+        State.chaseCurrentIdx = -1;
 
         showView('chase');
         updateChaseHud();
@@ -6391,12 +7483,12 @@
         const mult = getChaseMult();
         if (multEl) multEl.textContent = 'x' + mult;
         if (scoreEl) scoreEl.textContent = State.chaseScore;
-        if (streakEl) streakEl.textContent = 'Серия: ' + State.chaseStreak;
+        if (streakEl) streakEl.textContent = t('chaseStreakPrefix') + State.chaseStreak;
         if (speedEl) speedEl.style.width = Math.min(100, 15 + State.chaseStreak * 9.5) + '%';
 
         if (pill) {
           if (mult > 1) {
-            pill.textContent = '🔥 КОМБО x' + mult + '!';
+            pill.textContent = t('chaseComboPrefix') + mult + '!';
             pill.classList.remove('hidden');
           } else {
             pill.classList.add('hidden');
@@ -6407,9 +7499,13 @@
 
       function nextChaseQuestion() {
         State.chaseLocked = false;
-        const pool = CHASE_QUESTIONS.filter(x => x.q !== State.chaseLastQ);
-        const q = pool[Math.floor(Math.random() * pool.length)];
-        State.chaseLastQ = q.q;
+        const candidates = [];
+        for (let i = 0; i < CHASE_QUESTIONS.length; i++) {
+          if (i !== State.chaseCurrentIdx) candidates.push(i);
+        }
+        const pickedIdx = candidates[Math.floor(Math.random() * candidates.length)];
+        State.chaseCurrentIdx = pickedIdx;
+        const q = getChaseQuestionLocalized(pickedIdx);
 
         const qEl = document.getElementById('chase-question');
         const grid = document.getElementById('chase-choices');
@@ -6474,17 +7570,17 @@
           writeSave();
         }
         const sub = reason === 'shields'
-          ? 'Баг-Полиция догнала и пробила 3 щита! Верных ответов: ' + State.chaseCorrect + '. Рекорд: $' + State.chaseBest + '.'
-          : 'Время вышло! Ты набрал $' + State.chaseScore + ' (' + State.chaseCorrect + ' верных ответов). Рекорд: $' + State.chaseBest + '.';
+          ? t('chaseEndShieldsSub', { ok: State.chaseCorrect, best: State.chaseBest })
+          : t('chaseEndTimeSub', { score: State.chaseScore, ok: State.chaseCorrect, best: State.chaseBest });
 
         showBanner({
           isWasted: true,
-          title: 'ЗАЕЗД ОКОНЧЕН!',
-          rewardText: '+$' + State.chaseScore + ' ЗА ПОГОНЮ' + (isNewRecord ? ' • НОВЫЙ РЕКОРД!' : ''),
+          title: t('chaseEndTitle'),
+          rewardText: '+$' + State.chaseScore + t('chaseEndGain') + (isNewRecord ? t('chaseEndRecord') : ''),
           subtitle: sub,
           buttons: [
-            { label: '🔄 Сыграть ещё раз', cls: 'btn-cyan', onClick: startChaseMode },
-            { label: '🏠 На главную', cls: 'btn-dark', onClick: () => showView('menu') }
+            { label: t('chasePlayAgain'), cls: 'btn-cyan', onClick: startChaseMode },
+            { label: t('cityHomeBtn'), cls: 'btn-dark', onClick: () => showView('menu') }
           ]
         });
       }
@@ -6506,7 +7602,7 @@
           const btn = document.createElement('button');
           btn.type = 'button';
           btn.className = 'phone-tab-btn' + (idx === State.phoneTab ? ' active' : '');
-          btn.textContent = 'Ур.' + ch.level;
+          btn.textContent = t('phoneTabPrefix') + ch.level;
           btn.addEventListener('click', () => {
             AudioEngine.click();
             State.phoneTab = idx;
@@ -6521,7 +7617,7 @@
           cheatTabBtn.type = 'button';
           cheatTabBtn.className = 'phone-tab-btn' + (State.phoneTab === CHEAT_TAB_INDEX ? ' active' : '');
           cheatTabBtn.style.borderColor = 'var(--pink)';
-          cheatTabBtn.textContent = '🎮 Читы';
+          cheatTabBtn.textContent = t('phoneCheatsTab');
           cheatTabBtn.addEventListener('click', () => {
             AudioEngine.click();
             State.phoneTab = CHEAT_TAB_INDEX;
@@ -6540,7 +7636,7 @@
         if (State.cheatsUnlocked && State.phoneTab === CHEAT_TAB_INDEX) {
           const banner = document.createElement('div');
           banner.className = 'phone-level-banner';
-          banner.textContent = '🎮 ПАНЕЛЬ АДМИНА И ЧИТ-КОДЫ';
+          banner.textContent = t('phoneAdminBanner');
           list.appendChild(banner);
 
           const adminActionsCard = document.createElement('div');
@@ -6552,15 +7648,15 @@
           unlockAllBtn.className = 'gta-btn btn-sm btn-cyan';
           unlockAllBtn.style.width = '100%';
           unlockAllBtn.textContent = State.allDistrictsUnlocked
-            ? '✅ Все 11 районов и мосты уже открыты'
-            : '🔓 Открыть все 11 районов и мосты города';
+            ? t('phoneAllUnlocked')
+            : t('phoneUnlockAllBtn');
           unlockAllBtn.addEventListener('click', () => {
             AudioEngine.ok();
             State.allDistrictsUnlocked = true;
             writeSave();
             updateGlobalUI();
             renderPhoneContent();
-            CheatSystem.showToast('АДМИН-ДОСТУП', 'Все 11 районов (HTML + CSS) и мосты города открыты!');
+            CheatSystem.showToast(t('toastAdminTitle'), t('toastAdminAllOpen'));
           });
 
           const lockBackBtn = document.createElement('button');
@@ -6568,7 +7664,7 @@
           lockBackBtn.className = 'gta-btn btn-sm btn-danger';
           lockBackBtn.style.width = '100%';
           lockBackBtn.style.marginTop = '6px';
-          lockBackBtn.textContent = '🔒 Заблокировать обратно';
+          lockBackBtn.textContent = t('phoneLockBackBtn');
           lockBackBtn.addEventListener('click', () => {
             AudioEngine.click();
             CheatSystem.lockAdmin();
@@ -6582,7 +7678,7 @@
           const inp = document.createElement('input');
           inp.className = 'cheat-input';
           inp.type = 'text';
-          inp.placeholder = 'Введи чит-код...';
+          inp.placeholder = t('phoneCheatPlaceholder');
           inp.maxLength = 14;
           const goBtn = document.createElement('button');
           goBtn.type = 'button';
@@ -6595,7 +7691,7 @@
             inp.value = '';
             if (!ok) {
               AudioEngine.error();
-              CheatSystem.showToast('НЕВЕРНЫЙ ЧИТ-КОД', 'Доступны: HESOYAM, CATRAIN, NEONPARTY, TURBO', true);
+              CheatSystem.showToast(t('toastBadCheatTitle'), t('toastBadCheatDesc'), true);
             }
           };
           goBtn.addEventListener('click', runManual);
@@ -6603,7 +7699,7 @@
           inputRow.append(inp, goBtn);
           list.appendChild(inputRow);
 
-          CheatSystem.LIST.forEach(c => {
+          CheatSystem.LIST.forEach((c, cIdx) => {
             const card = document.createElement('div');
             card.className = 'phone-tag-card';
 
@@ -6620,14 +7716,14 @@
             const actBtn = document.createElement('button');
             actBtn.type = 'button';
             actBtn.className = 'gta-btn btn-sm btn-pink';
-            actBtn.textContent = '▶ Ввести';
+            actBtn.textContent = t('phoneEnterBtn');
             actBtn.addEventListener('click', () => CheatSystem.activate(c.code));
 
             top.append(codeEl, actBtn);
 
             const descEl = document.createElement('div');
             descEl.className = 'phone-tag-desc';
-            descEl.textContent = c.desc;
+            descEl.textContent = (getLang() === 'en' && EN_CONTENT.cheats[cIdx]) ? EN_CONTENT.cheats[cIdx].desc : c.desc;
 
             card.append(top, descEl);
             list.appendChild(card);
@@ -6635,14 +7731,16 @@
           return;
         }
 
-        const ch = PHONE_CHEATS[State.phoneTab] || PHONE_CHEATS[0];
+        const tabIdx = State.phoneTab;
+        const ch = PHONE_CHEATS[tabIdx] || PHONE_CHEATS[0];
+        const enCh = (getLang() === 'en' && EN_CONTENT.phoneCheats[tabIdx]) ? EN_CONTENT.phoneCheats[tabIdx] : null;
 
         const banner = document.createElement('div');
         banner.className = 'phone-level-banner';
-        banner.textContent = ch.title;
+        banner.textContent = enCh ? enCh.title : ch.title;
         list.appendChild(banner);
 
-        ch.items.forEach(item => {
+        ch.items.forEach((item, iIdx) => {
           const card = document.createElement('div');
           card.className = 'phone-tag-card';
 
@@ -6652,7 +7750,7 @@
 
           const desc = document.createElement('div');
           desc.className = 'phone-tag-desc';
-          desc.textContent = item.desc;
+          desc.textContent = (enCh && enCh.items[iIdx]) ? enCh.items[iIdx].desc : item.desc;
 
           const ex = document.createElement('div');
           ex.className = 'phone-tag-ex';
@@ -6809,19 +7907,21 @@
           if (!panel) return;
           panel.innerHTML = '';
 
-          CATALOG.forEach(group => {
+          CATALOG.forEach((group, gIdx) => {
+            const enGroup = (getLang() === 'en' && EN_CONTENT.garageCatalog[gIdx]) ? EN_CONTENT.garageCatalog[gIdx] : null;
             const wrap = document.createElement('div');
             wrap.className = 'garage-shop-group';
 
             const title = document.createElement('div');
             title.className = 'garage-shop-title';
-            title.textContent = group.title;
+            title.textContent = enGroup ? enGroup.title : group.title;
             wrap.appendChild(title);
 
             const row = document.createElement('div');
             row.className = 'garage-items-row';
 
-            group.items.forEach(item => {
+            group.items.forEach((item, iIdx) => {
+              const itemLabel = (enGroup && enGroup.items[iIdx]) ? enGroup.items[iIdx] : item.label;
               const token = group.key + ':' + item.id;
               const isOwned = item.price === 0 || State.garage.owned.includes(token);
               const isEquipped = State.garage[group.key] === item.id;
@@ -6838,7 +7938,7 @@
               }
 
               const txt = document.createElement('span');
-              txt.textContent = item.label + (isEquipped ? ' ✓' : isOwned ? '' : ' ($' + item.price + ')');
+              txt.textContent = itemLabel + (isEquipped ? ' ✓' : isOwned ? '' : ' ($' + item.price + ')');
               btn.appendChild(txt);
 
               btn.addEventListener('click', () => {
@@ -6853,7 +7953,7 @@
                   renderStage(false);
                   renderShop();
                   updateGlobalUI();
-                  showGarageMsg('✅ Установлено: ' + item.label + '!', false);
+                  showGarageMsg(t('garageEquippedMsg') + itemLabel + '!', false);
                 } else if (State.cash >= item.price) {
                   State.cash -= item.price;
                   State.garage.owned.push(token);
@@ -6863,10 +7963,10 @@
                   renderStage(false);
                   renderShop();
                   updateGlobalUI();
-                  showGarageMsg('🔥 Куплено и установлено: ' + item.label + ' (-$' + item.price + ')!', false);
+                  showGarageMsg(t('garageBoughtMsg') + itemLabel + ' (-$' + item.price + ')!', false);
                 } else {
                   AudioEngine.error();
-                  showGarageMsg('❌ Не хватает кэша! Нужно $' + item.price + ' — пройди миссии города!', true);
+                  showGarageMsg(t('garageNoCashMsg', { price: item.price }), true);
                 }
               });
 
@@ -6912,13 +8012,13 @@
         function open() {
           State.currentMode = 'garage';
           showView('garage');
-          const fb = document.getElementById('garage-feedback');
+          const fb = document.getElementById('graffiti-feedback');
           if (fb) fb.className = 'hidden';
           renderStage(false);
           renderShop();
         }
 
-        return { init, open };
+        return { init, open, refreshShop: renderShop };
       })();
 
       /* ==========================================================================
@@ -7079,9 +8179,10 @@
           if (sel) {
             sel.innerHTML = '';
             DISTRICTS.forEach((d, idx) => {
+              const locD = getDistrictLocalized(idx);
               const opt = document.createElement('option');
               opt.value = String(idx);
-              opt.textContent = 'Ур.' + d.level + ' — ' + d.name;
+              opt.textContent = (getLang() === 'en' ? 'Lv.' : 'Ур.') + d.level + ' — ' + locD.name;
               if (idx === districtIdx) opt.selected = true;
               sel.appendChild(opt);
             });
@@ -7090,13 +8191,14 @@
           const pal = document.getElementById('graffiti-palette');
           if (pal) {
             pal.innerHTML = '';
-            COLORS.forEach(c => {
+            COLORS.forEach((c, cIdx) => {
+              const cName = (getLang() === 'en' && EN_CONTENT.graffitiColors[cIdx]) ? EN_CONTENT.graffitiColors[cIdx] : c.name;
               const btn = document.createElement('button');
               btn.type = 'button';
               btn.className = 'graffiti-swatch' + (c.hex === color ? ' active' : '');
               btn.style.background = c.hex;
-              btn.title = c.name;
-              btn.setAttribute('aria-label', c.name);
+              btn.title = cName;
+              btn.setAttribute('aria-label', cName);
               btn.addEventListener('click', () => {
                 AudioEngine.click();
                 color = c.hex;
@@ -7135,6 +8237,7 @@
         function saveToDistrict() {
           if (!canvas) return;
           const dist = DISTRICTS[districtIdx] || DISTRICTS[0];
+          const locD = getDistrictLocalized(districtIdx);
           try {
             const thumbCanvas = document.createElement('canvas');
             thumbCanvas.width = 240;
@@ -7152,12 +8255,12 @@
             addCash(250);
             AudioEngine.ok();
             Fireworks.boom(80);
-            showFeedback('🎨 Граффити сохранено на карточке «' + dist.name + '»! Бонус за уличный арт: +$250!', false);
+            showFeedback(t('graffitiSavedBonus', { name: locD.name }), false);
           } else {
             writeSave();
             updateGlobalUI();
             AudioEngine.ok();
-            showFeedback('🎨 Рисунок на стене района «' + dist.name + '» обновлён на карте!', false);
+            showFeedback(t('graffitiSavedUpdated', { name: locD.name }), false);
           }
         }
 
@@ -7280,7 +8383,7 @@
           drawBrickBackground();
         }
 
-        return { init, open };
+        return { init, open, refreshControls: renderControls };
       })();
 
       /* ==========================================================================
@@ -7350,14 +8453,20 @@
               updateChaseHud();
             }
             AudioEngine.playCheatSound();
-            showToast('ЧИТ АКТИВИРОВАН: HESOYAM', '+$500 добавлено на счёт и щиты восстановлены!');
+            showToast(
+              getLang() === 'en' ? 'CHEAT ACTIVATED: HESOYAM' : 'ЧИТ АКТИВИРОВАН: HESOYAM',
+              getLang() === 'en' ? '+$500 cash added and shields restored!' : '+$500 добавлено на счёт и щиты восстановлены!'
+            );
             return true;
           }
 
           if (code === 'CATRAIN') {
             AudioEngine.playCheatSound();
             triggerCatRain();
-            showToast('ЧИТ АКТИВИРОВАН: CATRAIN', 'Внимание! С неба падают кибер-котики!');
+            showToast(
+              getLang() === 'en' ? 'CHEAT ACTIVATED: CATRAIN' : 'ЧИТ АКТИВИРОВАН: CATRAIN',
+              getLang() === 'en' ? 'Heads up! Cyber-cats are raining from the sky!' : 'Внимание! С неба падают кибер-котики!'
+            );
             return true;
           }
 
@@ -7365,7 +8474,12 @@
             State.neonParty = !State.neonParty;
             document.body.classList.toggle('neon-party', State.neonParty);
             AudioEngine.playCheatSound();
-            showToast('ЧИТ АКТИВИРОВАН: NEONPARTY', State.neonParty ? 'Неоновая вечеринка включена!' : 'Неоновая вечеринка выключена.');
+            showToast(
+              getLang() === 'en' ? 'CHEAT ACTIVATED: NEONPARTY' : 'ЧИТ АКТИВИРОВАН: NEONPARTY',
+              getLang() === 'en'
+                ? (State.neonParty ? 'Neon disco party enabled!' : 'Neon disco party turned off.')
+                : (State.neonParty ? 'Неоновая вечеринка включена!' : 'Неоновая вечеринка выключена.')
+            );
             return true;
           }
 
@@ -7374,7 +8488,12 @@
             writeSave();
             updateGlobalUI();
             AudioEngine.playCheatSound();
-            showToast('ЧИТ АКТИВИРОВАН: TURBO', State.turboStars ? 'Все 5 звёзд мастерства зажжены!' : 'Звёзды вернулись в обычный режим.');
+            showToast(
+              getLang() === 'en' ? 'CHEAT ACTIVATED: TURBO' : 'ЧИТ АКТИВИРОВАН: TURBO',
+              getLang() === 'en'
+                ? (State.turboStars ? 'All 5 mastery stars lit up!' : 'Mastery stars returned to normal.')
+                : (State.turboStars ? 'Все 5 звёзд мастерства зажжены!' : 'Звёзды вернулись в обычный режим.')
+            );
             return true;
           }
 
@@ -7407,7 +8526,16 @@
           AudioEngine.playCheatSound();
           const phoneModal = document.getElementById('phone-modal');
           if (phoneModal) phoneModal.classList.remove('hidden');
-          showToast('ДОСТУП АДМИНА ОТКРЫТ', 'В iCode Phone разблокирована вкладка «🎮 Читы»!');
+          showToast(t('toastAdminTitle'), t('toastAdminDesc'));
+        }
+
+        function lockAdmin() {
+          State.cheatsUnlocked = false;
+          State.phoneTab = 0;
+          updateGlobalUI();
+          renderPhoneTabs();
+          renderPhoneContent();
+          showToast(t('toastAdminLockedTitle'), t('toastAdminLockedDesc'), true);
         }
 
         function lockAdmin() {
@@ -7506,6 +8634,7 @@
         };
 
         loadSave();
+        applyStaticLanguageUI();
         AudioEngine.onTrackChange(updateRadioPlayerUI);
         renderRadioWheelNodes();
         updateRadioPlayerUI();
@@ -7516,6 +8645,10 @@
         renderPhoneTabs();
         renderPhoneContent();
         updateGlobalUI();
+
+        /* Кнопки переключателя языков RU / EN */
+        bindClick('btn-lang-ru', () => setLanguage('ru'));
+        bindClick('btn-lang-en', () => setLanguage('en'));
 
         /* Кнопки экрана Брифинга перед уровнем и возврата к нему из миссии */
         bindClick('btn-intel-back', () => {
@@ -7732,12 +8865,12 @@
             State.resetArmed = true;
             resetBtn.classList.remove('btn-dark');
             resetBtn.classList.add('btn-danger');
-            resetBtn.textContent = '⚠️ Точно сбросить? Нажми ещё раз';
+            resetBtn.textContent = t('resetBtnConfirm');
             resetTimer = setTimeout(() => {
               State.resetArmed = false;
               resetBtn.classList.remove('btn-danger');
               resetBtn.classList.add('btn-dark');
-              resetBtn.textContent = '🗑️ Сбросить прогресс';
+              resetBtn.textContent = t('resetBtnDefault');
             }, 4000);
           } else {
             clearTimeout(resetTimer);
@@ -7757,9 +8890,9 @@
             updateGlobalUI();
             resetBtn.classList.remove('btn-danger');
             resetBtn.classList.add('btn-dark');
-            resetBtn.textContent = '🗑️ Сбросить прогресс';
+            resetBtn.textContent = t('resetBtnDefault');
             if (resetMsg) {
-              resetMsg.textContent = 'Прогресс сброшен — можно начинать заново!';
+              resetMsg.textContent = t('resetSuccess');
               setTimeout(() => { resetMsg.textContent = ''; }, 3000);
             }
           }
