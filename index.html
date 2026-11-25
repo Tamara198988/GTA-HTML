@@ -4,17 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GTA: HTML CITY — Grand Theft HTML</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Rubik:wght@700;800;900&display=swap" rel="stylesheet" />
   <style>
     /* ==========================================================================
        1. ПЕРЕМЕННЫЕ И БАЗОВАЯ ПАЛИТРА GTA VICE CITY × GTA V
        ========================================================================== */
     :root {
       --bg-dark: #060816;
-      --glass-bg: rgba(14, 16, 32, 0.84);
-      --glass-elev: rgba(24, 30, 56, 0.92);
-      --ink: #05060b;
-      --white: #f8f9fa;
-      --muted: #c8c6e6;
+      --glass-bg: rgba(14, 16, 32, 0.86);
+      --glass-elev: rgba(24, 30, 56, 0.94);
+      --ink: #0b0f19;
+      --white: #ffffff;
+      --muted: #d4d2f0;
 
       --pink: #ff2a85;
       --cyan: #00f0ff;
@@ -29,9 +32,9 @@
       --shadow-sm: 3px 3px 0 var(--ink);
       --radius: 12px;
 
-      --font-display: 'Impact', 'Arial Black', 'Franklin Gothic Heavy', system-ui, sans-serif;
-      --font-ui: 'Trebuchet MS', 'Segoe UI', system-ui, sans-serif;
-      --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      --font-display: 'Rubik', 'Trebuchet MS', 'Segoe UI', Arial, sans-serif;
+      --font-ui: 'Inter', 'Trebuchet MS', 'Segoe UI', Arial, sans-serif;
+      --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
       --font-mono: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
     }
 
@@ -183,22 +186,23 @@
       background: linear-gradient(135deg, var(--pink), var(--yellow));
       color: var(--ink);
       font-family: var(--font-display);
-      font-size: 1.15rem;
+      font-weight: 900;
+      font-size: 1.12rem;
       padding: 6px 10px;
       border: 3px solid var(--ink);
       border-radius: 8px;
       box-shadow: 3px 3px 0 var(--ink);
-      transform: skewX(-8deg);
-      letter-spacing: 0.04em;
+      letter-spacing: 0.02em;
     }
 
     .brand-text-main {
       font-family: var(--font-display);
-      font-size: clamp(1.1rem, 2.2vw, 1.48rem);
-      letter-spacing: 0.05em;
-      line-height: 1.05;
+      font-weight: 900;
+      font-size: clamp(1.1rem, 2.2vw, 1.45rem);
+      letter-spacing: 0.02em;
+      line-height: 1.1;
       color: var(--white);
-      text-shadow: 3px 3px 0 var(--ink), 0 0 10px rgba(255, 42, 133, 0.5);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.75), 0 0 12px rgba(255, 42, 133, 0.45);
     }
 
     .brand-text-sub {
@@ -226,9 +230,10 @@
       background: linear-gradient(135deg, var(--pink), var(--purple));
       color: var(--white);
       font-family: var(--font-display);
+      font-weight: 800;
       font-size: 0.82rem;
-      letter-spacing: 0.04em;
-      padding: 4px 7px;
+      letter-spacing: 0.02em;
+      padding: 4px 8px;
       border: 2px solid var(--ink);
       border-radius: 6px;
       box-shadow: 2px 2px 0 var(--ink);
@@ -362,16 +367,12 @@
 
     .hud-cash {
       font-family: var(--font-display);
-      font-size: clamp(1.22rem, 2.3vw, 1.62rem);
+      font-weight: 900;
+      font-size: clamp(1.22rem, 2.3vw, 1.6rem);
       color: var(--green);
-      letter-spacing: 0.06em;
-      line-height: 1;
-      text-shadow:
-        -2px -2px 0 var(--ink),
-         2px -2px 0 var(--ink),
-        -2px  2px 0 var(--ink),
-         2px  2px 0 var(--ink),
-         0px  3px 0 var(--ink);
+      letter-spacing: 0.02em;
+      line-height: 1.05;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
     }
 
     .hud-stars {
@@ -420,8 +421,8 @@
       gap: 7px;
       font-family: var(--font-ui);
       font-weight: 800;
-      font-size: 0.9rem;
-      letter-spacing: 0.04em;
+      font-size: 0.88rem;
+      letter-spacing: 0.02em;
       text-transform: uppercase;
       color: var(--ink);
       background: var(--yellow);
@@ -431,6 +432,7 @@
       padding: 9px 14px;
       cursor: pointer;
       user-select: none;
+      line-height: 1.2;
       transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease;
     }
 
@@ -464,15 +466,16 @@
       font-family: var(--font-ui);
       font-weight: 800;
       font-size: 0.78rem;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.02em;
       text-transform: uppercase;
-      padding: 4px 10px;
+      padding: 5px 10px;
       border: 2px solid var(--ink);
       border-radius: 6px;
       background: var(--yellow);
       color: var(--ink);
       box-shadow: 2px 2px 0 var(--ink);
       white-space: nowrap;
+      line-height: 1.2;
     }
 
     /* ==========================================================================
@@ -493,11 +496,13 @@
 
     .hero-banner h1 {
       font-family: var(--font-display);
-      font-size: clamp(1.55rem, 3.4vw, 2.35rem);
-      letter-spacing: 0.05em;
+      font-weight: 900;
+      font-size: clamp(1.5rem, 3.3vw, 2.25rem);
+      letter-spacing: 0.02em;
       text-transform: uppercase;
-      text-shadow: 3px 3px 0 var(--ink), 0 0 14px rgba(255, 42, 133, 0.55);
-      line-height: 1.1;
+      color: var(--white);
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), 0 0 16px rgba(255, 42, 133, 0.45);
+      line-height: 1.15;
     }
 
     .hero-banner h1 span {
@@ -605,17 +610,19 @@
 
     .mode-card-body h3 {
       font-family: var(--font-display);
-      font-size: 1.2rem;
-      letter-spacing: 0.04em;
+      font-weight: 800;
+      font-size: 1.18rem;
+      letter-spacing: 0.02em;
       text-transform: uppercase;
       color: var(--white);
-      text-shadow: 2px 2px 0 var(--ink);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.65);
+      line-height: 1.25;
     }
 
     .mode-card-body p {
-      font-size: 0.87rem;
+      font-size: 0.88rem;
       color: var(--muted);
-      line-height: 1.4;
+      line-height: 1.45;
     }
 
     .districts-section-head {
@@ -624,37 +631,41 @@
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
 
     .districts-section-head h2 {
       font-family: var(--font-display);
-      font-size: 1.28rem;
-      letter-spacing: 0.05em;
+      font-weight: 800;
+      font-size: 1.26rem;
+      letter-spacing: 0.02em;
       text-transform: uppercase;
       color: var(--yellow);
-      text-shadow: 2px 2px 0 var(--ink);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.75);
+      line-height: 1.25;
     }
 
     .districts-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 14px;
-      margin-bottom: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+      gap: 16px;
+      margin-bottom: 22px;
+      align-items: stretch;
     }
 
     .district-card {
       background: var(--glass-bg);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      border: 2px solid rgba(0, 240, 255, 0.35);
+      border: 2px solid rgba(0, 240, 255, 0.38);
       border-radius: var(--radius);
       box-shadow: var(--shadow-sm);
-      padding: 14px;
+      padding: 16px;
+      min-height: 226px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 10px;
+      gap: 12px;
       transition: transform 0.14s ease, border-color 0.2s ease, box-shadow 0.14s ease;
     }
 
@@ -684,8 +695,10 @@
 
     .district-num {
       font-family: var(--font-display);
-      font-size: 0.84rem;
-      padding: 3px 8px;
+      font-weight: 800;
+      font-size: 0.8rem;
+      letter-spacing: 0.02em;
+      padding: 4px 9px;
       background: var(--pink);
       color: var(--white);
       border: 2px solid var(--ink);
@@ -699,16 +712,18 @@
 
     .district-name {
       font-family: var(--font-display);
+      font-weight: 800;
       font-size: 1.15rem;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.02em;
       color: var(--white);
-      text-shadow: 2px 2px 0 var(--ink);
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.65);
+      line-height: 1.25;
     }
 
     .district-topic {
-      font-size: 0.84rem;
+      font-size: 0.86rem;
       color: var(--muted);
-      line-height: 1.35;
+      line-height: 1.42;
     }
 
     .district-tags-preview {
@@ -917,10 +932,13 @@
 
     .briefing-title {
       font-family: var(--font-display);
-      font-size: 1.24rem;
+      font-weight: 800;
+      font-size: 1.22rem;
+      letter-spacing: 0.02em;
       color: var(--yellow);
       margin-bottom: 6px;
-      text-shadow: 2px 2px 0 var(--ink);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.65);
+      line-height: 1.25;
     }
 
     .briefing-desc {
@@ -1303,7 +1321,9 @@
       background: var(--pink);
       color: var(--white);
       font-family: var(--font-display);
-      font-size: 0.96rem;
+      font-weight: 800;
+      font-size: 0.94rem;
+      letter-spacing: 0.02em;
       padding: 5px 13px;
       border: 3px solid var(--ink);
       border-radius: 999px;
@@ -1313,10 +1333,12 @@
 
     .chase-q-text {
       font-family: var(--font-display);
-      font-size: clamp(1.2rem, 3vw, 1.8rem);
+      font-weight: 800;
+      font-size: clamp(1.2rem, 3vw, 1.75rem);
+      letter-spacing: 0.02em;
       color: var(--yellow);
-      text-shadow: 3px 3px 0 var(--ink);
-      line-height: 1.25;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.75);
+      line-height: 1.3;
     }
 
     .chase-choices-grid {
@@ -1400,24 +1422,27 @@
 
     .banner-main-title {
       font-family: var(--font-display);
-      font-size: clamp(1.9rem, 5vw, 3.2rem);
-      letter-spacing: 0.06em;
+      font-weight: 900;
+      font-size: clamp(1.85rem, 4.8vw, 3rem);
+      letter-spacing: 0.02em;
       color: var(--yellow);
-      text-shadow: 4px 4px 0 var(--ink), 0 0 18px rgba(255, 209, 102, 0.55);
-      line-height: 1.1;
+      text-shadow: 0 3px 12px rgba(0, 0, 0, 0.85), 0 0 18px rgba(255, 209, 102, 0.45);
+      line-height: 1.15;
     }
 
     .wasted-style .banner-main-title {
       color: var(--red);
-      text-shadow: 4px 4px 0 var(--ink), 0 0 20px rgba(255, 59, 59, 0.6);
+      text-shadow: 0 3px 12px rgba(0, 0, 0, 0.85), 0 0 20px rgba(255, 59, 59, 0.55);
     }
 
     .banner-reward {
       font-family: var(--font-display);
-      font-size: clamp(1.2rem, 3vw, 1.75rem);
+      font-weight: 800;
+      font-size: clamp(1.18rem, 2.8vw, 1.7rem);
+      letter-spacing: 0.02em;
       color: var(--green);
       margin-top: 10px;
-      text-shadow: 2px 2px 0 var(--ink);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
     }
 
     .banner-sub {
@@ -1487,9 +1512,10 @@
 
     .phone-app-title {
       font-family: var(--font-display);
-      font-size: 1.05rem;
+      font-weight: 800;
+      font-size: 1.04rem;
       color: var(--yellow);
-      letter-spacing: 0.04em;
+      letter-spacing: 0.02em;
     }
 
     .phone-lock-btn {
@@ -1546,10 +1572,11 @@
 
     .admin-modal-title {
       font-family: var(--font-display);
-      font-size: 1.2rem;
-      letter-spacing: 0.05em;
+      font-weight: 800;
+      font-size: 1.18rem;
+      letter-spacing: 0.02em;
       color: var(--yellow);
-      text-shadow: 2px 2px 0 var(--ink);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.75);
     }
 
     .admin-pass-input {
@@ -1618,9 +1645,10 @@
 
     .phone-level-banner {
       font-family: var(--font-display);
-      font-size: 0.96rem;
+      font-weight: 800;
+      font-size: 0.95rem;
       color: var(--pink);
-      letter-spacing: 0.03em;
+      letter-spacing: 0.02em;
       padding-bottom: 4px;
       border-bottom: 1px dashed rgba(255, 42, 133, 0.4);
     }
@@ -1715,8 +1743,9 @@
 
     .gta-cheat-toast-title {
       font-family: var(--font-display);
-      font-size: 1.05rem;
-      letter-spacing: 0.06em;
+      font-weight: 800;
+      font-size: 1.04rem;
+      letter-spacing: 0.02em;
       color: var(--green);
       margin-bottom: 3px;
     }
@@ -2286,7 +2315,7 @@
       <!-- Карта 7 районов -->
       <div class="districts-section-head">
         <h2>🗺️ Карта 7 районов HTML CITY (по нарастающей)</h2>
-        <span class="gta-pill" style="background: rgba(14,18,34,0.85); color: var(--cyan); border-color: var(--cyan);">📻 Включи 106.5 FM вверху для бита!</span>
+        <span class="gta-pill" style="background: #0e1222; color: var(--cyan); border-color: var(--cyan);">📻 Включи 106.5 FM вверху для бита!</span>
       </div>
       <section class="districts-grid" id="districts-grid"></section>
 
@@ -2317,7 +2346,7 @@
           </div>
           <div style="flex: 1; min-width: 220px;">
             <span class="gta-pill" id="intel-level-pill" style="background: var(--pink); color: #fff; margin-bottom: 6px;">БРИФИНГ РАЙОНА • УРОВЕНЬ 1</span>
-            <h2 id="intel-district-title" style="font-family: var(--font-display); font-size: clamp(1.35rem, 3vw, 1.95rem); color: var(--yellow); letter-spacing: 0.04em; text-shadow: 3px 3px 0 var(--ink);">
+            <h2 id="intel-district-title" style="font-family: var(--font-display); font-weight: 900; font-size: clamp(1.35rem, 3vw, 1.9rem); color: var(--yellow); letter-spacing: 0.02em; text-shadow: 0 2px 8px rgba(0,0,0,0.75); line-height: 1.2;">
               ПЛЯЖ ВАЙС
             </h2>
             <div id="intel-subtitle" style="font-size: 0.9rem; color: var(--cyan); font-weight: 700; margin-top: 3px;">
@@ -2413,7 +2442,7 @@
 
       <div class="gta-panel bug-alert-card">
         <span class="gta-pill" style="background: var(--red); color: #fff; margin-bottom: 8px;" id="bug-topic-pill">🚨 ТРЕВОГА СЕТИ</span>
-        <h2 style="font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 5px;" id="bug-title"></h2>
+        <h2 style="font-family: var(--font-display); font-weight: 800; font-size: 1.28rem; letter-spacing: 0.02em; text-shadow: 0 2px 8px rgba(0,0,0,0.65); margin-bottom: 5px;" id="bug-title"></h2>
         <p style="color: var(--muted); font-size: 0.94rem;" id="bug-desc"></p>
       </div>
 
@@ -2476,7 +2505,7 @@
 
       <div class="garage-layout">
         <div class="garage-stage">
-          <div style="font-family: var(--font-display); font-size: 1.3rem; color: var(--yellow); letter-spacing: 0.06em; text-shadow: 2px 2px 0 var(--ink);">
+          <div style="font-family: var(--font-display); font-weight: 900; font-size: 1.28rem; color: var(--yellow); letter-spacing: 0.02em; text-shadow: 0 2px 8px rgba(0,0,0,0.75);">
             VICE TURBO GT • ТЮНИНГ-БОКС
           </div>
           <div class="garage-car-box" id="garage-car-stage"></div>
@@ -5455,7 +5484,7 @@
             }, 4000);
           } else {
             clearTimeout(resetTimer);
- State.resetArmed = false;
+            State.resetArmed = false;
             State.cash = 0;
             State.completedMissionIds = [];
             State.completedBugs = [];
