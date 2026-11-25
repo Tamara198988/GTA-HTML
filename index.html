@@ -4,17 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GTA: HTML CITY — Grand Theft HTML</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Rubik:wght@700;800;900&display=swap" rel="stylesheet" />
   <style>
     /* ==========================================================================
        1. ПЕРЕМЕННЫЕ И БАЗОВАЯ ПАЛИТРА GTA VICE CITY × GTA V
        ========================================================================== */
     :root {
       --bg-dark: #060816;
-      --glass-bg: rgba(14, 16, 32, 0.86);
-      --glass-elev: rgba(24, 30, 56, 0.94);
+      --glass-bg: rgba(12, 17, 32, 0.88);
+      --glass-elev: rgba(20, 27, 50, 0.94);
       --ink: #0b0f19;
       --white: #ffffff;
       --muted: #d4d2f0;
@@ -32,9 +29,9 @@
       --shadow-sm: 3px 3px 0 var(--ink);
       --radius: 12px;
 
-      --font-display: 'Rubik', 'Trebuchet MS', 'Segoe UI', Arial, sans-serif;
-      --font-ui: 'Inter', 'Trebuchet MS', 'Segoe UI', Arial, sans-serif;
-      --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      --font-display: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      --font-ui: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      --font-body: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
       --font-mono: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
     }
 
@@ -58,7 +55,7 @@
     }
 
     /* ==========================================================================
-       2. ПОЛНОЭКРАННЫЙ НОЧНОЙ ГОРОД GTA НА ЗАДНЕМ ФОНЕ
+       2. ПОЛНОЭКРАННЫЙ НОЧНОЙ ГОРОД GTA НА ЗАДНЕМ ФОНЕ (МЯГКОЕ РАЗМЫТИЕ 50%)
        ========================================================================== */
     .city-backdrop {
       position: fixed;
@@ -73,10 +70,20 @@
 
     .city-backdrop svg {
       position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
+      inset: -14px;
+      width: calc(100% + 28px);
+      height: calc(100% + 28px);
       display: block;
+      filter: blur(6px) brightness(0.55);
+      transform: scale(1.02);
+    }
+
+    .city-backdrop::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(8, 12, 24, 0.45);
+      pointer-events: none;
     }
 
     .gta-star-a { animation: starTwinkle 3.4s ease-in-out infinite alternate; }
@@ -632,12 +639,19 @@
       justify-content: space-between;
       gap: 10px;
       margin-bottom: 14px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      padding: 12px 16px;
     }
 
     .districts-section-head h2 {
       font-family: var(--font-display);
       font-weight: 800;
-      font-size: 1.26rem;
+      font-size: 1.24rem;
       letter-spacing: 0.02em;
       text-transform: uppercase;
       color: var(--yellow);
@@ -655,9 +669,9 @@
 
     .district-card {
       background: var(--glass-bg);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 2px solid rgba(0, 240, 255, 0.38);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: var(--radius);
       box-shadow: var(--shadow-sm);
       padding: 16px;
