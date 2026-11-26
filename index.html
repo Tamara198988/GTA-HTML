@@ -1568,7 +1568,10 @@
       </section>
 
       <div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-top: 14px;">
-        <span id="reset-msg" style="font-size: 0.84rem; color: var(--green); font-weight: 700;"></span>
+        <button type="button" class="arc-btn btn-sm btn-dark" id="btn-export">💾 Export save</button>
+        <button type="button" class="arc-btn btn-sm btn-dark" id="btn-import">📂 Import save</button>
+        <input type="file" id="save-file" accept=".json,application/json" hidden>
+        <span id="reset-msg" role="status" style="font-size: 0.84rem; color: var(--green); font-weight: 700;"></span>
         <button type="button" class="arc-btn btn-sm btn-dark" id="btn-reset">🗑️ Reset Progress</button>
       </div>
     </main>
@@ -1934,8 +1937,9 @@
         const mem = {};
         return {
           get(k) {
+            if (Object.prototype.hasOwnProperty.call(mem, k)) return mem[k];
             try { return window.localStorage.getItem(k); }
-            catch (e) { return Object.prototype.hasOwnProperty.call(mem, k) ? mem[k] : null; }
+            catch (e) { return null; }
           },
           set(k, v) {
             mem[k] = String(v);
@@ -5047,6 +5051,8 @@
         setTxt('ch2-title', 'ch2Title');
         setTxt('ch2-pill', 'ch2Pill');
         if (!State.resetArmed) setTxt('btn-reset', 'resetBtn');
+        document.getElementById('btn-export').textContent = isEn ? '💾 Export save' : '💾 Сохранить в файл';
+        document.getElementById('btn-import').textContent = isEn ? '📂 Import save' : '📂 Загрузить из файла';
 
         setTxt('city-pill-top', 'cityTopPill');
         setTxt('city-pill-keys', 'cityKeysPill');
@@ -5241,6 +5247,50 @@
             }
           });
 
+          
+          bindClick('btn-export', () => {
+            saveState();
+            const raw = SafeStore.get(SAVE_KEY);
+            if (!raw) {
+              document.getElementById('reset-msg').textContent = State.lang === 'en' ? 'Could not export progress.' : 'Не удалось выгрузить прогресс.';
+              return;
+            }
+            const url = URL.createObjectURL(new Blob([raw], { type: 'application/json' }));
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'neon-code-city-save.json';
+            link.click();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+          });
+          const saveFile = document.getElementById('save-file');
+          bindClick('btn-import', () => saveFile.click());
+          saveFile.addEventListener('change', async () => {
+            const file = saveFile.files[0];
+            if (!file) return;
+            const msg = document.getElementById('reset-msg');
+            try {
+              if (file.size > 5000000) throw new Error('File too large');
+              const raw = await file.text();
+              const data = JSON.parse(raw);
+              if (!data || typeof data !== 'object' || Array.isArray(data) ||
+                  !Array.isArray(data.completedMissions) || !Array.isArray(data.completedBugs) ||
+                  typeof data.cash !== 'number' || !Number.isFinite(data.cash) || data.cash < 0 ||
+                  (data.garage != null && (typeof data.garage !== 'object' || Array.isArray(data.garage) ||
+                    (data.garage.owned != null && !Array.isArray(data.garage.owned)))) ||
+                  (data.graffiti != null && (typeof data.graffiti !== 'object' || Array.isArray(data.graffiti))) ||
+                  (data.unlockedAchievements != null && !Array.isArray(data.unlockedAchievements)) ||
+                  (data.graffitiRewarded != null && !Array.isArray(data.graffitiRewarded))) {
+                throw new Error('Invalid save');
+              }
+              if (!confirm(State.lang === 'en' ? 'Replace current progress with this save?' : 'Заменить текущий прогресс данными из файла?')) return;
+              window.localStorage.setItem(SAVE_KEY, raw);
+              window.location.reload();
+            } catch (error) {
+              msg.textContent = State.lang === 'en' ? 'Could not import this save.' : 'Не удалось загрузить это сохранение.';
+            } finally {
+              saveFile.value = '';
+            }
+          });
           let resetTimer = null;
           bindClick('btn-reset', () => {
             const btn = document.getElementById('btn-reset');
