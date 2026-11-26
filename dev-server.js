@@ -5,6 +5,13 @@ const crypto = require('node:crypto');
 
 const page = path.join(__dirname, 'index.html');
 const port = Number(process.env.PORT) || 4173;
+const assets = {
+  '/manifest.webmanifest': ['manifest.webmanifest', 'application/manifest+json; charset=utf-8'],
+  '/service-worker.js': ['service-worker.js', 'text/javascript; charset=utf-8'],
+  '/icons/icon-192.png': ['icons/icon-192.png', 'image/png'],
+  '/icons/icon-512.png': ['icons/icon-512.png', 'image/png'],
+  '/icons/icon-512-maskable.png': ['icons/icon-512-maskable.png', 'image/png']
+};
 const reloadScript = `<script>
   let lastVersion;
   async function checkForChanges() {
@@ -21,8 +28,18 @@ const reloadScript = `<script>
 </script>`;
 
 http.createServer((request, response) => {
-  if (request.method !== 'GET' || !['/', '/index.html', '/__version'].includes(request.url)) {
+  if (request.method !== 'GET' || (!['/', '/index.html', '/__version'].includes(request.url) && !Object.hasOwn(assets, request.url))) {
     response.writeHead(404).end('Not found');
+    return;
+  }
+  if (Object.hasOwn(assets, request.url)) {
+    const [filename, contentType] = assets[request.url];
+    fs.readFile(path.join(__dirname, filename), (error, data) => {
+      if (error) return response.writeHead(404).end('Not found');
+      response.setHeader('Content-Type', contentType);
+      response.setHeader('Cache-Control', 'no-store');
+      response.end(data);
+    });
     return;
   }
   fs.readFile(page, (error, data) => {
