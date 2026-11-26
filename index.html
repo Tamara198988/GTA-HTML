@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#060916" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
   <title>NEON CODE CITY: HTML &amp; CSS ARCADE</title>
   <style>
     :root {
@@ -1371,6 +1376,10 @@
     @media (max-width: 560px) {
       .chase-grid { grid-template-columns: 1fr; }
     }
+    :focus-visible { outline: 3px solid #ffd166; outline-offset: 3px; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+    }
   </style>
 </head>
 <body>
@@ -1564,7 +1573,10 @@
       </section>
 
       <div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-top: 14px;">
-        <span id="reset-msg" style="font-size: 0.84rem; color: var(--green); font-weight: 700;"></span>
+        <button type="button" class="arc-btn btn-sm btn-dark" id="btn-export">💾 Export save</button>
+        <button type="button" class="arc-btn btn-sm btn-dark" id="btn-import">📂 Import save</button>
+        <input type="file" id="save-file" accept=".json,application/json" hidden>
+        <span id="reset-msg" role="status" style="font-size: 0.84rem; color: var(--green); font-weight: 700;"></span>
         <button type="button" class="arc-btn btn-sm btn-dark" id="btn-reset">🗑️ Reset Progress</button>
       </div>
     </main>
@@ -1930,12 +1942,22 @@
         const mem = {};
         return {
           get(k) {
+            if (Object.prototype.hasOwnProperty.call(mem, k)) return mem[k];
             try { return window.localStorage.getItem(k); }
-            catch (e) { return Object.prototype.hasOwnProperty.call(mem, k) ? mem[k] : null; }
+            catch (e) { return null; }
           },
           set(k, v) {
             mem[k] = String(v);
-            try { window.localStorage.setItem(k, String(v)); } catch (e) {}
+            try { window.localStorage.setItem(k, String(v)); } catch (e) {
+              if (!document.getElementById('storage-warning')) {
+                const warning = document.createElement('div');
+                warning.id = 'storage-warning';
+                warning.setAttribute('role', 'alert');
+                warning.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:99999;padding:12px;background:#7a1626;color:white;text-align:center;font:16px sans-serif';
+                warning.textContent = 'Progress could not be saved. / Не удалось сохранить прогресс.';
+                document.body.appendChild(warning);
+              }
+            }
           }
         };
       })();
@@ -2978,7 +3000,7 @@
         { topicEn: 'Level 4 • HTML', topicRu: 'Уровень 4 • HTML', titleEn: 'Unclosed Table Row', titleRu: 'Забыли закрыть строку таблицы', descEn: 'An opening <tr> was placed instead of closing it.', descRu: 'Вместо закрытия </tr> написали открывающий тег.', before: '<table><tr><td>Neon</td><td>300$</td>', broken: '<tr>', after: '</table>', opts: ['</tr>', '</td>', '</table>'], ans: '</tr>', ruleEn: 'Every table row <tr> ends with </tr>.', ruleRu: 'Строка таблицы <tr> закрывается тегом </tr>.', reward: 130 },
         { topicEn: 'Level 5 • CSS', topicRu: 'Уровень 5 • CSS', titleEn: 'Syntax Error in style', titleRu: 'Ошибка в синтаксисе style', descEn: 'Used = instead of a colon inside style!', descRu: 'Между свойством и значением поставили = вместо двоеточия!', before: '<h2 ', broken: 'style="color = yellow;"', after: '>NEON CITY</h2>', opts: ['style="color: yellow;"', 'style="color - yellow;"', 'color="yellow"'], ans: 'style="color: yellow;"', ruleEn: 'Separate CSS property and value with a colon: color: yellow;.', ruleRu: 'Свойство и значение в CSS разделяются двоеточием: color: yellow;.', reward: 145 },
         { topicEn: 'Level 6 • HTML', topicRu: 'Уровень 6 • HTML', titleEn: 'Unclosed Span Tag', titleRu: 'Незакрытый тег <span>', descEn: 'Highlight only the word PRO inside the heading.', descRu: 'Выдели только слово PRO внутри заголовка.', before: '<h3>Rank: <span>PRO', broken: '<span>', after: '</h3>', opts: ['</span>', '</div>', '</h3>'], ans: '</span>', ruleEn: 'Close inline wrappers with </span>.', ruleRu: 'Строчный тег <span> закрывается с помощью </span>.', reward: 155 },
-        { topicEn: 'Level 8 • CSS', topicRu: 'Уровень 8 • CSS', titleEn: 'Missing px Unit', titleRu: 'Потерялись единицы измерения px', descEn: 'Forgot px after 28 in font-size.', descRu: 'Забыли написать px после числа 28.', before: '<h2 style="font-size: ', broken: '28', after: ';">NEON CSS</h2>', opts: ['28px', '28kg', '28#'], ans: '28px', ruleEn: 'Font size in CSS needs pixels: font-size: 28px;.', ruleRu: 'Размер шрифта в CSS задаётся в пикселях: font-size: 28px;.', reward: 165 },
+        { topicEn: 'Level 8 • CSS', topicRu: 'Уровень 8 • CSS', titleEn: 'Missing px Unit', titleRu: 'Потерялись единицы измерения px', descEn: 'Forgot px after 28 in font-size.', descRu: 'Забыли написать px после числа 28.', before: '<h2 style="font-size: ', broken: '28', after: ';">NEON CSS</h2>', opts: ['28px', '28kg', '28#'], ans: '28px', ruleEn: 'In this example, use pixels: font-size: 28px;. Other units such as rem and em also work.', ruleRu: 'В этом примере используем пиксели: font-size: 28px;. Также можно использовать rem и em.', reward: 165 },
         { topicEn: 'Level 9 • CSS', topicRu: 'Уровень 9 • CSS', titleEn: 'Wrong Corner Rounding Property', titleRu: 'Перепутали скругление углов', descEn: 'Use border-radius to round corners.', descRu: 'Для скругления углов нужно border-radius, а не border-color.', before: '<div style="', broken: 'border-color: 16px;', after: '">Card</div>', opts: ['border-radius: 16px;', 'border-size: 16px;', 'round: 16px;'], ans: 'border-radius: 16px;', ruleEn: 'border-radius controls rounded corners.', ruleRu: 'За скругление углов отвечает свойство border-radius.', reward: 175 },
         { topicEn: 'Level 10 • CSS', topicRu: 'Уровень 10 • CSS', titleEn: 'Blocks Not in a Row', titleRu: 'Блоки не встают в ряд', descEn: 'Enable Flexbox row layout with display: flex;.', descRu: 'Для Flexbox нужно написать display: flex;.', before: '<div style="', broken: 'display: block;', after: ' gap: 12px;">...</div>', opts: ['display: flex;', 'display: table;', 'flex: row;'], ans: 'display: flex;', ruleEn: 'display: flex; aligns child items in a horizontal row.', ruleRu: 'Команда display: flex; выстраивает блоки в ряд.', reward: 185 },
         { topicEn: 'Level 11 • CSS', topicRu: 'Уровень 11 • CSS', titleEn: 'Invisible Opacity Value', titleRu: 'Неверное значение opacity', descEn: 'Box vanished because opacity: 0; was used instead of 0.85.', descRu: 'Блок исчез из-за opacity: 0; вместо полупрозрачного 0.85.', before: '<div style="background-color: #241038; ', broken: 'opacity: 0;', after: '">Glass</div>', opts: ['opacity: 0.85;', 'opacity: 85px;', 'opacity: #fff;'], ans: 'opacity: 0.85;', ruleEn: 'opacity ranges from 0 (invisible) to 1 (solid).', ruleRu: 'opacity принимает число от 0 до 1.', reward: 200 }
@@ -5034,6 +5056,8 @@
         setTxt('ch2-title', 'ch2Title');
         setTxt('ch2-pill', 'ch2Pill');
         if (!State.resetArmed) setTxt('btn-reset', 'resetBtn');
+        document.getElementById('btn-export').textContent = isEn ? '💾 Export save' : '💾 Сохранить в файл';
+        document.getElementById('btn-import').textContent = isEn ? '📂 Import save' : '📂 Загрузить из файла';
 
         setTxt('city-pill-top', 'cityTopPill');
         setTxt('city-pill-keys', 'cityKeysPill');
@@ -5228,6 +5252,50 @@
             }
           });
 
+          
+          bindClick('btn-export', () => {
+            saveState();
+            const raw = SafeStore.get(SAVE_KEY);
+            if (!raw) {
+              document.getElementById('reset-msg').textContent = State.lang === 'en' ? 'Could not export progress.' : 'Не удалось выгрузить прогресс.';
+              return;
+            }
+            const url = URL.createObjectURL(new Blob([raw], { type: 'application/json' }));
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'neon-code-city-save.json';
+            link.click();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+          });
+          const saveFile = document.getElementById('save-file');
+          bindClick('btn-import', () => saveFile.click());
+          saveFile.addEventListener('change', async () => {
+            const file = saveFile.files[0];
+            if (!file) return;
+            const msg = document.getElementById('reset-msg');
+            try {
+              if (file.size > 5000000) throw new Error('File too large');
+              const raw = await file.text();
+              const data = JSON.parse(raw);
+              if (!data || typeof data !== 'object' || Array.isArray(data) ||
+                  !Array.isArray(data.completedMissions) || !Array.isArray(data.completedBugs) ||
+                  typeof data.cash !== 'number' || !Number.isFinite(data.cash) || data.cash < 0 ||
+                  (data.garage != null && (typeof data.garage !== 'object' || Array.isArray(data.garage) ||
+                    (data.garage.owned != null && !Array.isArray(data.garage.owned)))) ||
+                  (data.graffiti != null && (typeof data.graffiti !== 'object' || Array.isArray(data.graffiti))) ||
+                  (data.unlockedAchievements != null && !Array.isArray(data.unlockedAchievements)) ||
+                  (data.graffitiRewarded != null && !Array.isArray(data.graffitiRewarded))) {
+                throw new Error('Invalid save');
+              }
+              if (!confirm(State.lang === 'en' ? 'Replace current progress with this save?' : 'Заменить текущий прогресс данными из файла?')) return;
+              window.localStorage.setItem(SAVE_KEY, raw);
+              window.location.reload();
+            } catch (error) {
+              msg.textContent = State.lang === 'en' ? 'Could not import this save.' : 'Не удалось загрузить это сохранение.';
+            } finally {
+              saveFile.value = '';
+            }
+          });
           let resetTimer = null;
           bindClick('btn-reset', () => {
             const btn = document.getElementById('btn-reset');
@@ -5276,6 +5344,13 @@
       if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
       else init();
     })();
+  </script>
+  <script>
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js").catch(error => console.warn("Offline support unavailable", error));
+      });
+    }
   </script>
 </body>
 </html>
