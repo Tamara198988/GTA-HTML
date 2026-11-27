@@ -1067,9 +1067,16 @@
       display: block;
       width: 100%;
       height: auto;
-      aspect-ratio: 900 / 430;
+      aspect-ratio: auto;
       touch-action: none;
       cursor: crosshair;
+    }
+
+    body.graffiti-active .arcade-hud { display: none; }
+    @media (max-width: 900px) {
+      body.graffiti-active .app-wrap { padding: 8px 8px 40px; }
+      #view-graffiti > .arc-panel { padding: 10px; }
+      #view-graffiti .graffiti-wall-wrap { margin: 8px 0; }
     }
 
     .swatch-btn {
@@ -1896,6 +1903,7 @@
           <select id="graf-dist-select" style="background: var(--glass-elev); color: var(--yellow); font-weight: 800; border: 2px solid var(--cyan); border-radius: 8px; padding: 5px 8px;"></select>
         </div>
         <div style="display: flex; gap: 6px;">
+          <button type="button" class="arc-btn btn-sm btn-purple" id="btn-graf-radio">📻 RADIO</button>
           <button type="button" class="arc-btn btn-sm btn-green" id="btn-graf-city">🏎️ To 2D City</button>
           <button type="button" class="arc-btn btn-sm btn-dark" id="btn-graf-home">🏠 Home</button>
         </div>
@@ -1969,6 +1977,7 @@
       </div>
       <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
         <span id="rw-hint" style="font-size: 0.78rem; color: var(--muted);">Shortcut key: <b>R</b></span>
+        <button type="button" class="arc-btn btn-xs btn-green" id="btn-wheel-play" aria-label="Play or pause radio">▶</button>
         <button type="button" class="arc-btn btn-xs btn-cyan" id="btn-wheel-next">⏭ Next Track</button>
       </div>
     </div>
@@ -4891,7 +4900,13 @@
             const tc = document.createElement('canvas');
             tc.width = 220;
             tc.height = 105;
-            tc.getContext('2d').drawImage(cvs, 0, 0, tc.width, tc.height);
+            const thumbCtx = tc.getContext('2d');
+            thumbCtx.fillStyle = '#1b142e';
+            thumbCtx.fillRect(0, 0, tc.width, tc.height);
+            const scale = Math.min(tc.width / cvs.width, tc.height / cvs.height);
+            const width = cvs.width * scale;
+            const height = cvs.height * scale;
+            thumbCtx.drawImage(cvs, (tc.width - width) / 2, (tc.height - height) / 2, width, height);
             State.graffiti[d.id] = tc.toDataURL('image/jpeg', 0.72);
           } catch (e) {}
 
@@ -4919,6 +4934,7 @@
             showView('graffiti');
             document.getElementById('graf-feedback').className = 'hidden';
             renderControls();
+            if (cvs) cvs.height = window.matchMedia('(max-width: 900px)').matches ? 720 : 430;
             drawWall();
           },
           refresh: renderControls
@@ -4986,6 +5002,7 @@
       function showView(name) {
         State.view = name;
         document.body.classList.toggle('city-active', name === 'city');
+        document.body.classList.toggle('graffiti-active', name === 'graffiti');
         if (name !== 'chase') stopChaseTimer();
         if (name !== 'city') OpenCityGame.pause();
         closeBanner();
@@ -5035,6 +5052,7 @@
         document.getElementById('btn-radio-wheel').textContent = tr('radioBtn');
         document.getElementById('hud-freq').textContent = st.freq;
         document.getElementById('btn-radio-toggle').textContent = info.playing ? '⏸' : '▶';
+        document.getElementById('btn-wheel-play').textContent = info.playing ? '⏸' : '▶';
         document.getElementById('hud-eq').classList.toggle('active', info.playing && !st.off);
         document.getElementById('hud-st-name').textContent = st.off ? tr('radioOff') : st.freq + ' ' + st.name;
         document.getElementById('hud-st-track').textContent = st.off ? tr('radioOffSub') : '♪ ' + info.trk.title;
@@ -5218,6 +5236,7 @@
         setTxt('btn-gar-city', 'backCityBtn');
         setTxt('btn-gar-home', 'hudHome');
 
+        setTxt('btn-graf-radio', 'radioBtn');
         setTxt('graf-pill-title', 'grafTitle');
         setTxt('graf-dist-lbl', 'grafDist');
         setTxt('btn-tool-spray', 'toolSpray');
@@ -5421,6 +5440,8 @@
             wheelModal.classList.toggle('hidden');
           };
           bindClick('btn-radio-wheel', toggleWheel);
+          bindClick('btn-graf-radio', toggleWheel);
+          bindClick('btn-wheel-play', () => AudioEngine.togglePlay());
           bindClick('hud-radio-click', toggleWheel);
           bindClick('btn-wheel-close', () => wheelModal.classList.add('hidden'));
           bindClick('btn-wheel-next', () => AudioEngine.nextTrack());
