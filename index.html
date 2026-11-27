@@ -1440,6 +1440,23 @@
       #city-marker-label { display: none; }
       .city-gate-alert { top: calc(max(8px, env(safe-area-inset-top)) + 48px); }
     }
+
+    .tour-overlay { position: fixed; inset: 0; z-index: 11000; overflow: hidden; }
+    .tour-shade { position: absolute; inset: 0; background: rgba(3, 5, 18, .82); }
+    .tour-spotlight { position: fixed; border: 3px solid var(--yellow); border-radius: 12px; box-shadow: 0 0 0 200vmax rgba(3, 5, 18, .82), 0 0 18px var(--yellow); pointer-events: none; transition: top .2s, left .2s, width .2s, height .2s; }
+    .tour-dialog { position: absolute; left: 50%; bottom: max(12px, env(safe-area-inset-bottom)); transform: translateX(-50%); width: min(600px, calc(100% - 24px)); max-height: min(70vh, 440px); overflow-y: auto; padding: 16px; background: #10162a; border: 3px solid var(--cyan); border-radius: 14px; box-shadow: 4px 4px 0 #05060b; }
+    .tour-top { display: flex; gap: 12px; align-items: flex-start; }
+    .tour-avatar { flex: 0 0 72px; width: 72px; height: 72px; border: 2px solid var(--pink); border-radius: 10px; overflow: hidden; }
+    .tour-avatar svg { display: block; width: 100%; height: 100%; }
+    .tour-name { color: var(--cyan); font-size: .75rem; font-weight: 900; text-transform: uppercase; }
+    .tour-title { color: var(--yellow); font-size: 1.08rem; margin: 3px 0 6px; }
+    .tour-copy { color: var(--white); font-size: .92rem; line-height: 1.45; }
+    .tour-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .tour-count { color: var(--muted); font-size: .8rem; margin-right: auto; }
+    .tour-languages { display: flex; gap: 6px; margin-top: 10px; }
+    .tour-languages button[aria-pressed="true"] { border-color: var(--cyan); background: var(--cyan); color: var(--ink); }
+    @media (max-height: 500px) { .tour-dialog { max-height: 58vh; padding: 10px; } .tour-avatar { flex-basis: 48px; width: 48px; height: 48px; } .tour-copy { font-size: .82rem; } .tour-actions { margin-top: 6px; } }
+
     :focus-visible { outline: 3px solid #ffd166; outline-offset: 3px; }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
@@ -1518,6 +1535,7 @@
           <button type="button" class="lang-btn" id="btn-lang-ru">🇷🇺 RU</button>
         </div>
 
+        <button type="button" class="arc-btn btn-sm btn-dark" id="btn-tour-open">❔ Guide</button>
         <button type="button" class="arc-btn btn-sm btn-gold" id="btn-hud-trophies">🏆 <span id="hud-ach-count">0</span>/12</button>
         <button type="button" class="arc-btn btn-sm btn-green" id="btn-hud-city">🏎️ City</button>
         <button type="button" class="arc-btn btn-sm btn-pink" id="btn-hud-phone">📱 iCode Phone</button>
@@ -1990,6 +2008,41 @@
       <div class="ad-progress-bar"><div class="ad-progress-fill" id="ad-sim-fill"></div></div>
       <div id="ad-sim-sec" style="font-family: var(--font-mono); font-weight: 800; color: var(--green); font-size: 0.9rem;">3s</div>
     </div>
+  </div>
+
+
+  <div class="tour-overlay hidden" id="tour-overlay">
+    <div class="tour-shade" id="tour-shade"></div>
+    <div class="tour-spotlight hidden" id="tour-spotlight"></div>
+    <section class="tour-dialog" role="dialog" aria-modal="true" aria-labelledby="tour-title" aria-describedby="tour-copy">
+      <div class="tour-top">
+        <div class="tour-avatar" aria-hidden="true"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <rect width="120" height="120" fill="#140d2b" />
+              <polygon points="24,48 32,14 54,36" fill="#ff2a85" stroke="#05060b" stroke-width="4" />
+              <polygon points="96,48 88,14 66,36" fill="#ff2a85" stroke="#05060b" stroke-width="4" />
+              <circle cx="60" cy="64" r="34" fill="#ffd700" stroke="#05060b" stroke-width="4" />
+              <rect x="32" y="50" width="56" height="17" rx="5" fill="#05060b" />
+              <rect x="36" y="54" width="21" height="9" rx="2" fill="#00f0ff" />
+              <rect x="63" y="54" width="21" height="9" rx="2" fill="#00f0ff" />
+              <path d="M48,79 Q60,89 72,79" fill="none" stroke="#05060b" stroke-width="4" stroke-linecap="round" />
+            </svg></div>
+        <div>
+          <div class="tour-name" id="tour-name"></div>
+          <h2 class="tour-title" id="tour-title"></h2>
+          <p class="tour-copy" id="tour-copy"></p>
+          <div class="tour-languages" id="tour-languages" aria-label="Language">
+            <button type="button" class="arc-btn btn-xs btn-dark" id="tour-lang-ru">🇷🇺 RU</button>
+            <button type="button" class="arc-btn btn-xs btn-dark" id="tour-lang-en">🇬🇧 EN</button>
+          </div>
+        </div>
+      </div>
+      <div class="tour-actions">
+        <span class="tour-count" id="tour-count"></span>
+        <button type="button" class="arc-btn btn-sm btn-dark" id="tour-skip"></button>
+        <button type="button" class="arc-btn btn-sm btn-cyan" id="tour-back"></button>
+        <button type="button" class="arc-btn btn-sm btn-green" id="tour-next"></button>
+      </div>
+    </section>
   </div>
 
   <script>
@@ -5089,6 +5142,7 @@
         const setTxt = (id, key) => { const el = document.getElementById(id); if (el) el.textContent = tr(key); };
         const setHtml = (id, key) => { const el = document.getElementById(id); if (el) el.innerHTML = tr(key); };
 
+        document.getElementById('btn-tour-open').textContent = isEn ? '❔ Guide' : '❔ Знакомство';
         setTxt('btn-hud-city', 'hudCity');
         setTxt('btn-hud-home', 'hudHome');
         setHtml('hero-title', 'heroTitle');
@@ -5184,6 +5238,98 @@
 
         updateRadioUI();
         renderDistrictCards();
+      }
+
+
+      function initTour() {
+        const storageKey = 'neon_code_city_intro_v1';
+        const overlay = document.getElementById('tour-overlay');
+        const spotlight = document.getElementById('tour-spotlight');
+        const shade = document.getElementById('tour-shade');
+        const dialog = overlay.querySelector('.tour-dialog');
+        const steps = [
+          { target: null, ru: ['Привет! Я твой проводник', 'Добро пожаловать в Neon Code City! Покажу, где найти самое важное. Выбери язык и нажми «Дальше».'], en: ['Hi! I’m your guide', 'Welcome to Neon Code City! I’ll show you around. Choose a language and tap Next.'] },
+          { target: 'btn-radio-wheel', ru: ['Радио', 'Включай радио и выбирай станции, чтобы кататься под музыку.'], en: ['Radio', 'Turn on the radio and choose a station for your drive.'] },
+          { target: 'btn-hero-city', ru: ['Город', 'Здесь можно ездить по улицам. Подъезжай к маркерам, чтобы открывать задания и места.'], en: ['City', 'Drive around the streets and visit markers to discover missions and places.'] },
+          { target: 'btn-strip-graffiti', ru: ['Граффити', 'Здесь можно рисовать на стенах и сохранять свои работы.'], en: ['Graffiti', 'Make your own art on the walls and save it here.'] },
+          { target: 'btn-mode-missions', ru: ['Миссии', 'Собирай код из плиток и изучай HTML и CSS. Начни с первого района!'], en: ['Missions', 'Build code from tiles and learn HTML and CSS. Start with the first district!'] }
+        ];
+        let step = 0;
+        let lastFocused = null;
+
+        function positionSpotlight() {
+          const target = steps[step].target && document.getElementById(steps[step].target);
+          if (!target) return;
+          const rect = target.getBoundingClientRect();
+          const pad = 5;
+          spotlight.style.left = (rect.left - pad) + 'px';
+          spotlight.style.top = (rect.top - pad) + 'px';
+          spotlight.style.width = (rect.width + pad * 2) + 'px';
+          spotlight.style.height = (rect.height + pad * 2) + 'px';
+        }
+        function renderTour() {
+          const isEn = State.lang === 'en';
+          const entry = steps[step];
+          const words = isEn ? entry.en : entry.ru;
+          document.getElementById('tour-name').textContent = isEn ? 'Your guide' : 'Твой проводник';
+          document.getElementById('tour-title').textContent = words[0];
+          document.getElementById('tour-copy').textContent = words[1];
+          document.getElementById('tour-count').textContent = (step + 1) + ' / ' + steps.length;
+          document.getElementById('tour-skip').textContent = isEn ? 'Skip' : 'Пропустить';
+          document.getElementById('tour-back').textContent = isEn ? 'Back' : 'Назад';
+          document.getElementById('tour-back').classList.toggle('hidden', step === 0);
+          document.getElementById('tour-next').textContent = step === steps.length - 1 ? (isEn ? 'Let’s play!' : 'В игру!') : (isEn ? 'Next' : 'Дальше');
+          document.getElementById('tour-languages').classList.toggle('hidden', step !== 0);
+          document.getElementById('tour-lang-ru').setAttribute('aria-pressed', String(!isEn));
+          document.getElementById('tour-lang-en').setAttribute('aria-pressed', String(isEn));
+          shade.classList.toggle('hidden', !!entry.target);
+          spotlight.classList.toggle('hidden', !entry.target);
+          if (entry.target) {
+            document.getElementById(entry.target).scrollIntoView({ behavior: 'instant', block: 'start' });
+            positionSpotlight();
+          } else {
+            window.scrollTo({ top: 0, behavior: 'instant' });
+          }
+        }
+        function closeTour() {
+          overlay.classList.add('hidden');
+          SafeStore.set(storageKey, '1');
+          window.scrollTo({ top: 0, behavior: 'instant' });
+          if (lastFocused && lastFocused.isConnected) lastFocused.focus({ preventScroll: true });
+        }
+        function openTour() {
+          if (State.view !== 'menu') showView('menu');
+          lastFocused = document.activeElement;
+          step = 0;
+          overlay.classList.remove('hidden');
+          renderTour();
+          document.getElementById('tour-next').focus({ preventScroll: true });
+        }
+        bindClick('btn-tour-open', openTour);
+        bindClick('tour-skip', closeTour);
+        bindClick('tour-back', () => { if (step > 0) { step--; renderTour(); } });
+        bindClick('tour-next', () => { if (step === steps.length - 1) closeTour(); else { step++; renderTour(); } });
+        ['ru', 'en'].forEach(lang => bindClick('tour-lang-' + lang, () => {
+          State.lang = lang;
+          saveState();
+          renderPhoneTabs();
+          renderPhoneBody();
+          updateAllUI();
+          renderTour();
+        }));
+        window.addEventListener('resize', () => { if (!overlay.classList.contains('hidden')) positionSpotlight(); });
+        window.addEventListener('scroll', () => { if (!overlay.classList.contains('hidden')) positionSpotlight(); }, { passive: true });
+        document.addEventListener('keydown', event => {
+          if (overlay.classList.contains('hidden')) return;
+          if (event.key === 'Escape') { event.preventDefault(); closeTour(); return; }
+          if (event.key !== 'Tab') return;
+          const buttons = Array.from(dialog.querySelectorAll('button')).filter(button => button.offsetParent !== null && !button.disabled);
+          const first = buttons[0];
+          const last = buttons[buttons.length - 1];
+          if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+          else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+        }, true);
+        if (!SafeStore.get(storageKey)) openTour();
       }
 
       /* ==================== 18. INITIALIZATION ==================== */
@@ -5402,6 +5548,7 @@
               setTimeout(() => { msg.textContent = ''; }, 3000);
             }
           });
+          initTour();
         } catch (err) {
           console.error('Init error:', err);
           renderDistrictCards();
