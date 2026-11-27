@@ -1448,6 +1448,14 @@
       .city-gate-alert { top: calc(max(8px, env(safe-area-inset-top)) + 48px); }
     }
 
+    .menu-quick-start { gap: 12px; }
+    .menu-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .menu-actions .arc-btn { flex: 1 1 auto; }
+    .menu-details-card { text-align: left; max-height: min(90vh, 650px); overflow-y: auto; }
+    .menu-details-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .menu-details-head h2 { color: var(--yellow); font-size: 1.1rem; }
+    .menu-city-info { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
+
     .tour-overlay { position: fixed; inset: 0; z-index: 11000; overflow: hidden; }
     .tour-shade { position: absolute; inset: 0; background: rgba(3, 5, 18, .82); }
     .tour-spotlight { position: fixed; border: 3px solid var(--yellow); border-radius: 12px; box-shadow: 0 0 0 200vmax rgba(3, 5, 18, .82), 0 0 18px var(--yellow); pointer-events: none; transition: top .2s, left .2s, width .2s, height .2s; }
@@ -1553,37 +1561,15 @@
 
     <!-- ==================== MAIN MENU ==================== -->
     <main id="view-menu">
-      <section class="arc-panel hero-card">
+      <section class="arc-panel hero-card menu-quick-start">
         <div>
           <h1 id="hero-title">NEON CODE CITY: <span>HTML &amp; CSS ARCADE</span></h1>
-          <div class="hero-pills">
-            <span class="arc-pill" style="background: var(--green);">🏆 <span id="lbl-rank">Rank:</span> <b id="val-rank">City Rookie 🌴</b></span>
-            <span class="arc-pill" style="background: var(--cyan);">📍 <span id="lbl-dist">Districts:</span> <b id="val-dist">0</b> / 11</span>
-            <span class="arc-pill" style="background: var(--gold); cursor: pointer;" id="pill-trophies">🏅 <span id="lbl-ach">Trophies:</span> <b id="val-ach">0</b> / 12</span>
-            <span class="arc-pill" style="background: var(--white);">⚡ <span id="lbl-chase">Chase Best:</span> $<b id="val-chase">0</b></span>
-          </div>
         </div>
-        <button type="button" class="arc-btn btn-green" id="btn-hero-city" style="font-size: 0.96rem; padding: 12px 18px;">
-          🏎️ DRIVE IN 2D CITY
-        </button>
-      </section>
-
-      <section class="arc-panel car-strip">
-        <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap; flex: 1;">
-          <div class="car-mini-box" id="menu-car-box" title="Open HTML Customs Garage"></div>
-          <div style="max-width: 560px;">
-            <div id="strip-title" style="font-weight: 900; font-size: 1.02rem; color: var(--yellow);">
-              🏎️ CRUISE TWO ISLANDS AND UNLOCK HTML &amp; CSS CHAPTERS!
-            </div>
-            <div id="strip-sub" style="font-size: 0.85rem; color: var(--muted); margin-top: 3px;">
-              Drive your tuned car through the streets, enter mission markers, spray graffiti walls, and open bridges to Neon-City CSS!
-            </div>
-          </div>
-        </div>
-        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-          <button type="button" class="arc-btn btn-green" id="btn-strip-city">🏎️ Drive in City</button>
+        <div class="menu-actions">
+          <button type="button" class="arc-btn btn-green" id="btn-hero-city">🏎️ DRIVE IN 2D CITY</button>
           <button type="button" class="arc-btn btn-pink" id="btn-strip-graffiti">🎨 Graffiti Wall</button>
           <button type="button" class="arc-btn" id="btn-strip-garage">🔧 HTML Customs Garage</button>
+          <button type="button" class="arc-btn btn-dark" id="btn-menu-details">📊 Progress &amp; City</button>
         </div>
       </section>
 
@@ -1947,6 +1933,28 @@
         <div id="graf-feedback" class="hidden"></div>
       </div>
     </section>
+  </div>
+
+  <div class="overlay-backdrop hidden" id="menu-details-modal" role="dialog" aria-modal="true" aria-labelledby="menu-details-title">
+    <div class="modal-card menu-details-card">
+      <div class="menu-details-head">
+        <h2 id="menu-details-title">Your progress</h2>
+        <button type="button" class="arc-btn btn-xs btn-dark" id="btn-menu-details-close" aria-label="Close">✕</button>
+      </div>
+      <div class="hero-pills">
+        <span class="arc-pill" style="background: var(--green);">🏆 <span id="lbl-rank">Rank:</span> <b id="val-rank">City Rookie 🌴</b></span>
+        <span class="arc-pill" style="background: var(--cyan);">📍 <span id="lbl-dist">Districts:</span> <b id="val-dist">0</b> / 11</span>
+        <span class="arc-pill" style="background: var(--gold); cursor: pointer;" id="pill-trophies">🏅 <span id="lbl-ach">Trophies:</span> <b id="val-ach">0</b> / 12</span>
+        <span class="arc-pill" style="background: var(--white);">⚡ <span id="lbl-chase">Chase Best:</span> $<b id="val-chase">0</b></span>
+      </div>
+      <div class="menu-city-info">
+        <div class="car-mini-box" id="menu-car-box" title="Open HTML Customs Garage"></div>
+        <div>
+          <div id="strip-title" style="font-weight: 900; color: var(--yellow);">🏎️ CRUISE TWO ISLANDS AND UNLOCK HTML &amp; CSS CHAPTERS!</div>
+          <div id="strip-sub" style="font-size: 0.85rem; color: var(--muted); margin-top: 5px;">Drive your tuned car through the streets and discover the city!</div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ==================== VICTORY / ERROR BANNER ==================== -->
@@ -5161,6 +5169,9 @@
         const setHtml = (id, key) => { const el = document.getElementById(id); if (el) el.innerHTML = tr(key); };
 
         document.getElementById('btn-tour-open').textContent = isEn ? '❔ Guide' : '❔ Знакомство';
+        document.getElementById('btn-menu-details').textContent = isEn ? '📊 Progress & City' : '📊 Прогресс и город';
+        document.getElementById('menu-details-title').textContent = isEn ? 'Your progress' : 'Твой прогресс';
+        document.getElementById('btn-menu-details-close').setAttribute('aria-label', isEn ? 'Close' : 'Закрыть');
         setTxt('btn-hud-city', 'hudCity');
         setTxt('btn-hud-home', 'hudHome');
         setHtml('hero-title', 'heroTitle');
@@ -5384,7 +5395,12 @@
           bindClick('btn-strip-city', () => { AudioEngine.click(); OpenCityGame.open(); });
           bindClick('btn-strip-graffiti', () => { AudioEngine.click(); GraffitiWall.open(); });
           bindClick('btn-strip-garage', () => { AudioEngine.click(); GarageCustoms.open(); });
-          bindClick('menu-car-box', () => { AudioEngine.click(); GarageCustoms.open(); });
+          bindClick('menu-car-box', () => { document.getElementById('menu-details-modal').classList.add('hidden'); AudioEngine.click(); GarageCustoms.open(); });
+          const menuDetailsModal = document.getElementById('menu-details-modal');
+          const closeMenuDetails = () => { menuDetailsModal.classList.add('hidden'); document.getElementById('btn-menu-details').focus(); };
+          bindClick('btn-menu-details', () => { menuDetailsModal.classList.remove('hidden'); document.getElementById('btn-menu-details-close').focus(); });
+          bindClick('btn-menu-details-close', closeMenuDetails);
+          menuDetailsModal.addEventListener('click', event => { if (event.target === menuDetailsModal) closeMenuDetails(); });
 
           bindClick('btn-mode-missions', () => {
             AudioEngine.click();
@@ -5469,7 +5485,7 @@
           };
           bindClick('btn-hud-phone', () => openPhone('cheatsheet'));
           bindClick('btn-hud-trophies', () => openPhone('trophies'));
-          bindClick('pill-trophies', () => openPhone('trophies'));
+          bindClick('pill-trophies', () => { menuDetailsModal.classList.add('hidden'); openPhone('trophies'); });
           bindClick('btn-phone-close', () => phoneModal.classList.add('hidden'));
 
           document.addEventListener('keydown', (e) => {
@@ -5477,6 +5493,7 @@
             const tag = document.activeElement ? document.activeElement.tagName : '';
             if (tag === 'INPUT' || tag === 'SELECT') return;
             if (e.key === 'Escape') {
+              if (!menuDetailsModal.classList.contains('hidden')) closeMenuDetails();
               phoneModal.classList.add('hidden');
               wheelModal.classList.add('hidden');
               return;
