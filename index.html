@@ -138,7 +138,6 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      cursor: pointer;
       user-select: none;
     }
 
@@ -5640,7 +5639,6 @@
           bindClick('btn-lang-en', () => switchLang('en'));
           bindClick('btn-lang-ru', () => switchLang('ru'));
 
-          bindClick('btn-logo', () => { AudioEngine.click(); showView('menu'); });
           bindClick('btn-hud-home', () => { AudioEngine.click(); showView('menu'); });
           bindClick('btn-hud-city', () => { AudioEngine.click(); OpenCityGame.open(); });
           bindClick('btn-hero-city', () => { AudioEngine.click(); OpenCityGame.open(); });
