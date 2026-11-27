@@ -1579,7 +1579,6 @@
         </div>
 
         <button type="button" class="arc-btn btn-sm btn-dark" id="btn-tour-open">❔ Guide</button>
-        <button type="button" class="arc-btn btn-sm btn-gold" id="btn-hud-trophies">🏆 <span id="hud-ach-count">0</span>/12</button>
         <button type="button" class="arc-btn btn-sm btn-green" id="btn-hud-city">🏎️ City</button>
         <button type="button" class="arc-btn btn-sm btn-pink" id="btn-hud-phone">📱 iCode Phone</button>
         <button type="button" class="arc-btn btn-sm btn-dark" id="btn-hud-sfx">🔊 SFX</button>
@@ -5404,7 +5403,6 @@
         const ranks = tr('ranks');
         const rankName = cap >= 11 ? ranks[0] : cap >= 9 ? ranks[1] : cap >= 7 ? ranks[2] : cap >= 4 ? ranks[3] : cap >= 1 ? ranks[4] : ranks[5];
 
-        document.getElementById('hud-ach-count').textContent = State.unlockedAchievements.length;
         document.getElementById('val-ach').textContent = State.unlockedAchievements.length;
         document.getElementById('val-rank').textContent = rankName;
         document.getElementById('val-dist').textContent = cap;
@@ -5736,7 +5734,6 @@
             phoneModal.classList.remove('hidden');
           };
           bindClick('btn-hud-phone', () => openPhone('cheatsheet'));
-          bindClick('btn-hud-trophies', () => openPhone('trophies'));
           bindClick('pill-trophies', () => { menuDetailsModal.classList.add('hidden'); openPhone('trophies'); });
           bindClick('btn-phone-close', () => phoneModal.classList.add('hidden'));
 
