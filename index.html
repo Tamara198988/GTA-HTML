@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="google" content="notranslate" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#060916" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -1377,6 +1377,69 @@
     @media (max-width: 560px) {
       .chase-grid { grid-template-columns: 1fr; }
     }
+
+    @media (max-width: 900px) {
+      body.city-active { overflow: hidden; }
+      body.city-active .arcade-hud { display: none; }
+      #view-city {
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+        background: #061026;
+      }
+      #view-city > .arc-panel {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        padding: 0 !important;
+        border: 0;
+        border-radius: 0;
+      }
+      #city-toolbar {
+        position: absolute;
+        top: max(8px, env(safe-area-inset-top));
+        right: max(8px, env(safe-area-inset-right));
+        z-index: 10;
+        margin: 0 !important;
+      }
+      #city-pill-top, #city-pill-keys, #city-legend, #city-hud-island, #city-hud-tags, #pad-horn { display: none !important; }
+      .city-viewport {
+        width: 100%;
+        height: 100%;
+        max-height: none;
+        aspect-ratio: auto;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .city-hud-box {
+        top: max(8px, env(safe-area-inset-top));
+        left: max(8px, env(safe-area-inset-left));
+        max-width: calc(100% - 120px);
+        padding: 6px 9px;
+      }
+      #city-hud-dist { font-size: 0.8rem !important; }
+      .city-controls-overlay {
+        left: max(10px, env(safe-area-inset-left));
+        right: max(10px, env(safe-area-inset-right));
+        bottom: max(12px, env(safe-area-inset-bottom));
+      }
+      .pad-group { gap: 6px; }
+      .pad-btn, .pad-gas, .pad-rev {
+        width: clamp(54px, 16vw, 76px);
+        height: clamp(56px, 15vw, 72px);
+      }
+      .city-marker-bar {
+        bottom: calc(max(12px, env(safe-area-inset-bottom)) + clamp(56px, 15vw, 72px) + 12px);
+        width: max-content;
+        max-width: calc(100% - 20px);
+        padding: 5px;
+        border-width: 2px;
+      }
+      #city-marker-label { display: none; }
+      .city-gate-alert { top: calc(max(8px, env(safe-area-inset-top)) + 48px); }
+    }
     :focus-visible { outline: 3px solid #ffd166; outline-offset: 3px; }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
@@ -1585,7 +1648,7 @@
     <!-- ==================== OPEN 2D CITY ==================== -->
     <section id="view-city" class="hidden">
       <div class="arc-panel" style="padding: 12px;">
-        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px;">
+        <div id="city-toolbar" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px;">
           <span class="arc-pill" id="city-pill-top" style="background: var(--green);">🏎️ OPEN 2D CITY • TOP-DOWN VIEW</span>
           <span class="arc-pill" id="city-pill-keys" style="background: #0e1222; color: var(--cyan); border-color: var(--cyan);">WASD / Arrows • H — Horn • Enter — Enter Marker</span>
           <button type="button" class="arc-btn btn-sm btn-dark" id="btn-city-home">🏠 Home</button>
@@ -1620,7 +1683,7 @@
           </div>
         </div>
 
-        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-top: 10px; font-size: 0.8rem; color: var(--muted);">
+        <div id="city-legend" style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-top: 10px; font-size: 0.8rem; color: var(--muted);">
           <span id="city-leg-1">🟡/🟢 <b>District Markers</b> (HTML &amp; CSS) • 🟣 <b>Graffiti Walls</b> • 🔵 <b>HTML Customs Garage</b></span>
           <span id="city-leg-2">🌉 Two eastbound bridges lead to <b>Neon-City CSS</b> (Levels 8–11)</span>
         </div>
@@ -3891,9 +3954,9 @@
           const el = document.getElementById(id);
           if (!el) return;
           const set = (v) => { keys[k] = v; el.classList.toggle('pressed', v); };
-          el.addEventListener('pointerdown', (e) => { e.preventDefault(); set(true); });
+          el.addEventListener('pointerdown', (e) => { e.preventDefault(); el.setPointerCapture(e.pointerId); set(true); });
           el.addEventListener('pointerup', () => set(false));
-          el.addEventListener('pointerleave', () => set(false));
+          el.addEventListener('lostpointercapture', () => set(false));
           el.addEventListener('pointercancel', () => set(false));
         }
 
@@ -3947,6 +4010,8 @@
           },
           pause() {
             running = false;
+            Object.keys(keys).forEach(key => { keys[key] = false; });
+            document.querySelectorAll('.pad-btn.pressed').forEach(button => button.classList.remove('pressed'));
             if (raf) { cancelAnimationFrame(raf); raf = null; }
           }
         };
@@ -4867,6 +4932,7 @@
       /* ==================== 17. NAVIGATION, BANNERS & UI REFRESH ==================== */
       function showView(name) {
         State.view = name;
+        document.body.classList.toggle('city-active', name === 'city');
         if (name !== 'chase') stopChaseTimer();
         if (name !== 'city') OpenCityGame.pause();
         closeBanner();
