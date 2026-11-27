@@ -1448,6 +1448,33 @@
       .city-gate-alert { top: calc(max(8px, env(safe-area-inset-top)) + 48px); }
     }
 
+
+    body.bank-active .arcade-hud { display: none; }
+    .bank-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+    .bank-panel { padding: 16px; }
+    .bank-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+    .bank-header h1 { font-size: clamp(1.25rem, 4vw, 2rem); color: var(--yellow); }
+    .bank-kicker { color: var(--cyan); font-size: .78rem; font-weight: 900; text-transform: uppercase; letter-spacing: .05em; }
+    .bank-heading { font-size: 1rem; color: var(--yellow); margin-bottom: 8px; }
+    .bank-plan { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 14px 0; }
+    .bank-room { min-width: 0; min-height: 98px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 8px 4px; background: #16192d; border: 2px solid #57546f; border-radius: 10px; text-align: center; font-size: .78rem; font-weight: 800; }
+    .bank-room span { font-size: 1.4rem; }
+    .bank-room.open { background: #0e2a2b; border-color: var(--green); color: var(--green); }
+    .bank-room.blocked { border-color: var(--pink); color: var(--white); }
+    .bank-route { color: var(--muted); line-height: 1.4; font-size: .86rem; }
+    .bank-task { margin: 10px 0; line-height: 1.45; }
+    .bank-code { display: block; width: 100%; min-height: 230px; resize: vertical; padding: 12px; border: 2px solid var(--cyan); border-radius: 10px; background: #080d1c; color: #e0f7fa; font: 14px/1.55 var(--font-mono); tab-size: 2; }
+    .bank-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .bank-feedback { margin-top: 10px; min-height: 2em; color: var(--yellow); line-height: 1.4; }
+    .bank-status { color: var(--muted); font-size: .8rem; }
+    @media (max-width: 760px) {
+      body.bank-active .app-wrap { padding: 8px 8px 36px; }
+      .bank-layout { grid-template-columns: 1fr; }
+      .bank-panel { padding: 12px; }
+      .bank-code { min-height: 210px; font-size: 14px; }
+      .bank-room { min-height: 75px; }
+    }
+
     .menu-quick-start { gap: 12px; }
     .menu-actions { display: flex; flex-wrap: wrap; gap: 8px; }
     .menu-actions .arc-btn { flex: 1 1 auto; }
@@ -1621,6 +1648,20 @@
             </div>
           </div>
         </article>
+
+        <article class="mode-card">
+          <div class="mode-head mh-2">
+            <span class="arc-pill" id="bank-card-badge" style="background:var(--ink);color:var(--yellow);">ADVANCED • HTML</span>
+            <span aria-hidden="true" style="font-size:1.4rem;">🏦</span>
+          </div>
+          <div class="mode-body">
+            <div>
+              <h3 id="bank-card-title">🌆 Shadow City: Bank</h3>
+              <p id="bank-card-desc">Edit the bank’s HTML and find a route to the vault.</p>
+            </div>
+            <button type="button" class="arc-btn btn-pink" id="btn-bank-open">▶ Visit Shadow City</button>
+          </div>
+        </article>
       </section>
 
       <section class="arc-panel">
@@ -1655,6 +1696,39 @@
         <button type="button" class="arc-btn btn-sm btn-dark" id="btn-reset">🗑️ Reset Progress</button>
       </div>
     </main>
+
+
+    <section id="view-bank" class="hidden">
+      <div class="bank-header">
+        <div><div class="bank-kicker" id="bank-district">🌆 Shadow City · Advanced mission</div><h1 id="bank-title">The HTML Bank</h1></div>
+        <div class="bank-actions"><button type="button" class="arc-btn btn-sm btn-cyan" id="btn-bank-city">🏎️ City</button><button type="button" class="arc-btn btn-sm btn-dark" id="btn-bank-home">🏠 Home</button></div>
+      </div>
+      <div class="bank-layout">
+        <div class="arc-panel bank-panel">
+          <div class="bank-heading" id="bank-plan-title">Bank map</div>
+          <p class="bank-route" id="bank-intro">Change the HTML to make a safe route to the vault. The map reacts as you type.</p>
+          <div class="bank-plan" aria-label="Bank map">
+            <div class="bank-room blocked" id="bank-room-lobby"><span aria-hidden="true">🚪</span><b id="bank-label-lobby">Lobby</b><small id="bank-state-lobby"></small></div>
+            <div class="bank-room blocked" id="bank-room-hall"><span aria-hidden="true">📹</span><b id="bank-label-hall">Security</b><small id="bank-state-hall"></small></div>
+            <div class="bank-room blocked" id="bank-room-vault"><span aria-hidden="true">🏦</span><b id="bank-label-vault">Vault</b><small id="bank-state-vault"></small></div>
+          </div>
+          <p class="bank-status" id="bank-alarm" role="status"></p>
+        </div>
+        <div class="arc-panel bank-panel">
+          <div class="bank-kicker" id="bank-step"></div>
+          <h2 class="bank-heading" id="bank-task-title"></h2>
+          <p class="bank-task" id="bank-task"></p>
+          <label for="bank-code" class="bank-kicker">HTML</label>
+          <textarea id="bank-code" class="bank-code" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>
+          <div class="bank-actions">
+            <button type="button" class="arc-btn btn-green" id="btn-bank-check">▶ Test route</button>
+            <button type="button" class="arc-btn btn-dark" id="btn-bank-hint">💡 Hint</button>
+            <button type="button" class="arc-btn btn-dark hidden" id="btn-bank-retry">↻ Play again</button>
+          </div>
+          <p class="bank-feedback" id="bank-feedback" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
 
     <!-- ==================== OPEN 2D CITY ==================== -->
     <section id="view-city" class="hidden">
@@ -3222,6 +3296,7 @@
         garage: defaultGarage(),
         graffiti: {},
         graffitiRewarded: [],
+        bankCompleted: false,
 
         view: 'menu',
         distIdx: 0,
@@ -3266,6 +3341,7 @@
           }
           if (d.graffiti && typeof d.graffiti === 'object') State.graffiti = d.graffiti;
           if (Array.isArray(d.graffitiRewarded)) State.graffitiRewarded = d.graffitiRewarded;
+          if (typeof d.bankCompleted === 'boolean') State.bankCompleted = d.bankCompleted;
         } catch (e) {}
       }
 
@@ -3281,7 +3357,8 @@
             visitedCityMarker: State.visitedCityMarker,
             garage: State.garage,
             graffiti: State.graffiti,
-            graffitiRewarded: State.graffitiRewarded
+            graffitiRewarded: State.graffitiRewarded,
+            bankCompleted: State.bankCompleted
           }));
         } catch (e) {}
       }
@@ -3706,6 +3783,7 @@
           { kind: 'dist', idx: 9, x: 1840, y: 1260, r: 46 },
           { kind: 'dist', idx: 10, x: 2420, y: 1260, r: 46 },
           { kind: 'garage', x: 690, y: 550, r: 42 },
+          { kind: 'bank', x: 690, y: 340, r: 40 },
           { kind: 'graffiti', idx: 1, x: 690, y: 970, r: 40 },
           { kind: 'graffiti', idx: 5, x: 260, y: 1460, r: 40 },
           { kind: 'graffiti', idx: 8, x: 2130, y: 840, r: 42 }
@@ -3830,6 +3908,10 @@
             lbl.textContent = (unl ? '📍 ' : '🔒 ') + name + ' (' + (isEn ? 'Lv.' : 'Ур.') + d.level + ')';
             btn.textContent = unl ? tr('enterMissionBtn') : tr('locked');
             btn.disabled = !unl;
+          } else if (activeMarker.kind === 'bank') {
+            lbl.textContent = isEn ? '🌆 Shadow City — bank mission' : '🌆 Теневой город — миссия в банке';
+            btn.textContent = isEn ? '🚆 Travel to Shadow City' : '🚆 В Теневой город';
+            btn.disabled = false;
           } else if (activeMarker.kind === 'graffiti') {
             lbl.textContent = isEn ? '🎨 Graffiti Wall — spray your art!' : '🎨 Стена граффити — рисуй баллончиком!';
             btn.textContent = tr('enterGraffitiBtn');
@@ -3850,6 +3932,9 @@
             saveState();
             AchievementSystem.checkAll();
             openBriefing(activeMarker.idx, false);
+          } else if (activeMarker.kind === 'bank') {
+            AudioEngine.ok();
+            ShadowBank.open();
           } else if (activeMarker.kind === 'graffiti') {
             AudioEngine.ok();
             GraffitiWall.open(activeMarker.idx);
@@ -3937,6 +4022,9 @@
                 const cap = isDistCompleted(m.idx);
                 col = cap ? '#4cd137' : unl ? '#ffd166' : '#64748b';
                 lbl = (isEn ? 'Lv.' : 'Ур.') + d.level + ': ' + (isEn ? d.nameEn : d.nameRu);
+              } else if (m.kind === 'bank') {
+                col = '#9d4edd';
+                lbl = isEn ? '🚆 Shadow City' : '🚆 Теневой город';
               } else if (m.kind === 'graffiti') {
                 col = '#ff2a85';
                 lbl = isEn ? '🎨 Graffiti' : '🎨 Граффити';
@@ -3999,7 +4087,7 @@
             ctx.fillRect(mx + 1550 * (mw / W), my + 100 * (mh / H), 1140 * (mw / W), 1600 * (mh / H));
 
             MARKERS.forEach(m => {
-              ctx.fillStyle = m.kind === 'graffiti' ? '#ff2a85' : m.kind === 'garage' ? '#00f0ff' : '#ffd166';
+              ctx.fillStyle = m.kind === 'graffiti' ? '#ff2a85' : m.kind === 'garage' ? '#00f0ff' : m.kind === 'bank' ? '#9d4edd' : '#ffd166';
               ctx.fillRect(mx + m.x * (mw / W) - 1.5, my + m.y * (mh / H) - 1.5, 3, 3);
             });
 
@@ -5006,16 +5094,166 @@
         });
       }
 
+
+      /* ==================== SHADOW CITY BANK ==================== */
+      const ShadowBank = (() => {
+        const starter = '<main id="bank">\n  <section id="lobby" data-door="closed">\n    <section id="hall" data-camera="on">\n      <section id="vault" data-code="000"></section>\n    </section>\n  </section>\n</main>';
+        const editor = document.getElementById('bank-code');
+        const feedback = document.getElementById('bank-feedback');
+        let stage = 0;
+        let alarms = 0;
+        let finished = false;
+        let initialized = false;
+
+        const tasks = [
+          {
+            titleRu: 'Открой вход', titleEn: 'Open the entrance',
+            taskRu: 'В секции lobby измени data-door с closed на open. Нажми «Проверить маршрут».',
+            taskEn: 'In the lobby section, change data-door from closed to open. Tap Test route.',
+            hintRu: 'Найди строку с id="lobby" и напиши data-door="open".',
+            hintEn: 'Find the line with id="lobby" and write data-door="open".'
+          },
+          {
+            titleRu: 'Отключи камеру', titleEn: 'Disable the camera',
+            taskRu: 'В секции hall измени data-camera с on на off. Сохрани открытый вход.',
+            taskEn: 'In the hall section, change data-camera from on to off. Keep the entrance open.',
+            hintRu: 'В строке с id="hall" замени data-camera="on" на data-camera="off".',
+            hintEn: 'On the line with id="hall", replace data-camera="on" with data-camera="off".'
+          },
+          {
+            titleRu: 'Открой хранилище', titleEn: 'Open the vault',
+            taskRu: 'В секции vault замени data-code="000" на код 314. Сохрани предыдущие изменения.',
+            taskEn: 'In the vault section, replace data-code="000" with code 314. Keep your previous changes.',
+            hintRu: 'Последняя строка секции должна содержать id="vault" и data-code="314".',
+            hintEn: 'The vault section must contain id="vault" and data-code="314".'
+          }
+        ];
+
+        function inspectCode() {
+          const text = editor.value;
+          if (text.length > 10000 || /<!|<\\?/i.test(text)) return null;
+          const doc = new DOMParser().parseFromString(text, 'application/xml');
+          if (doc.querySelector('parsererror')) return null;
+          const root = doc.documentElement;
+          if (!root || root.tagName !== 'main' || root.getAttribute('id') !== 'bank') return null;
+          const child = (parent, id) => parent && Array.from(parent.children).find(el => el.tagName === 'section' && el.getAttribute('id') === id);
+          const lobby = child(root, 'lobby');
+          const hall = child(lobby, 'hall');
+          const vault = child(hall, 'vault');
+          return [
+            !!lobby && lobby.getAttribute('data-door') === 'open',
+            !!hall && hall.getAttribute('data-camera') === 'off',
+            !!vault && vault.getAttribute('data-code') === '314'
+          ];
+        }
+
+        function render() {
+          const en = State.lang === 'en';
+          const checks = inspectCode();
+          const reachable = [
+            !!checks && checks[0],
+            !!checks && checks[0] && checks[1],
+            !!checks && checks[0] && checks[1] && checks[2]
+          ];
+          const ids = ['lobby', 'hall', 'vault'];
+          const ruNames = ['Вход', 'Охрана', 'Хранилище'];
+          const enNames = ['Lobby', 'Security', 'Vault'];
+          ids.forEach((id, i) => {
+            const room = document.getElementById('bank-room-' + id);
+            room.classList.toggle('open', reachable[i]);
+            room.classList.toggle('blocked', !reachable[i]);
+            document.getElementById('bank-label-' + id).textContent = en ? enNames[i] : ruNames[i];
+            document.getElementById('bank-state-' + id).textContent = reachable[i] ? (en ? 'OPEN' : 'ОТКРЫТО') : (en ? 'LOCKED' : 'ЗАКРЫТО');
+          });
+          document.getElementById('bank-district').textContent = en ? '🌆 Shadow City · Advanced mission' : '🌆 Теневой город · Сложная миссия';
+          document.getElementById('bank-title').textContent = en ? 'The HTML Bank' : 'Ограбление HTML-банка';
+          document.getElementById('btn-bank-home').textContent = en ? '🏠 Home' : '🏠 На главную';
+          document.getElementById('btn-bank-city').textContent = en ? '🏎️ City' : '🏎️ В город';
+          document.getElementById('bank-plan-title').textContent = en ? 'Bank map' : 'План банка';
+          document.getElementById('bank-intro').textContent = en ? 'Edit the HTML to create a route to the vault. The map reacts as you type.' : 'Измени HTML-код, чтобы проложить путь к хранилищу. План меняется сразу.';
+          document.getElementById('bank-alarm').textContent = (en ? 'Alarm triggers: ' : 'Срабатываний сигнализации: ') + alarms;
+          document.getElementById('bank-step').textContent = finished ? (en ? 'MISSION COMPLETE' : 'МИССИЯ ПРОЙДЕНА') : (en ? 'STAGE ' : 'ЭТАП ') + (stage + 1) + ' / 3';
+          document.getElementById('bank-task-title').textContent = finished ? (en ? 'Vault unlocked!' : 'Хранилище открыто!') : (en ? tasks[stage].titleEn : tasks[stage].titleRu);
+          document.getElementById('bank-task').textContent = finished ? (en ? 'The route is clear. Play again to practice.' : 'Маршрут открыт. Можно пройти миссию ещё раз для тренировки.') : (en ? tasks[stage].taskEn : tasks[stage].taskRu);
+          document.getElementById('btn-bank-check').textContent = en ? '▶ Test route' : '▶ Проверить маршрут';
+          document.getElementById('btn-bank-hint').textContent = en ? '💡 Hint' : '💡 Подсказка';
+          document.getElementById('btn-bank-retry').textContent = en ? '↻ Play again' : '↻ Сыграть ещё раз';
+          document.getElementById('btn-bank-check').classList.toggle('hidden', finished);
+          document.getElementById('btn-bank-hint').classList.toggle('hidden', finished);
+          document.getElementById('btn-bank-retry').classList.toggle('hidden', !finished);
+          editor.readOnly = finished;
+        }
+
+        function reset() {
+          editor.value = starter;
+          stage = 0;
+          alarms = 0;
+          finished = false;
+          feedback.textContent = '';
+          initialized = true;
+          render();
+        }
+
+        function check() {
+          if (finished) return;
+          const en = State.lang === 'en';
+          const checks = inspectCode();
+          if (!checks) {
+            alarms++;
+            feedback.textContent = en ? 'Alarm! Check the tags and quotation marks. Keep the main bank element.' : 'Тревога! Проверь теги и кавычки. Сохрани главный элемент bank.';
+            AudioEngine.error();
+            render();
+            return;
+          }
+          const missing = checks.slice(0, stage + 1).findIndex(value => !value);
+          if (missing !== -1) {
+            alarms++;
+            stage = missing;
+            feedback.textContent = en ? 'Alarm! Check this stage and try again. The map shows which doors are open.' : 'Тревога! Проверь этот этап и попробуй снова. План покажет, какие двери открыты.';
+            AudioEngine.error();
+            render();
+            return;
+          }
+          if (stage < tasks.length - 1) {
+            stage++;
+            feedback.textContent = en ? 'Route updated. Continue to the next stage.' : 'Маршрут обновлён. Переходи к следующему этапу.';
+            AudioEngine.ok();
+          } else {
+            finished = true;
+            if (!State.bankCompleted) {
+              State.bankCompleted = true;
+              addCash(1000);
+              feedback.textContent = en ? 'First successful run: +$1000!' : 'Первое прохождение: +$1000!';
+            } else {
+              feedback.textContent = en ? 'Mission complete! First-run reward was already collected.' : 'Миссия пройдена! Награда за первое прохождение уже получена.';
+            }
+            AudioEngine.ok();
+          }
+          render();
+        }
+
+        function open() { showView('bank'); if (!initialized) reset(); else render(); }
+        bindClick('btn-bank-open', () => { AudioEngine.click(); open(); });
+        bindClick('btn-bank-city', () => { AudioEngine.click(); OpenCityGame.open(); });
+        bindClick('btn-bank-home', () => { AudioEngine.click(); showView('menu'); });
+        bindClick('btn-bank-check', check);
+        bindClick('btn-bank-hint', () => { feedback.textContent = State.lang === 'en' ? tasks[stage].hintEn : tasks[stage].hintRu; });
+        bindClick('btn-bank-retry', reset);
+        editor.addEventListener('input', () => { if (!finished) render(); });
+        return { open, refresh: render };
+      })();
+
       /* ==================== 17. NAVIGATION, BANNERS & UI REFRESH ==================== */
       function showView(name) {
         State.view = name;
         document.body.classList.toggle('city-active', name === 'city');
         document.body.classList.toggle('graffiti-active', name === 'graffiti');
+        document.body.classList.toggle('bank-active', name === 'bank');
         if (name !== 'chase') stopChaseTimer();
         if (name !== 'city') OpenCityGame.pause();
         closeBanner();
 
-        ['menu', 'city', 'briefing', 'missions', 'bugs', 'chase', 'garage', 'graffiti'].forEach(v => {
+        ['menu', 'city', 'briefing', 'missions', 'bugs', 'chase', 'garage', 'graffiti', 'bank'].forEach(v => {
           const el = document.getElementById('view-' + v);
           if (el) el.classList.toggle('hidden', v !== name);
         });
@@ -5172,6 +5410,10 @@
         document.getElementById('btn-menu-details').textContent = isEn ? '📊 Progress & City' : '📊 Прогресс и город';
         document.getElementById('menu-details-title').textContent = isEn ? 'Your progress' : 'Твой прогресс';
         document.getElementById('btn-menu-details-close').setAttribute('aria-label', isEn ? 'Close' : 'Закрыть');
+        document.getElementById('bank-card-badge').textContent = isEn ? 'ADVANCED • HTML' : 'СЛОЖНО • HTML';
+        document.getElementById('bank-card-title').textContent = isEn ? '🌆 Shadow City: Bank' : '🌆 Теневой город: банк';
+        document.getElementById('bank-card-desc').textContent = isEn ? 'Edit the bank’s HTML and find a route to the vault.' : 'Меняй HTML-код банка и прокладывай путь к хранилищу.';
+        document.getElementById('btn-bank-open').textContent = isEn ? '▶ Visit Shadow City' : '▶ Поехать в Теневой город';
         setTxt('btn-hud-city', 'hudCity');
         setTxt('btn-hud-home', 'hudHome');
         setHtml('hero-title', 'heroTitle');
@@ -5383,6 +5625,7 @@
             if (State.view === 'briefing') openBriefing(State.distIdx, State.briefFromMission);
             if (State.view === 'missions') loadMission();
             if (State.view === 'bugs') loadBug();
+            if (State.view === 'bank') ShadowBank.refresh();
             updateAllUI();
           };
           bindClick('btn-lang-en', () => switchLang('en'));
@@ -5575,6 +5818,7 @@
               State.garage = defaultGarage();
               State.graffiti = {};
               State.graffitiRewarded = [];
+              State.bankCompleted = false;
               saveState();
               renderPhoneTabs();
               renderPhoneBody();
