@@ -3950,6 +3950,85 @@
           { x: 1620, y: 1400, w: 1000, h: 220, neon: '#ffd700', name: 'ANIMATION ALLEY' }
         ];
 
+        // Parks and pedestrians are decorative: roads, missions and driving physics stay clear.
+        const CITY_PARKS = [
+          { x: 490, y: 432, w: 135, h: 235, trees: [[22, 25], [113, 26], [22, 203], [113, 204]], fountain: true },
+          { x: 490, y: 858, w: 135, h: 225, trees: [[23, 24], [112, 26], [24, 195], [110, 195]], fountain: false },
+          { x: 2225, y: 875, w: 140, h: 225, trees: [[24, 25], [116, 25], [24, 198], [116, 198]], fountain: true }
+        ];
+        const CITY_WALKERS = [
+          { x: 485, y: 405, dx: 135, dy: 0, speed: 17, phase: 0, color: '#ff74b2' },
+          { x: 485, y: 690, dx: 135, dy: 0, speed: 14, phase: 3, color: '#73e8ff' },
+          { x: 485, y: 1110, dx: 135, dy: 0, speed: 16, phase: 7, color: '#ffd166' },
+          { x: 2208, y: 1125, dx: 150, dy: 0, speed: 15, phase: 4, color: '#cda3ff' },
+          { x: 2195, y: 790, dx: 145, dy: 0, speed: 13, phase: 9, color: '#ff8b7b' },
+          { x: 495, y: 290, dx: 125, dy: 0, speed: 15, phase: 5, color: '#75e5b3' }
+        ];
+
+        function drawCityLife(camX, camY, cw, ch) {
+          CITY_PARKS.forEach(p => {
+            if (p.x + p.w < camX - 25 || p.x > camX + cw + 25 || p.y + p.h < camY - 25 || p.y > camY + ch + 25) return;
+            ctx.fillStyle = '#24523e';
+            ctx.fillRect(p.x, p.y, p.w, p.h);
+            ctx.strokeStyle = '#70d99a';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(p.x, p.y, p.w, p.h);
+            ctx.fillStyle = '#76947a';
+            ctx.fillRect(p.x + p.w / 2 - 10, p.y + 7, 20, p.h - 14);
+            ctx.fillRect(p.x + 8, p.y + p.h / 2 - 8, p.w - 16, 16);
+            p.trees.forEach(([tx, ty]) => {
+              ctx.fillStyle = '#0b3026';
+              ctx.beginPath(); ctx.arc(p.x + tx + 3, p.y + ty + 4, 16, 0, Math.PI * 2); ctx.fill();
+              ctx.fillStyle = '#38a66a';
+              ctx.beginPath(); ctx.arc(p.x + tx, p.y + ty, 15, 0, Math.PI * 2); ctx.fill();
+              ctx.fillStyle = '#68ce85';
+              ctx.beginPath(); ctx.arc(p.x + tx - 5, p.y + ty - 5, 6, 0, Math.PI * 2); ctx.fill();
+            });
+            ctx.fillStyle = '#a96743';
+            ctx.fillRect(p.x + 21, p.y + p.h / 2 + 17, 27, 7);
+            ctx.fillRect(p.x + p.w - 48, p.y + p.h / 2 - 24, 27, 7);
+            if (p.fountain) {
+              ctx.fillStyle = '#d3e5d6';
+              ctx.beginPath(); ctx.arc(p.x + p.w / 2, p.y + p.h / 2, 18, 0, Math.PI * 2); ctx.fill();
+              ctx.fillStyle = '#40cbe5';
+              ctx.beginPath(); ctx.arc(p.x + p.w / 2, p.y + p.h / 2, 13, 0, Math.PI * 2); ctx.fill();
+              ctx.fillStyle = '#e8ffff';
+              ctx.beginPath(); ctx.arc(p.x + p.w / 2, p.y + p.h / 2, 4 + Math.sin(clock * 3) * 1.5, 0, Math.PI * 2); ctx.fill();
+            } else {
+              ctx.fillStyle = '#ffcae3';
+              [[31, 57], [100, 58], [30, 166], [105, 165]].forEach(([x, y]) => {
+                ctx.beginPath(); ctx.arc(p.x + x, p.y + y, 4, 0, Math.PI * 2); ctx.fill();
+              });
+            }
+          });
+        }
+
+        function drawPedestrians(camX, camY, cw, ch) {
+          CITY_WALKERS.forEach(person => {
+            const length = Math.hypot(person.dx, person.dy);
+            const progress = ((clock * person.speed / length + person.phase) % 2);
+            const t = progress <= 1 ? progress : 2 - progress;
+            const x = person.x + person.dx * t;
+            const y = person.y + person.dy * t;
+            if (x < camX - 20 || x > camX + cw + 20 || y < camY - 20 || y > camY + ch + 20) return;
+            const step = Math.sin(clock * 9 + person.phase) * 3;
+            ctx.fillStyle = 'rgba(0,0,0,0.35)';
+            ctx.beginPath(); ctx.ellipse(x, y + 7, 8, 4, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = '#101727';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(x - 2, y + 3); ctx.lineTo(x - 3 + step, y + 9);
+            ctx.moveTo(x + 2, y + 3); ctx.lineTo(x + 3 - step, y + 9);
+            ctx.stroke();
+            ctx.fillStyle = person.color;
+            ctx.fillRect(x - 5, y - 5, 10, 10);
+            ctx.fillStyle = '#f3c7a2';
+            ctx.beginPath(); ctx.arc(x, y - 8, 5, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#29334a';
+            ctx.fillRect(x - 5, y - 12, 10, 3);
+          });
+        }
+
         function syncCanvasSize() {
           if (!cvs) return;
           const r = cvs.getBoundingClientRect();
@@ -4143,6 +4222,8 @@
             [420, 840, 1260].forEach(ry => { ctx.beginPath(); ctx.moveTo(1590, ry); ctx.lineTo(2650, ry); ctx.stroke(); });
             ctx.setLineDash([]);
 
+            drawCityLife(camX, camY, cw, ch);
+
             /* Neon Buildings */
             BUILDINGS.forEach(b => {
               ctx.fillStyle = '#141c38';
@@ -4195,6 +4276,8 @@
               ctx.fillStyle = '#fff';
               ctx.fillText(lbl, m.x, m.y - m.r - 10);
             });
+
+            drawPedestrians(camX, camY, cw, ch);
 
             /* Patrol cars follow the roads and flash their lights. */
             patrols.forEach(patrol => {
