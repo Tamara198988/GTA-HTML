@@ -2037,8 +2037,8 @@
 
         <p class="graf-police-notice" id="graf-police-notice">🚓 Saving graffiti may result in a fine.</p>
         <div class="graf-stencil-controls hidden" id="graf-stencil-controls">
-          <button type="button" class="arc-btn btn-xs btn-dark" id="graf-rotate-left">↶ 90°</button>
-          <button type="button" class="arc-btn btn-xs btn-dark" id="graf-rotate-right">↷ 90°</button>
+          <button type="button" class="arc-btn btn-xs btn-dark" id="graf-rotate-left">↶ 45°</button>
+          <button type="button" class="arc-btn btn-xs btn-dark" id="graf-rotate-right">↷ 45°</button>
           <button type="button" class="arc-btn btn-xs btn-dark" id="graf-flip">⇋ Flip</button>
           <span class="graf-stencil-sample" aria-hidden="true"><span id="graf-stencil-sample"></span></span>
           <span id="graf-transform-hint" style="font-size:.78rem;color:var(--muted);"></span>
@@ -5212,8 +5212,8 @@
           sample.classList.toggle('graf-bolt', stencil === '⚡');
           sample.style.color = stencil === '⚡' ? '#ffffff' : color;
           sample.style.transform = 'rotate(' + stencilAngle + 'deg) scaleX(' + (stencilFlipped ? -1 : 1) + ')';
-          document.getElementById('graf-rotate-left').setAttribute('aria-label', isEn ? 'Rotate left' : 'Повернуть влево');
-          document.getElementById('graf-rotate-right').setAttribute('aria-label', isEn ? 'Rotate right' : 'Повернуть вправо');
+          document.getElementById('graf-rotate-left').setAttribute('aria-label', isEn ? 'Rotate left 45 degrees' : 'Повернуть влево на 45 градусов');
+          document.getElementById('graf-rotate-right').setAttribute('aria-label', isEn ? 'Rotate right 45 degrees' : 'Повернуть вправо на 45 градусов');
           document.getElementById('graf-flip').textContent = isEn ? '⇋ Flip' : '⇋ Отразить';
           document.getElementById('graf-flip').setAttribute('aria-pressed', String(stencilFlipped));
           document.getElementById('graf-transform-hint').textContent = isEn ? 'Drag on the wall to position, release to stamp.' : 'Перетащи по стене и отпусти, чтобы нанести.';
@@ -5346,8 +5346,8 @@
         }
 
         window.addEventListener('blur', stopDrawing);
-        bindClick('graf-rotate-left', () => { stencilAngle = (stencilAngle + 270) % 360; renderControls(); });
-        bindClick('graf-rotate-right', () => { stencilAngle = (stencilAngle + 90) % 360; renderControls(); });
+        bindClick('graf-rotate-left', () => { stencilAngle = (stencilAngle + 315) % 360; renderControls(); });
+        bindClick('graf-rotate-right', () => { stencilAngle = (stencilAngle + 45) % 360; renderControls(); });
         bindClick('graf-flip', () => { stencilFlipped = !stencilFlipped; renderControls(); });
 
         document.querySelectorAll('.graf-tool').forEach(b => b.addEventListener('click', () => { stopDrawing(); AudioEngine.click(); tool = b.dataset.tool; renderControls(); }));
