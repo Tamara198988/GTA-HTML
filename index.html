@@ -5131,7 +5131,7 @@
 
         function inspectCode() {
           const text = editor.value;
-          if (text.length > 10000 || /<!|<\\?/i.test(text)) return null;
+          if (text.length > 10000 || /<!|<\?/i.test(text)) return null;
           const doc = new DOMParser().parseFromString(text, 'application/xml');
           if (doc.querySelector('parsererror')) return null;
           const root = doc.documentElement;
