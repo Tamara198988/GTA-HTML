@@ -1084,6 +1084,7 @@
     }
 
     .graffiti-wall-wrap {
+      position: relative;
       width: 100%;
       background: #0a0812;
       border: 3px solid var(--ink);
@@ -1107,6 +1108,15 @@
       #view-graffiti > .arc-panel { padding: 10px; }
       #view-graffiti .graffiti-wall-wrap { margin: 8px 0; }
     }
+
+    .graf-stencil-controls { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:10px; }
+    .graf-stencil-sample { display:inline-flex; width:56px; height:44px; justify-content:center; align-items:center; overflow:hidden; border:1px solid var(--cyan); border-radius:7px; color:var(--cyan); font:900 12px var(--font-mono); }
+    .graf-stencil-sample span { display:inline-block; }
+    .graf-ghost { position:absolute; z-index:2; pointer-events:none; font:900 20px var(--font-mono); white-space:nowrap; text-shadow:0 0 8px currentColor; opacity:.9; }
+    .graf-shop { margin:12px 0; padding:10px; border:1px solid rgba(0,240,255,.4); border-radius:10px; background:rgba(7,10,22,.65); }
+    .graf-shop summary { cursor:pointer; color:var(--yellow); font-weight:800; }
+    .graf-shop-items { display:flex; flex-wrap:wrap; gap:7px; margin:8px 0 12px; }
+    .graf-shop-feedback { min-height:1.2em; color:var(--yellow); font-size:.82rem; }
 
     .swatch-btn {
       width: 28px;
@@ -2012,8 +2022,16 @@
           </div>
         </div>
 
+        <div class="graf-stencil-controls hidden" id="graf-stencil-controls">
+          <button type="button" class="arc-btn btn-xs btn-dark" id="graf-rotate-left">↶ 90°</button>
+          <button type="button" class="arc-btn btn-xs btn-dark" id="graf-rotate-right">↷ 90°</button>
+          <button type="button" class="arc-btn btn-xs btn-dark" id="graf-flip">⇋ Flip</button>
+          <span class="graf-stencil-sample" aria-hidden="true"><span id="graf-stencil-sample"></span></span>
+          <span id="graf-transform-hint" style="font-size:.78rem;color:var(--muted);"></span>
+        </div>
         <div class="graffiti-wall-wrap">
           <canvas id="graffiti-canvas" width="900" height="430"></canvas>
+          <div id="graf-ghost" class="graf-ghost hidden" aria-hidden="true"></div>
         </div>
 
         <div class="two-col" style="margin-bottom: 10px;">
@@ -2027,9 +2045,18 @@
           </div>
         </div>
 
+        <details class="graf-shop" id="graf-shop">
+          <summary id="graf-shop-title">🎨 Art shop</summary>
+          <div style="margin-top:8px;color:var(--green);font-weight:800;"><span id="graf-cash-label">Cash:</span> $<span id="graf-cash">0</span></div>
+          <div class="caption" id="graf-shop-colors-title">Colors</div>
+          <div class="graf-shop-items" id="graf-shop-colors"></div>
+          <div class="caption" id="graf-shop-stencils-title">Stencils</div>
+          <div class="graf-shop-items" id="graf-shop-stencils"></div>
+          <p class="graf-shop-feedback" id="graf-shop-feedback" role="status" aria-live="polite"></p>
+        </details>
         <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px;">
           <button type="button" class="arc-btn btn-sm btn-dark" id="btn-graf-clear">🧹 Clear Wall</button>
-          <button type="button" class="arc-btn btn-green" id="btn-graf-save">📸 Save to District Card (+$250)</button>
+          <button type="button" class="arc-btn btn-dark" id="btn-graf-save" disabled>📸 Save to District Card (+$250)</button>
         </div>
 
         <div id="graf-feedback" class="hidden"></div>
@@ -2462,9 +2489,9 @@
           toolSpray: '💨 Spray Can',
           toolMarker: '🖊️ Marker',
           toolStencil: '🔖 Stencil',
-          grafSize: 'Nozzle:',
-          grafPalCap: 'Palette (10 neon colors):',
-          grafStCap: 'Stencils (click the wall while Stencil tool is active):',
+          grafSize: 'Size:',
+          grafPalCap: 'Your colors:',
+          grafStCap: 'Your stencils:',
           grafClear: '🧹 Clear Wall',
           grafSave: '📸 Save to District Card (+$250)',
           grafSavedNew: '🎨 Graffiti saved on «{name}» card! Bonus: +$250!',
@@ -2613,9 +2640,9 @@
           toolSpray: '💨 Баллончик',
           toolMarker: '🖊️ Маркер',
           toolStencil: '🔖 Трафарет',
-          grafSize: 'Сопло:',
-          grafPalCap: 'Палитра (10 неоновых красок):',
-          grafStCap: 'Трафареты (кликни по стене в режиме трафарета):',
+          grafSize: 'Размер:',
+          grafPalCap: 'Твои цвета:',
+          grafStCap: 'Твои трафареты:',
           grafClear: '🧹 Очистить стену',
           grafSave: '📸 Сохранить на карту района (+$250)',
           grafSavedNew: '🎨 Граффити сохранено на карточке «{name}»! Награда: +$250!',
@@ -3324,6 +3351,8 @@
         garage: defaultGarage(),
         graffiti: {},
         graffitiRewarded: [],
+        graffitiColorsOwned: [],
+        graffitiStencilsOwned: [],
         bankCompleted: false,
 
         view: 'menu',
@@ -3369,6 +3398,8 @@
           }
           if (d.graffiti && typeof d.graffiti === 'object') State.graffiti = d.graffiti;
           if (Array.isArray(d.graffitiRewarded)) State.graffitiRewarded = d.graffitiRewarded;
+          if (Array.isArray(d.graffitiColorsOwned)) State.graffitiColorsOwned = d.graffitiColorsOwned.filter(item => typeof item === 'string');
+          if (Array.isArray(d.graffitiStencilsOwned)) State.graffitiStencilsOwned = d.graffitiStencilsOwned.filter(item => typeof item === 'string');
           if (typeof d.bankCompleted === 'boolean') State.bankCompleted = d.bankCompleted;
         } catch (e) {}
       }
@@ -3386,6 +3417,8 @@
             garage: State.garage,
             graffiti: State.graffiti,
             graffitiRewarded: State.graffitiRewarded,
+            graffitiColorsOwned: State.graffitiColorsOwned,
+            graffitiStencilsOwned: State.graffitiStencilsOwned,
             bankCompleted: State.bankCompleted
           }));
         } catch (e) {}
@@ -4868,6 +4901,22 @@
       const GraffitiWall = (() => {
         const PALETTE = ['#ff2a85', '#00f0ff', '#4cd137', '#ffd166', '#ff7b00', '#9d4edd', '#ffffff', '#ff4757', '#38bdf8', '#ffd700'];
         const STENCILS = ['<h1>', '<p>', '<img>', '<table>', '<div>', 'flex', '★', 'NEON CODE CITY'];
+        const SHOP_COLORS = [
+          { id: '#a3ff12', ru: 'Кислотный', en: 'Acid', price: 150 },
+          { id: '#ff77cc', ru: 'Жвачка', en: 'Bubblegum', price: 150 },
+          { id: '#00ffbc', ru: 'Мята', en: 'Mint', price: 180 },
+          { id: '#6c7cff', ru: 'Индиго', en: 'Indigo', price: 180 },
+          { id: '#ffbb66', ru: 'Персик', en: 'Peach', price: 200 },
+          { id: '#b9fffa', ru: 'Ледяной', en: 'Ice', price: 220 }
+        ];
+        const SHOP_STENCILS = [
+          { id: '♥', price: 150 },
+          { id: '⚡', price: 180 },
+          { id: '☀', price: 180 },
+          { id: '</>', price: 200 },
+          { id: '#CODE', price: 220 },
+          { id: '∞', price: 250 }
+        ];
 
         const cvs = document.getElementById('graffiti-canvas');
         const ctx = cvs ? cvs.getContext('2d') : null;
@@ -4876,11 +4925,35 @@
         let color = '#ff2a85';
         let size = 26;
         let stencil = '<h1>';
+        let stencilAngle = 0;
+        let stencilFlipped = false;
+        let stencilPointer = null;
         let drawing = false;
         let lastPt = null;
+        let sprayTimer = null;
+        let hasArtwork = false;
+
+        function setArtworkPresent(present) {
+          hasArtwork = present;
+          const button = document.getElementById('btn-graf-save');
+          button.disabled = !present;
+          button.classList.toggle('btn-dark', !present);
+          button.classList.toggle('btn-green', present);
+        }
+
+        function stopDrawing() {
+          if (sprayTimer !== null) clearInterval(sprayTimer);
+          sprayTimer = null;
+          stencilPointer = null;
+          drawing = false;
+          lastPt = null;
+          document.getElementById('graf-ghost').classList.add('hidden');
+        }
 
         function drawWall() {
           if (!ctx || !cvs) return;
+          stopDrawing();
+          setArtworkPresent(false);
           const w = cvs.width;
           const h = cvs.height;
           ctx.fillStyle = '#1b142e';
@@ -4908,6 +4981,7 @@
 
         function spray(x, y) {
           if (!ctx) return;
+          setArtworkPresent(true);
           ctx.save();
           ctx.fillStyle = color;
           for (let i = 0; i < size * 1.5; i++) {
@@ -4921,6 +4995,7 @@
 
         function line(a, b) {
           if (!ctx) return;
+          setArtworkPresent(true);
           ctx.save();
           ctx.strokeStyle = color;
           ctx.lineWidth = Math.max(4, size * 0.35);
@@ -4936,6 +5011,7 @@
 
         function stamp(x, y) {
           if (!ctx) return;
+          setArtworkPresent(true);
           ctx.save();
           const fs = size === 14 ? 32 : size === 26 ? 48 : 66;
           ctx.font = '900 ' + fs + 'px Consolas, monospace';
@@ -4944,7 +5020,10 @@
           ctx.shadowColor = color;
           ctx.shadowBlur = 18;
           ctx.fillStyle = color;
-          ctx.fillText(stencil, x, y);
+          ctx.translate(x, y);
+          ctx.rotate(stencilAngle * Math.PI / 180);
+          ctx.scale(stencilFlipped ? -1 : 1, 1);
+          ctx.fillText(stencil, 0, 0);
           ctx.restore();
           AudioEngine.spray();
         }
@@ -4963,61 +5042,170 @@
             });
           }
 
+
+          if (!PALETTE.includes(color) && !State.graffitiColorsOwned.includes(color)) color = PALETTE[0];
+          if (!STENCILS.includes(stencil) && !State.graffitiStencilsOwned.includes(stencil)) stencil = STENCILS[0];
+
           const pal = document.getElementById('graf-palette');
-          if (pal) {
-            pal.innerHTML = '';
-            PALETTE.forEach(hex => {
-              const b = document.createElement('button');
-              b.type = 'button';
-              b.className = 'swatch-btn' + (hex === color ? ' active' : '');
-              b.style.background = hex;
-              b.addEventListener('click', () => { AudioEngine.click(); color = hex; renderControls(); });
-              pal.appendChild(b);
-            });
-          }
+          pal.innerHTML = '';
+          PALETTE.concat(SHOP_COLORS.filter(item => State.graffitiColorsOwned.includes(item.id)).map(item => item.id)).forEach(hex => {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'swatch-btn' + (hex === color ? ' active' : '');
+            b.style.background = hex;
+            b.setAttribute('aria-label', (isEn ? 'Color ' : 'Цвет ') + hex);
+            b.setAttribute('aria-pressed', String(hex === color));
+            b.addEventListener('click', () => { AudioEngine.click(); color = hex; renderControls(); });
+            pal.appendChild(b);
+          });
 
           const stBox = document.getElementById('graf-stencils');
-          if (stBox) {
-            stBox.innerHTML = '';
-            STENCILS.forEach(st => {
-              const b = document.createElement('button');
-              b.type = 'button';
-              b.className = 'arc-btn btn-xs btn-dark' + (st === stencil && tool === 'stencil' ? ' tool-active' : '');
-              b.style.fontFamily = 'var(--font-mono)';
-              b.style.textTransform = 'none';
-              b.textContent = st;
-              b.addEventListener('click', () => { AudioEngine.click(); stencil = st; tool = 'stencil'; renderControls(); });
-              stBox.appendChild(b);
+          stBox.innerHTML = '';
+          STENCILS.concat(SHOP_STENCILS.filter(item => State.graffitiStencilsOwned.includes(item.id)).map(item => item.id)).forEach(st => {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'arc-btn btn-xs btn-dark' + (st === stencil && tool === 'stencil' ? ' tool-active' : '');
+            b.style.fontFamily = 'var(--font-mono)';
+            b.style.textTransform = 'none';
+            b.textContent = st;
+            b.setAttribute('aria-pressed', String(st === stencil && tool === 'stencil'));
+            b.addEventListener('click', () => { AudioEngine.click(); stencil = st; tool = 'stencil'; renderControls(); });
+            stBox.appendChild(b);
+          });
+
+          document.getElementById('graf-stencil-controls').classList.toggle('hidden', tool !== 'stencil');
+          const sample = document.getElementById('graf-stencil-sample');
+          sample.textContent = stencil;
+          sample.style.color = color;
+          sample.style.transform = 'rotate(' + stencilAngle + 'deg) scaleX(' + (stencilFlipped ? -1 : 1) + ')';
+          document.getElementById('graf-rotate-left').setAttribute('aria-label', isEn ? 'Rotate left' : 'Повернуть влево');
+          document.getElementById('graf-rotate-right').setAttribute('aria-label', isEn ? 'Rotate right' : 'Повернуть вправо');
+          document.getElementById('graf-flip').textContent = isEn ? '⇋ Flip' : '⇋ Отразить';
+          document.getElementById('graf-flip').setAttribute('aria-pressed', String(stencilFlipped));
+          document.getElementById('graf-transform-hint').textContent = isEn ? 'Drag on the wall to position, release to stamp.' : 'Перетащи по стене и отпусти, чтобы нанести.';
+          document.getElementById('graf-shop-title').textContent = isEn ? '🎨 Art shop' : '🎨 Магазин граффити';
+          document.getElementById('graf-cash-label').textContent = isEn ? 'Cash:' : 'Деньги:';
+          document.getElementById('graf-cash').textContent = State.cash;
+          document.getElementById('graf-shop-colors-title').textContent = isEn ? 'New colors' : 'Новые цвета';
+          document.getElementById('graf-shop-stencils-title').textContent = isEn ? 'New stencils' : 'Новые трафареты';
+
+          function renderShopItems(containerId, items, owned, isColor) {
+            const box = document.getElementById(containerId);
+            box.innerHTML = '';
+            items.forEach(item => {
+              const purchased = owned.includes(item.id);
+              const button = document.createElement('button');
+              button.type = 'button';
+              button.className = 'shop-item-btn' + (purchased ? ' owned' : '');
+              if (isColor) {
+                const dot = document.createElement('span');
+                dot.className = 'color-dot';
+                dot.style.background = item.id;
+                button.appendChild(dot);
+              }
+              const label = isColor ? (isEn ? item.en : item.ru) : item.id;
+              const text = document.createElement('span');
+              text.textContent = label + (purchased ? (isEn ? ' ✓ Owned' : ' ✓ Куплено') : ' · $' + item.price);
+              button.appendChild(text);
+              button.disabled = purchased;
+              button.addEventListener('click', () => {
+                const message = document.getElementById('graf-shop-feedback');
+                if (State.cash < item.price) {
+                  message.textContent = isEn ? 'Not enough cash for this item.' : 'Недостаточно денег для покупки.';
+                  AudioEngine.error();
+                  return;
+                }
+                if (owned.includes(item.id)) return;
+                State.cash -= item.price;
+                owned.push(item.id);
+                saveState();
+                updateAllUI();
+                if (isColor) color = item.id;
+                else { stencil = item.id; tool = 'stencil'; }
+                message.textContent = isEn ? 'Purchased and selected!' : 'Куплено и выбрано!';
+                AudioEngine.ok();
+                renderControls();
+              });
+              box.appendChild(button);
             });
           }
+          renderShopItems('graf-shop-colors', SHOP_COLORS, State.graffitiColorsOwned, true);
+          renderShopItems('graf-shop-stencils', SHOP_STENCILS, State.graffitiStencilsOwned, false);
 
           document.querySelectorAll('.graf-tool').forEach(b => b.classList.toggle('tool-active', b.dataset.tool === tool));
           document.querySelectorAll('.graf-size').forEach(b => b.classList.toggle('tool-active', Number(b.dataset.size) === size));
         }
 
+
+        const ghost = document.getElementById('graf-ghost');
+        function moveGhost(event) {
+          const rect = cvs.getBoundingClientRect();
+          const x = Math.max(0, Math.min(rect.width, event.clientX - rect.left));
+          const y = Math.max(0, Math.min(rect.height, event.clientY - rect.top));
+          const fontSize = size === 14 ? 32 : size === 26 ? 48 : 66;
+          ghost.textContent = stencil;
+          ghost.style.left = x + 'px';
+          ghost.style.top = y + 'px';
+          ghost.style.color = color;
+          ghost.style.fontSize = (fontSize * rect.width / cvs.width) + 'px';
+          ghost.style.transform = 'translate(-50%, -50%) rotate(' + stencilAngle + 'deg) scaleX(' + (stencilFlipped ? -1 : 1) + ')';
+          ghost.classList.remove('hidden');
+        }
+
         if (cvs) {
           drawWall();
-          cvs.addEventListener('pointerdown', (e) => {
-            const p = getPt(e);
-            if (tool === 'stencil') { stamp(p.x, p.y); return; }
+          cvs.addEventListener('pointerdown', event => {
+            if (stencilPointer !== null || drawing) return;
+            event.preventDefault();
+            cvs.setPointerCapture(event.pointerId);
+            const p = getPt(event);
+            if (tool === 'stencil') {
+              stencilPointer = event.pointerId;
+              moveGhost(event);
+              return;
+            }
             drawing = true;
             lastPt = p;
-            if (tool === 'spray') { spray(p.x, p.y); AudioEngine.spray(); }
-            else line(p, { x: p.x + 1, y: p.y + 1 });
+            if (tool === 'spray') {
+              spray(p.x, p.y);
+              AudioEngine.spray();
+              let soundTick = 0;
+              sprayTimer = setInterval(() => {
+                if (!drawing || !lastPt || tool !== 'spray') return;
+                spray(lastPt.x, lastPt.y);
+                soundTick++;
+                if (soundTick % 4 === 0) AudioEngine.spray();
+              }, 75);
+            } else line(p, { x: p.x + 1, y: p.y + 1 });
           });
-          cvs.addEventListener('pointermove', (e) => {
+          cvs.addEventListener('pointermove', event => {
+            if (stencilPointer === event.pointerId) { moveGhost(event); return; }
             if (!drawing) return;
-            const p = getPt(e);
+            const p = getPt(event);
             if (tool === 'spray') spray(p.x, p.y);
             else line(lastPt, p);
             lastPt = p;
           });
-          const endDraw = () => { drawing = false; lastPt = null; };
-          cvs.addEventListener('pointerup', endDraw);
-          cvs.addEventListener('pointerleave', endDraw);
+          cvs.addEventListener('pointerup', event => {
+            if (stencilPointer === event.pointerId) {
+              const rect = cvs.getBoundingClientRect();
+              const p = getPt(event);
+              if (event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom) stamp(p.x, p.y);
+              stencilPointer = null;
+              ghost.classList.add('hidden');
+            }
+            stopDrawing();
+          });
+          cvs.addEventListener('pointercancel', stopDrawing);
+          cvs.addEventListener('lostpointercapture', stopDrawing);
         }
 
-        document.querySelectorAll('.graf-tool').forEach(b => b.addEventListener('click', () => { AudioEngine.click(); tool = b.dataset.tool; renderControls(); }));
+        window.addEventListener('blur', stopDrawing);
+        bindClick('graf-rotate-left', () => { stencilAngle = (stencilAngle + 270) % 360; renderControls(); });
+        bindClick('graf-rotate-right', () => { stencilAngle = (stencilAngle + 90) % 360; renderControls(); });
+        bindClick('graf-flip', () => { stencilFlipped = !stencilFlipped; renderControls(); });
+
+        document.querySelectorAll('.graf-tool').forEach(b => b.addEventListener('click', () => { stopDrawing(); AudioEngine.click(); tool = b.dataset.tool; renderControls(); }));
         document.querySelectorAll('.graf-size').forEach(b => b.addEventListener('click', () => { AudioEngine.click(); size = Number(b.dataset.size); renderControls(); }));
         const selEl = document.getElementById('graf-dist-select');
         if (selEl) selEl.addEventListener('change', (e) => { distIdx = Number(e.target.value) || 0; drawWall(); });
@@ -5026,7 +5214,7 @@
         bindClick('btn-graf-city', () => { AudioEngine.click(); OpenCityGame.open(); });
         bindClick('btn-graf-home', () => { AudioEngine.click(); showView('menu'); });
         bindClick('btn-graf-save', () => {
-          if (!cvs) return;
+          if (!cvs || !hasArtwork) return;
           const d = DISTRICTS[distIdx];
           const name = State.lang === 'en' ? d.nameEn : d.nameRu;
           try {
@@ -5059,6 +5247,7 @@
             fb.className = 'feedback-box fb-ok';
             fb.textContent = tr('grafSavedUpd', { name: name });
           }
+          renderControls();
         });
 
         return {
@@ -5070,7 +5259,8 @@
             if (cvs) cvs.height = window.matchMedia('(max-width: 900px)').matches ? 720 : 430;
             drawWall();
           },
-          refresh: renderControls
+          refresh: renderControls,
+          stopDrawing
         };
       })();
 
@@ -5288,6 +5478,7 @@
         document.body.classList.toggle('bank-active', name === 'bank');
         if (name !== 'chase') stopChaseTimer();
         if (name !== 'city') OpenCityGame.pause();
+        if (name !== 'graffiti') GraffitiWall.stopDrawing();
         closeBanner();
 
         ['menu', 'city', 'briefing', 'missions', 'bugs', 'chase', 'garage', 'graffiti', 'bank'].forEach(v => {
@@ -5813,7 +6004,9 @@
                     (data.garage.owned != null && !Array.isArray(data.garage.owned)))) ||
                   (data.graffiti != null && (typeof data.graffiti !== 'object' || Array.isArray(data.graffiti))) ||
                   (data.unlockedAchievements != null && !Array.isArray(data.unlockedAchievements)) ||
-                  (data.graffitiRewarded != null && !Array.isArray(data.graffitiRewarded))) {
+                  (data.graffitiRewarded != null && !Array.isArray(data.graffitiRewarded)) ||
+                  (data.graffitiColorsOwned != null && !Array.isArray(data.graffitiColorsOwned)) ||
+                  (data.graffitiStencilsOwned != null && !Array.isArray(data.graffitiStencilsOwned))) {
                 throw new Error('Invalid save');
               }
               if (!confirm(State.lang === 'en' ? 'Replace current progress with this save?' : 'Заменить текущий прогресс данными из файла?')) return;
@@ -5853,6 +6046,8 @@
               State.garage = defaultGarage();
               State.graffiti = {};
               State.graffitiRewarded = [];
+              State.graffitiColorsOwned = [];
+              State.graffitiStencilsOwned = [];
               State.bankCompleted = false;
               saveState();
               renderPhoneTabs();
