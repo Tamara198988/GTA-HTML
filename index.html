@@ -4197,6 +4197,15 @@
           'td{border:2px solid #00f0ff;padding:6px 8px;text-align:center;min-width:44px;min-height:28px;}' +
           'td:empty{background:rgba(255,42,133,0.16);}' +
           '<\/style><\/head><body>' + html + '<\/body><\/html>';
+        iframeEl.onload = () => {
+          const preview = iframeEl.contentDocument;
+          if (!preview) return;
+          preview.addEventListener('click', event => {
+            const target = event.target;
+            if (target && target.nodeType === 1 && target.closest('a')) event.preventDefault();
+          });
+          preview.addEventListener('submit', event => event.preventDefault());
+        };
         iframeEl.srcdoc = docHtml;
       }
 
