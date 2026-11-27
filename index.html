@@ -303,6 +303,35 @@
       color: var(--ink);
     }
 
+
+    /* Keep the header groups aligned as the available width changes. */
+    .arcade-hud {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      justify-content: normal;
+      gap: 12px 16px;
+      padding: 12px 16px;
+    }
+    .brand-box, .radio-bar, .hud-right { min-width: 0; }
+    .radio-bar { max-width: 100%; justify-self: end; }
+    .radio-info { flex: 1 1 110px; min-width: 90px; }
+    .hud-right { grid-column: 1 / -1; justify-content: flex-start; gap: 8px; }
+    .hud-money-box { align-items: flex-start; margin-right: 4px; }
+    .hud-right > .arc-btn, .lang-switch { min-height: 36px; }
+    .lang-switch { align-items: stretch; }
+    .lang-btn { min-width: 42px; }
+    @media (max-width: 760px) {
+      .arcade-hud { grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 12px; }
+      .radio-bar { width: 100%; justify-self: stretch; }
+      .hud-right { grid-column: auto; }
+    }
+    @media (max-width: 380px) {
+      .radio-bar { gap: 5px; padding: 5px 6px; }
+      .radio-info { flex-basis: 90px; }
+      .hud-right { gap: 6px; }
+    }
+
     /* ==================== BUTTONS, PANELS & PILLS ==================== */
     .arc-panel {
       background: var(--glass-bg);
