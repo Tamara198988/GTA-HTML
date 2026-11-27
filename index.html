@@ -1564,6 +1564,7 @@
       </div>
 
       <div class="hud-right">
+        <button type="button" class="arc-btn btn-sm btn-cyan hidden" id="btn-hud-home">🏠 Home</button>
         <div class="hud-money-box">
           <div class="hud-cash" id="hud-cash">$000000</div>
           <div class="hud-stars" id="hud-stars">
@@ -1581,7 +1582,6 @@
         <button type="button" class="arc-btn btn-sm btn-green" id="btn-hud-city">🏎️ City</button>
         <button type="button" class="arc-btn btn-sm btn-pink" id="btn-hud-phone">📱 iCode Phone</button>
         <button type="button" class="arc-btn btn-sm btn-dark" id="btn-hud-sfx">🔊 SFX</button>
-        <button type="button" class="arc-btn btn-sm btn-cyan" id="btn-hud-home">🏠 Home</button>
       </div>
     </header>
 
@@ -5391,6 +5391,7 @@
       function updateAllUI() {
         const isEn = State.lang === 'en';
         document.documentElement.lang = State.lang;
+        document.getElementById('btn-hud-home').classList.toggle('hidden', State.view === 'menu');
         document.getElementById('btn-lang-en').classList.toggle('active', isEn);
         document.getElementById('btn-lang-ru').classList.toggle('active', !isEn);
 
