@@ -1122,6 +1122,8 @@
     .graf-stencil-controls { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:10px; }
     .graf-stencil-sample { display:inline-flex; width:56px; height:44px; justify-content:center; align-items:center; overflow:hidden; border:1px solid var(--cyan); border-radius:7px; color:var(--cyan); font:900 12px var(--font-mono); }
     .graf-stencil-sample span { display:inline-block; }
+    .graf-bolt { display:inline-block; width:16px; height:26px; background:#fff; clip-path:polygon(52% 0, 93% 0, 65% 39%, 90% 39%, 20% 100%, 38% 54%, 10% 54%); }
+    .spray-can-icon::before { content:''; display:inline-block; flex:none; width:15px; height:21px; margin-right:3px; background:linear-gradient(to bottom, #d9fbff 0 14%, #294456 14% 27%, #00f0ff 27% 45%, #f8fafc 45% 88%, #8a9ba8 88%); clip-path:polygon(37% 0, 65% 0, 65% 13%, 78% 13%, 78% 25%, 91% 32%, 91% 96%, 9% 96%, 9% 32%, 22% 25%, 22% 13%, 37% 13%); transform:rotate(-12deg); }
     .graf-ghost { position:absolute; z-index:2; pointer-events:none; font:900 20px var(--font-mono); white-space:nowrap; text-shadow:0 0 8px currentColor; opacity:.9; }
     .graf-shop { margin:12px 0; padding:10px; border:1px solid rgba(0,240,255,.4); border-radius:10px; background:rgba(7,10,22,.65); }
     .graf-shop summary { cursor:pointer; color:var(--yellow); font-weight:800; }
@@ -1642,7 +1644,7 @@
         </div>
         <div class="menu-actions">
           <button type="button" class="arc-btn btn-green" id="btn-hero-city">🏎️ DRIVE IN 2D CITY</button>
-          <button type="button" class="arc-btn btn-pink" id="btn-strip-graffiti">🎨 Graffiti Wall</button>
+          <button type="button" class="arc-btn btn-pink spray-can-icon" id="btn-strip-graffiti">Graffiti Wall</button>
           <button type="button" class="arc-btn" id="btn-strip-garage">🔧 HTML Customs Garage</button>
           <button type="button" class="arc-btn btn-dark" id="btn-menu-details">📊 Progress &amp; City</button>
         </div>
@@ -2006,7 +2008,7 @@
     <!-- ==================== GRAFFITI WALL ==================== -->
     <section id="view-graffiti" class="hidden">
       <div class="mode-top-bar">
-        <span class="arc-pill" id="graf-pill-title" style="background: var(--pink); color: #fff;">🎨 GRAFFITI WALL • SPRAY CAN</span>
+        <span class="arc-pill spray-can-icon" id="graf-pill-title" style="background: var(--pink); color: #fff;">🎨 GRAFFITI WALL • SPRAY CAN</span>
         <div style="display: flex; align-items: center; gap: 8px;">
           <label for="graf-dist-select" id="graf-dist-lbl" style="font-size: 0.8rem; font-weight: 800; color: var(--cyan);">District wall:</label>
           <select id="graf-dist-select" style="background: var(--glass-elev); color: var(--yellow); font-weight: 800; border: 2px solid var(--cyan); border-radius: 8px; padding: 5px 8px;"></select>
@@ -2384,7 +2386,7 @@
           stripTitle: '🏎️ CRUISE TWO ISLANDS AND UNLOCK HTML & CSS CHAPTERS!',
           stripSub: 'Drive your tuned car through the streets, enter mission markers, spray graffiti walls, and open bridges to Neon-City CSS!',
           btnCity: '🏎️ Drive in City',
-          btnGraffiti: '🎨 Graffiti Wall',
+          btnGraffiti: 'Graffiti Wall',
           btnGarage: '🔧 HTML Customs Garage',
           m1Pill: '11 DISTRICTS • 33 MISSIONS',
           m1Title: '🗺️ HTML & CSS Chapters',
@@ -2496,7 +2498,7 @@
           garNoCash: '❌ Not enough cash! You need ${price}.',
           garEquipped: '✅ Equipped: ',
           garBought: '🔥 Purchased & equipped: ',
-          grafTitle: '🎨 GRAFFITI WALL • SPRAY CAN',
+          grafTitle: 'GRAFFITI WALL • SPRAY CAN',
           grafDist: 'District wall:',
           toolSpray: '💨 Spray Can',
           toolMarker: '🖊️ Marker',
@@ -2535,7 +2537,7 @@
           stripTitle: '🏎️ КАТАЙСЯ ПО ДВУМ ОСТРОВАМ И ОТКРЫВАЙ ГЛАВЫ HTML И CSS!',
           stripSub: 'Управляй своей прокачанной тачкой по улицам города, заезжай в маркеры миссий, рисуй граффити и открывай мосты в Неон-Сити CSS!',
           btnCity: '🏎️ Выехать в город',
-          btnGraffiti: '🎨 Стена граффити',
+          btnGraffiti: 'Стена граффити',
           btnGarage: '🔧 Гараж HTML Customs',
           m1Pill: '11 РАЙОНОВ • 33 МИССИИ',
           m1Title: '🗺️ Главы HTML & CSS',
@@ -2647,7 +2649,7 @@
           garNoCash: '❌ Не хватает кэша! Нужно ${price}.',
           garEquipped: '✅ Установлено: ',
           garBought: '🔥 Куплено и установлено: ',
-          grafTitle: '🎨 СТЕНА ГРАФФИТИ • БАЛЛОНЧИК',
+          grafTitle: 'СТЕНА ГРАФФИТИ • БАЛЛОНЧИК',
           grafDist: 'Район стены:',
           toolSpray: '💨 Баллончик',
           toolMarker: '🖊️ Маркер',
@@ -5125,13 +5127,27 @@
           ctx.font = '900 ' + fs + 'px Consolas, monospace';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
-          ctx.shadowColor = color;
+          const ink = stencil === '⚡' ? '#ffffff' : color;
+          ctx.shadowColor = ink;
           ctx.shadowBlur = 18;
-          ctx.fillStyle = color;
+          ctx.fillStyle = ink;
           ctx.translate(x, y);
           ctx.rotate(stencilAngle * Math.PI / 180);
           ctx.scale(stencilFlipped ? -1 : 1, 1);
-          ctx.fillText(stencil, 0, 0);
+          if (stencil === '⚡') {
+            ctx.beginPath();
+            ctx.moveTo(0.05 * fs, -0.5 * fs);
+            ctx.lineTo(0.4 * fs, -0.5 * fs);
+            ctx.lineTo(0.14 * fs, -0.1 * fs);
+            ctx.lineTo(0.35 * fs, -0.1 * fs);
+            ctx.lineTo(-0.32 * fs, 0.5 * fs);
+            ctx.lineTo(-0.15 * fs, 0.08 * fs);
+            ctx.lineTo(-0.38 * fs, 0.08 * fs);
+            ctx.closePath();
+            ctx.fill();
+          } else {
+            ctx.fillText(stencil, 0, 0);
+          }
           ctx.restore();
           AudioEngine.spray();
         }
@@ -5177,7 +5193,14 @@
             b.className = 'arc-btn btn-xs btn-dark' + (st === stencil && tool === 'stencil' ? ' tool-active' : '');
             b.style.fontFamily = 'var(--font-mono)';
             b.style.textTransform = 'none';
-            b.textContent = st;
+            if (st === '⚡') {
+              const bolt = document.createElement('span');
+              bolt.className = 'graf-bolt';
+              bolt.style.width = '10px';
+              bolt.style.height = '16px';
+              b.appendChild(bolt);
+              b.setAttribute('aria-label', isEn ? 'Lightning stencil' : 'Трафарет молнии');
+            } else b.textContent = st;
             b.setAttribute('aria-pressed', String(st === stencil && tool === 'stencil'));
             b.addEventListener('click', () => { AudioEngine.click(); stencil = st; tool = 'stencil'; renderControls(); });
             stBox.appendChild(b);
@@ -5185,8 +5208,9 @@
 
           document.getElementById('graf-stencil-controls').classList.toggle('hidden', tool !== 'stencil');
           const sample = document.getElementById('graf-stencil-sample');
-          sample.textContent = stencil;
-          sample.style.color = color;
+          sample.textContent = stencil === '⚡' ? '' : stencil;
+          sample.classList.toggle('graf-bolt', stencil === '⚡');
+          sample.style.color = stencil === '⚡' ? '#ffffff' : color;
           sample.style.transform = 'rotate(' + stencilAngle + 'deg) scaleX(' + (stencilFlipped ? -1 : 1) + ')';
           document.getElementById('graf-rotate-left').setAttribute('aria-label', isEn ? 'Rotate left' : 'Повернуть влево');
           document.getElementById('graf-rotate-right').setAttribute('aria-label', isEn ? 'Rotate right' : 'Повернуть вправо');
@@ -5213,7 +5237,14 @@
                 dot.style.background = item.id;
                 button.appendChild(dot);
               }
-              const label = isColor ? (isEn ? item.en : item.ru) : item.id;
+              const label = isColor ? (isEn ? item.en : item.ru) : item.id === '⚡' ? (isEn ? 'Lightning' : 'Молния') : item.id;
+              if (!isColor && item.id === '⚡') {
+                const bolt = document.createElement('span');
+                bolt.className = 'graf-bolt';
+                bolt.style.width = '10px';
+                bolt.style.height = '16px';
+                button.appendChild(bolt);
+              }
               const text = document.createElement('span');
               text.textContent = label + (purchased ? (isEn ? ' ✓ Owned' : ' ✓ Куплено') : ' · $' + item.price);
               button.appendChild(text);
@@ -5253,10 +5284,14 @@
           const x = Math.max(0, Math.min(rect.width, event.clientX - rect.left));
           const y = Math.max(0, Math.min(rect.height, event.clientY - rect.top));
           const fontSize = size === 14 ? 32 : size === 26 ? 48 : 66;
-          ghost.textContent = stencil;
+          ghost.textContent = stencil === '⚡' ? '' : stencil;
+          ghost.classList.toggle('graf-bolt', stencil === '⚡');
+          const displaySize = fontSize * rect.width / cvs.width;
+          ghost.style.width = stencil === '⚡' ? (displaySize * 0.7) + 'px' : '';
+          ghost.style.height = stencil === '⚡' ? displaySize + 'px' : '';
           ghost.style.left = x + 'px';
           ghost.style.top = y + 'px';
-          ghost.style.color = color;
+          ghost.style.color = stencil === '⚡' ? '#ffffff' : color;
           ghost.style.fontSize = (fontSize * rect.width / cvs.width) + 'px';
           ghost.style.transform = 'translate(-50%, -50%) rotate(' + stencilAngle + 'deg) scaleX(' + (stencilFlipped ? -1 : 1) + ')';
           ghost.classList.remove('hidden');
